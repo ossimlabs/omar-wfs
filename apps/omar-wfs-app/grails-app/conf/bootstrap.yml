@@ -1,6 +1,6 @@
 spring:
   application:
-    name: o2-wfs
+    name: omar-wfs
   cloud:
     config:
       enabled: false
