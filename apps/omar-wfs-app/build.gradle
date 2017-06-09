@@ -9,7 +9,10 @@ buildscript {
   }
   repositories {
     mavenLocal()
-    maven { url "${ossimMavenProxy}" }
+    mavenLocal()
+    if ( ! System.getenv('O2_DEV_HOME') ) {
+      maven { url "${ossimMavenProxy}" }
+    }
     maven { url "https://repo.grails.org/grails/core" }
   }
   dependencies {
@@ -49,7 +52,9 @@ assets {
 
 repositories {
   mavenLocal()
-  maven { url "${ossimMavenProxy}" }
+  if ( ! System.getenv('O2_DEV_HOME') ) {
+    maven { url "${ossimMavenProxy}" }
+  }
   maven { url "https://repo.grails.org/grails/core" }
 }
 
@@ -62,7 +67,13 @@ dependencyManagement {
 }
 
 dependencies {
-  compile(group: "io.ossim.omar.plugins", name: "omar-wfs-plugin", version: "1.0.0-${buildVersionTag}", changing: jarArtifactsChanging)
+
+  if ( System.getenv('O2_DEV_HOME') ) {
+    compile project(':omar-wfs-plugin')
+  } else {
+    compile(group: "io.ossim.omar.plugins", name: "omar-wfs-plugin", version: "1.0.0-${buildVersionTag}", changing: jarArtifactsChanging)
+  }
+
   compile "org.grails.plugins:hibernate5"
   compile "org.hibernate:hibernate-core:5.0.10.Final"
   compile "org.hibernate:hibernate-ehcache:5.0.10.Final"
