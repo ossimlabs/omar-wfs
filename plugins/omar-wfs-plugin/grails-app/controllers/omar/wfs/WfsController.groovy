@@ -17,6 +17,8 @@ class WfsController
 
   def index()
   {
+    println params
+
     def wfsParams = params - params.subMap( ['controller', 'format', 'action'] )
     def op = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }
 
@@ -115,7 +117,8 @@ class WfsController
 
 //    println '*' * 40
 
-    render contentType: results.contentType, text: results.buffer
+    //render contentType: results.contentType, text: results.buffer
+    render results
   }
 
   @ApiOperation(value = "Get the capabilities of the server", produces='application/xml')
@@ -133,11 +136,12 @@ class WfsController
 
     def results = webFeatureService.getCapabilities( wfsParams )
 
-    if(results.status != null) {
-response.status = results.status
-}
-
-    render contentType: results.contentType, text: results.buffer
+    // if(results.status != null) {
+    //   response.status = results.status
+    // }
+    //
+    // render contentType: results.contentType, text: results.buffer
+    render results
   }
 
   @ApiOperation(value = "Describe the feature from the server", produces='application/xml')
@@ -154,11 +158,13 @@ response.status = results.status
     BindUtil.fixParamNames( DescribeFeatureTypeRequest, params )
     bindData( wfsParams, params )
     def results = webFeatureService.describeFeatureType( wfsParams )
-    if(results.status != null) {
-response.status = results.status
-}
 
-    render contentType: results.contentType, text: results.buffer
+    // if(results.status != null) {
+    //   response.status = results.status
+    // }
+
+    //render contentType: results.contentType, text: results.buffer
+    render results
   }
 
   @ApiOperation(value = "Get features from the server", produces='application/xml,application/json')
@@ -185,13 +191,14 @@ response.status = results.status
 
     def results = webFeatureService.getFeature( wfsParams )
     if(results.status != null) {
-response.status = results.status
-}
+      response.status = results.status
+    }
 
     if(results.filename) {
-response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
-};
+      response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
+    }
 
-    render contentType: results.contentType, text: results.buffer
+    //render contentType: results.contentType, text: results.buffer
+    render results
   }
 }
