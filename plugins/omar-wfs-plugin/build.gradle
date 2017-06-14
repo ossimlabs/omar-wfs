@@ -9,9 +9,7 @@ buildscript {
   }
   repositories {
     mavenLocal()
-    if ( ! System.getenv('O2_DEV_HOME') ) {
-      maven { url "${ossimMavenProxy}" }
-    }
+    maven { url "${ossimMavenProxy}" }
     maven { url "https://repo.grails.org/grails/core" }
   }
   dependencies {
@@ -43,9 +41,7 @@ ext {
 
 repositories {
   mavenLocal()
-  if ( ! System.getenv('O2_DEV_HOME') ) {
-    maven { url "${ossimMavenProxy}" }
-  }
+  maven { url "${ossimMavenProxy}" }
   mavenCentral()
   maven { url "https://repo.grails.org/grails/core" }
 
@@ -64,11 +60,11 @@ dependencyManagement {
 
 dependencies {
   if ( System.getenv('O2_DEV_HOME')) {
-//    compile project(':omar-geoscript-plugin')
+    compile project(':omar-geoscript-plugin')
     compile project(':omar-core-plugin')
     compile project(':omar-hibernate-spatial-plugin')
   } else {
-//    compile(group: "io.ossim.omar.plugins", name: "omar-geoscript-plugin", version: "1.0.0-${buildVersionTag}", changing: jarArtifactsChanging)
+    compile(group: "io.ossim.omar.plugins", name: "omar-geoscript-plugin", version: "1.0.0-${buildVersionTag}", changing: jarArtifactsChanging)
     compile(group: "io.ossim.omar.plugins", name: "omar-hibernate-spatial-plugin", version: "1.0.0-${buildVersionTag}", changing: jarArtifactsChanging)
   }
 
