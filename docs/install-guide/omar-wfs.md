@@ -14,7 +14,22 @@ USER 1001
 WORKDIR /usr/share/omar
 CMD java -server -Xms256m -Xmx1024m -Djava.awt.headless=true -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit -Djava.security.egd=file:/dev/./urandom -jar omar-wfs-app-1.0.0-SNAPSHOT.jar
 ```
-Ref: [omar-ossim-base](../../../omar-ossim-base/docs/instal-guide/omar-ossim-base/)
+Ref: [omar-base](../../../omar-base/docs/install-guide/omar-base/)
 
 ## JAR
-`http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-wfs-app`
+[http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-wfs-app](http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-wfs-app)
+
+## Configuration
+
+Additional configuration from [Common Config Settings](../../../omar-common/docs/install-guide/omar-common#common-config-settings) can be added to the YAML.
+
+```
+omar:
+  wfs:
+    app:
+      geoscript:
+        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
+```
+
+* **omar.wfs.app.geoscript**
+ * **url** is the url endpoint for the [omar-geoscript](../../../omar-geoscript/docs/install-guide/omar-geoscript) service 
