@@ -130,7 +130,7 @@ omar:
   wfs:
     app:
       geoscript:
-        url: http://localhost:7777/omar-geoscript/geoscriptApi
+        url: http://localhost:8083/omar-geoscript/geoscriptApi
 # wfs:
 # #  geoserverHome: /Applications/GeoServer.app/Contents/Java
 #
