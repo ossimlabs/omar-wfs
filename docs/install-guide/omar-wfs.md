@@ -17,4 +17,19 @@ CMD java -server -Xms256m -Xmx1024m -Djava.awt.headless=true -XX:+CMSClassUnload
 Ref: [omar-ossim-base](../../../omar-ossim-base/docs/instal-guide/omar-ossim-base/)
 
 ## JAR
-`http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-wfs-app`
+http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-wfs-app`
+
+## Configuration
+
+Additional configuration from [Common Config Settings](../../../omar-common/docs/install-guide/omar-common#common-config-settings) can be added to the YAML.
+
+```
+omar:
+  wfs:
+    app:
+      geoscript:
+        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
+```
+
+* **omar.wfs.app.geoscript**
+ * **url** is the url endpoint for the [omar-geoscript](../../../omar-geoscript/docs/instal-guide/omar-geoscript) service 
