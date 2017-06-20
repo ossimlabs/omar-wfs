@@ -32,4 +32,4 @@ omar:
 ```
 
 * **omar.wfs.app.geoscript**
- * **url** is the url endpoint for the [omar-geoscript](../../../omar-geoscript/docs/instal-guide/omar-geoscript) service 
+ * **url** is the url endpoint for the [omar-geoscript](../../../omar-geoscript/docs/install-guide/omar-geoscript) service 
