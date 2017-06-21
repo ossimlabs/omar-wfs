@@ -99,7 +99,7 @@ class WebFeatureService
       def x = {
         mkp.xmlDeclaration()
         mkp.declareNamespace(ogcNamespaces)
-        mkp.declareNamespace(model.featureTypeNamespacesByPrefix)
+        mkp.declareNamespace(model?.featureTypeNamespacesByPrefix)
         wfs.WFS_Capabilities( version:'1.1.0', xmlns: 'http://www.opengis.net/wfs',
           'xsi:schemaLocation': "http://www.opengis.net/wfs ${schemaLocation}/schemas/wfs/1.1.0/wfs.xsd",
         ) {
@@ -228,7 +228,7 @@ class WebFeatureService
                 ogc.SimpleArithmetic()
                 ogc.Functions {
                   ogc.FunctionNames {
-                    model.functions.each {function ->
+                    model?.functions.each {function ->
                       ogc.FunctionName( nArgs: function.argCount, function.name)
                     }
                   }
