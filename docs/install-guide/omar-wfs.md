@@ -2,7 +2,7 @@
 
 ## Dockerfile
 ```
-FROM omar-ossim-base
+FROM omar-base
 EXPOSE 8080
 RUN mkdir /usr/share/omar
 COPY omar-wfs-app-1.0.0-SNAPSHOT.jar /usr/share/omar
