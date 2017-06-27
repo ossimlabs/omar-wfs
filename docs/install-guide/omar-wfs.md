@@ -21,14 +21,18 @@ Ref: [omar-base](../../../omar-base/docs/install-guide/omar-base/)
 
 ## Configuration
 
-Additional configuration from [Common Config Settings](../../../omar-common/docs/install-guide/omar-common#common-config-settings) can be added to the YAML.
+Additional configuration from [Common Config Settings](../../../omar-common/docs/install-guide/omar-common/#common-config-settings) can be added to the YAML.
 
 ```
+---
 omar:
-  wfs:
-    app:
-      geoscript:
-        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
+  wms:
+    geoscript:
+      url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
+    oms:
+      chipper:
+        url: http://omar-oms-app:8080/omar-oms/chipper
+        histOp: auto-minmax
 ```
 
 * **omar.wfs.app.geoscript**
