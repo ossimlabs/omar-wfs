@@ -321,6 +321,9 @@ class WebFeatureService
       case 'JSON':
         formattedResults = getFeatureJSON(results, wfsParams?.typeName)
         break
+      case 'CSV':
+        formattedResults = [contentType: 'text/csv', text: results.features]
+        break
       default:
         formattedResults = results
       }
@@ -470,6 +473,14 @@ class WebFeatureService
     case 'APPLICATION/JSON':
     case 'JSON':
           format = 'JSON'
+          break
+    case 'APPLICATION/CSV':
+    case 'CSV':
+          format = 'CSV'
+          break
+    case 'KML':
+          'APPLICATION/VND.GOOGLE-EARTH.KMLl+XML'
+          format = 'CSV'
           break
     }
 
