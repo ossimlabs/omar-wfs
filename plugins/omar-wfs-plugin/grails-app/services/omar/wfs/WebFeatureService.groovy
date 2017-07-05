@@ -428,13 +428,11 @@ class WebFeatureService
           if ( wfsParams[wfsParamName]?.trim() )
           {
             options['sort'] = wfsParams[wfsParamName].split(',').collect {
-                def x
-                if ( it ==~ /.*DESC/ ) {
-                    x = [it[0..<-4], 'DESC'] as List
-                } else if (it ==~ /.*ASC/) {
-                    x = [it[0..<-3], 'ASC'] as List
-                } else {
-                    x = it.split(/ |\+/) as List
+                def x = it.split(/ |\+/) as List
+                if ( x[1] ==~ /.*D(ESC)?/ ) {
+                    x = [x[0], 'DESC'] as List
+                } else if (x[1] ==~ /.*A(SC)?/) {
+                    x = [x[0], 'ASC'] as List
                 }
             } as List
           }
