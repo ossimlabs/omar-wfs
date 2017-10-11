@@ -4,13 +4,17 @@ import grails.transaction.Transactional
 import groovy.json.JsonSlurper
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 
+@Service
 @Transactional( readOnly = true )
 class GeoscriptClientService
 {
   @Value('${omar.wfs.app.geoscript.url}')
   def geoscriptEndpoint
 
+  @HystrixCommand(fallbackMethod = "serviceDown")
   def getCapabilitiesData()
   {
     def url = "${geoscriptEndpoint}/getCapabilitiesData".toURL()
@@ -19,12 +23,23 @@ class GeoscriptClientService
 
   }
 
+  String serviceDown() {
+    return "Service is down"
+  }
+
+  @HystrixCommand(fallbackMethod = "serviceDown")
   def getSchemaInfoByTypeName(String typeName)
   {
     def url = "${geoscriptEndpoint}/getSchemaInfoByTypeName?typeName=${typeName}".toURL()
 
     new JsonSlurper().parse( url )
   }
+
+
+  // The fallback method must match the same parameters of the method where you define the Hystrix Command
+  String serviceDown(String typeName) {
+    return "Service is down"
+   }
 
   def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null)
   {
