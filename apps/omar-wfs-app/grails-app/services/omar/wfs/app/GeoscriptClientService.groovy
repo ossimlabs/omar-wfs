@@ -41,6 +41,7 @@ class GeoscriptClientService
     return "Service is down"
    }
 
+  @HystrixCommand(fallbackMethod = "serviceDown")
   def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null)
   {
     def params = [
@@ -83,5 +84,11 @@ class GeoscriptClientService
     // println url
 
     new JsonSlurper().parse( url )
+  }
+
+
+  // The fallback method must match the same parameters of the method where you define the Hystrix Command
+  String serviceDown(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null) {
+    return "Service is down"
   }
 }
