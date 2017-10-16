@@ -139,4 +139,9 @@ omar:
   wfs:
     app:
       geoscript:
-        url: http://localhost:8083/omar-geoscript/geoscriptApi                
+        url: http://localhost:8083/omar-geoscript/geoscriptApi
+
+swagger:
+  schemes:
+    - HTTPS
+    - HTTP
