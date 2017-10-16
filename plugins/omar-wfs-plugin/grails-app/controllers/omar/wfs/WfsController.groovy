@@ -120,13 +120,13 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get the capabilities of the server",
+  @ApiOperation(value = "Get the capabilities of the server", 
                 produces='application/xml',
                 httpMethod="GET")
   @ApiImplicitParams([
-          @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="[GetCapabilities]", defaultValue = 'GetCapabilities', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="WFS", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="GetCapabilities", defaultValue = 'GetCapabilities', paramType = 'query', dataType = 'string', required=true),
   ])
   def getCapabilities(/*GetCapabilitiesRequest wfsParams*/)
   {
@@ -145,13 +145,13 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Describe the feature from the server",
+  @ApiOperation(value = "Describe the feature from the server", 
                 produces='application/xml',
                 httpMethod="GET")
   @ApiImplicitParams([
-          @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="[DescribeFeatureType]", defaultValue = 'DescribeFeatureType', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="WFS", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="DescribeFeatureType", defaultValue = 'DescribeFeatureType', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'typeName', value = 'Type Name', defaultValue="omar:raster_entry", paramType = 'query', dataType = 'string', required=true)
   ])
   def describeFeatureType(/*DescribeFeatureTypeRequest wfsParams*/)
@@ -170,17 +170,17 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get features from the server",
-    produces='application/xml,application/json',
-    httpMethod="GET")
+  @ApiOperation(value = "Get features from the server", 
+                produces='application/xml,application/json',
+                httpMethod="GET")
   @ApiImplicitParams([
-          @ApiImplicitParam(name = 'service', value = 'OGC service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
-          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="[GetFeature]", defaultValue = 'GetFeature', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'service', value = 'OGC service type', allowableValues="WFS", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
+          @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="GetFeature", defaultValue = 'GetFeature', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'typeName', value = 'Type name', defaultValue="omar:raster_entry", paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'filter', value = 'Filter', paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="results", allowableValues="[results,hits]", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="JSON", allowableValues="[JSON, KML, CSV, GML2, GML3, GML32]", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="results", allowableValues="results,hits", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="JSON", allowableValues="JSON, KML, CSV, GML2, GML3, GML32", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'int', required=false),

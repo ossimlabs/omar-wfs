@@ -78,6 +78,8 @@ dependencies {
 */
   compile "org.springframework.cloud:spring-cloud-starter-config"
   compile "org.springframework.cloud:spring-cloud-starter-eureka"
+  compile "org.springframework.cloud:spring-cloud-starter-hystrix"
+  compile "org.springframework.boot:spring-boot-starter-web"
 
   compile "org.springframework.boot:spring-boot-starter-logging"
   compile "org.springframework.boot:spring-boot-autoconfigure"
