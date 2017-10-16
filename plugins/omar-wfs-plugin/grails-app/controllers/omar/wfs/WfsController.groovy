@@ -3,8 +3,8 @@ package omar.wfs
 import omar.core.BindUtil
 import io.swagger.annotations.*
 
-@Api(value = "wfs",
-        description = "WFS Support"
+@Api(value = "/wfs",
+     description = "WFS Support"
 )
 class WfsController
 {
