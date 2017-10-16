@@ -120,7 +120,9 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get the capabilities of the server", produces='application/xml')
+  @ApiOperation(value = "Get the capabilities of the server", 
+                produces='application/xml',
+                httpMethod="GET")
   @ApiImplicitParams([
           @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
@@ -143,7 +145,9 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Describe the feature from the server", produces='application/xml')
+  @ApiOperation(value = "Describe the feature from the server", 
+                produces='application/xml',
+                httpMethod="GET")
   @ApiImplicitParams([
           @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
@@ -166,7 +170,9 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get features from the server", produces='application/xml,application/json')
+  @ApiOperation(value = "Get features from the server", 
+                produces='application/xml,application/json',
+                httpMethod="GET")
   @ApiImplicitParams([
           @ApiImplicitParam(name = 'service', value = 'OGC service type', allowableValues="[WFS]", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="[1.1.0]", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
