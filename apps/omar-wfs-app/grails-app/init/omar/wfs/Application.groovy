@@ -1,4 +1,4 @@
-package wfs.app
+package omar.wfs
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration

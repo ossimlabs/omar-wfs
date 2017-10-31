@@ -1,4 +1,4 @@
-package omar.wfs.app
+package omar.wfs
 
 import grails.transaction.Transactional
 import groovy.json.JsonSlurper
@@ -12,7 +12,14 @@ class GeoscriptClientService
   @Value('${omar.wfs.app.geoscript.url}')
   def geoscriptEndpoint
 
-  @HystrixCommand(fallbackMethod = "serviceDown")
+  @HystrixCommand (commandProperties = [
+          @HystrixProperty (name = "fallback.enabled", value = "false"),
+          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
+          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
+  ], threadPoolProperties = [
+          @HystrixProperty (name = "coreSize", value = "50"),
+          @HystrixProperty (name = "maxQueueSize", value = "20"),
+  ])
   def getCapabilitiesData()
   {
     def url = "${geoscriptEndpoint}/getCapabilitiesData".toURL()
@@ -21,11 +28,14 @@ class GeoscriptClientService
 
   }
 
-  String serviceDown() {
-    return "Service is down"
-  }
-
-  @HystrixCommand(fallbackMethod = "serviceDown")
+  @HystrixCommand (commandProperties = [
+          @HystrixProperty (name = "fallback.enabled", value = "false"),
+          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
+          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
+  ], threadPoolProperties = [
+          @HystrixProperty (name = "coreSize", value = "50"),
+          @HystrixProperty (name = "maxQueueSize", value = "20"),
+  ])
   def getSchemaInfoByTypeName(String typeName)
   {
     def url = "${geoscriptEndpoint}/getSchemaInfoByTypeName?typeName=${typeName}".toURL()
@@ -33,13 +43,14 @@ class GeoscriptClientService
     new JsonSlurper().parse( url )
   }
 
-
-  // The fallback method must match the same parameters of the method where you define the Hystrix Command
-  String serviceDown(String typeName) {
-    return "Service is down"
-   }
-
-  @HystrixCommand(fallbackMethod = "serviceDown")
+  @HystrixCommand (commandProperties = [
+          @HystrixProperty (name = "fallback.enabled", value = "false"),
+          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
+          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
+  ], threadPoolProperties = [
+          @HystrixProperty (name = "coreSize", value = "50"),
+          @HystrixProperty (name = "maxQueueSize", value = "20"),
+  ])
   def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null)
   {
     def params = [
@@ -82,11 +93,5 @@ class GeoscriptClientService
     // println url
 
     new JsonSlurper().parse( url )
-  }
-
-
-  // The fallback method must match the same parameters of the method where you define the Hystrix Command
-  String serviceDown(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null) {
-    return "Service is down"
   }
 }
