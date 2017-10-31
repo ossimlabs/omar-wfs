@@ -4,8 +4,6 @@ import grails.transaction.Transactional
 import groovy.json.JsonSlurper
 
 import org.springframework.beans.factory.annotation.Value
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty
 
 @Transactional( readOnly = true )
 class GeoscriptClientService
@@ -13,14 +11,6 @@ class GeoscriptClientService
   @Value('${omar.wfs.app.geoscript.url}')
   def geoscriptEndpoint
 
-  @HystrixCommand (commandProperties = [
-          @HystrixProperty (name = "fallback.enabled", value = "false"),
-          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-  ], threadPoolProperties = [
-          @HystrixProperty (name = "coreSize", value = "50"),
-          @HystrixProperty (name = "maxQueueSize", value = "20"),
-  ])
   def getCapabilitiesData()
   {
     def url = "${geoscriptEndpoint}/getCapabilitiesData".toURL()
@@ -29,14 +19,6 @@ class GeoscriptClientService
 
   }
 
-  @HystrixCommand (commandProperties = [
-          @HystrixProperty (name = "fallback.enabled", value = "false"),
-          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-  ], threadPoolProperties = [
-          @HystrixProperty (name = "coreSize", value = "50"),
-          @HystrixProperty (name = "maxQueueSize", value = "20"),
-  ])
   def getSchemaInfoByTypeName(String typeName)
   {
     def url = "${geoscriptEndpoint}/getSchemaInfoByTypeName?typeName=${typeName}".toURL()
@@ -44,14 +26,6 @@ class GeoscriptClientService
     new JsonSlurper().parse( url )
   }
 
-  @HystrixCommand (commandProperties = [
-          @HystrixProperty (name = "fallback.enabled", value = "false"),
-          @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-          @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-  ], threadPoolProperties = [
-          @HystrixProperty (name = "coreSize", value = "50"),
-          @HystrixProperty (name = "maxQueueSize", value = "20"),
-  ])
   def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null)
   {
     def params = [

@@ -4,8 +4,6 @@ import grails.transaction.Transactional
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty
 
 @Transactional(readOnly=true)
 class WebFeatureService
@@ -87,14 +85,6 @@ class WebFeatureService
         'java.sql.Timestamp': 'xsd:dateTime'
     ]
 
-    @HystrixCommand (commandProperties = [
-            @HystrixProperty (name = "fallback.enabled", value = "false"),
-            @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-            @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-    ], threadPoolProperties = [
-            @HystrixProperty (name = "coreSize", value = "50"),
-            @HystrixProperty (name = "maxQueueSize", value = "20"),
-    ])
     def getCapabilities(GetCapabilitiesRequest wfsParams)
     {
       println wfsParams
@@ -256,14 +246,6 @@ class WebFeatureService
       [contentType: contentType, text: xml.toString()]
     }
 
-    @HystrixCommand (commandProperties = [
-            @HystrixProperty (name = "fallback.enabled", value = "false"),
-            @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-            @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-    ], threadPoolProperties = [
-            @HystrixProperty (name = "coreSize", value = "50"),
-            @HystrixProperty (name = "maxQueueSize", value = "20"),
-    ])
     def describeFeatureType(DescribeFeatureTypeRequest wfsParams)
     {
       println wfsParams
@@ -309,14 +291,6 @@ class WebFeatureService
       [contentType: 'text/xml', text: xml.toString()]
     }
 
-    @HystrixCommand (commandProperties = [
-            @HystrixProperty (name = "fallback.enabled", value = "false"),
-            @HystrixProperty (name = "execution.timeout.enabled", value = "false"),
-            @HystrixProperty (name = "circuitBreaker.enabled", value = "false")
-    ], threadPoolProperties = [
-            @HystrixProperty (name = "coreSize", value = "50"),
-            @HystrixProperty (name = "maxQueueSize", value = "20"),
-    ])
     def getFeature(GetFeatureRequest wfsParams)
     {
       println wfsParams
