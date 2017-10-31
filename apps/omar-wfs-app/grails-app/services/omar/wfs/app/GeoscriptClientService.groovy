@@ -4,10 +4,8 @@ import grails.transaction.Transactional
 import groovy.json.JsonSlurper
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand
 
-@Service
 @Transactional( readOnly = true )
 class GeoscriptClientService
 {
