@@ -253,7 +253,7 @@ class WebFeatureService
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
-              responseSize: xml.getBytes().length, contentType: contentType)
+              responseSize: xml.toString().bytes.length, contentType: contentType)
 
       log.info requestInfoLog.toString()
 
@@ -311,7 +311,7 @@ class WebFeatureService
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
-              responseSize: xml.getBytes().length, contentType: contentType)
+              responseSize: xml.toString().bytes.length, contentType: contentType)
 
       log.info requestInfoLog.toString()
 
@@ -331,8 +331,8 @@ class WebFeatureService
       def responseSize
       def requestInfoLog
       def status
-      def filter = wfsParams[filter]?.trim()
-      def maxFeatures = wfsParams[maxFeatures]?.trim()
+      def filter = options?.filter
+      def maxFeatures = options?.max
 
       def results = geoscriptService.queryLayer(
         wfsParams?.typeName,
@@ -364,7 +364,7 @@ class WebFeatureService
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
       status = results.features.size() > 0 ? 200 : 400
-      responseSize = formattedResults.bytes.length
+      responseSize = formattedResults.toString().bytes.length
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, status: status, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"),

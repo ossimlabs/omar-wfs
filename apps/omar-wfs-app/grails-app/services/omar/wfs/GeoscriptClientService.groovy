@@ -57,15 +57,11 @@ class GeoscriptClientService
       params.sort = options.sort.collect { it.join(' ') }.join(',')
     }
 
-    println params
-
     def newParams = params.collect {
       "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}"
     }.join('&')
 
     def url = "${geoscriptEndpoint}/queryLayer?${newParams}".toURL()
-
-    // println url
 
     new JsonSlurper().parse( url )
   }
