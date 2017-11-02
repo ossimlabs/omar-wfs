@@ -253,7 +253,7 @@ class WebFeatureService
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
-              responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
+              responseSize: xml.toString().bytes.length, contentType: contentType, params: new JsonSlurper().parseText(wfsParams.toString()))
 
       log.info requestInfoLog.toString()
 
@@ -311,7 +311,7 @@ class WebFeatureService
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
-              responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
+              responseSize: xml.toString().bytes.length, contentType: contentType, params: new JsonSlurper().parseText(wfsParams.toString()))
 
       log.info requestInfoLog.toString()
 
@@ -368,7 +368,7 @@ class WebFeatureService
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
               requestMethod: requestMethod, status: status, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"),
-              responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures, params: wfsParams.toString())
+              responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures, params: new JsonSlurper().parseText(wfsParams.toString()))
 
       log.info requestInfoLog.toString()
 
