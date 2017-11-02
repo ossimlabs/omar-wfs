@@ -16,8 +16,6 @@ class WfsController
 
   def index()
   {
-    println params
-
     def wfsParams = params - params.subMap( ['controller', 'format', 'action'] )
     def op = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }
 
@@ -120,7 +118,7 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get the capabilities of the server", 
+  @ApiOperation(value = "Get the capabilities of the server",
                 produces='application/xml',
                 httpMethod="GET")
   @ApiImplicitParams([
@@ -145,7 +143,7 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Describe the feature from the server", 
+  @ApiOperation(value = "Describe the feature from the server",
                 produces='application/xml',
                 httpMethod="GET")
   @ApiImplicitParams([
@@ -170,7 +168,7 @@ class WfsController
     render results
   }
 
-  @ApiOperation(value = "Get features from the server", 
+  @ApiOperation(value = "Get features from the server",
                 produces='application/xml,application/json',
                 httpMethod="GET")
   @ApiImplicitParams([
