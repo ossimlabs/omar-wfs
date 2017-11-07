@@ -179,12 +179,12 @@ class WfsController
           @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="GetFeature", defaultValue = 'GetFeature', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'typeName', value = 'Type name', defaultValue="omar:raster_entry", paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'filter', value = 'Filter', paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="results", allowableValues="results,hits", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="JSON", allowableValues="JSON, KML, CSV, GML2, GML3, GML32", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="", allowableValues="results,hits", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'int', required=false),
-          @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="0", paramType = 'query', dataType = 'int', required=false),
+          @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="", paramType = 'query', dataType = 'integer', required=false),
+          @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'int', required=false),
   ])
   def getFeature(/*GetFeatureRequest wfsParams*/)
   {
