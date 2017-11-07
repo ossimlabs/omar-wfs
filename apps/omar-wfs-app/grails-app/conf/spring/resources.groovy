@@ -1,5 +1,5 @@
 // Place your Spring DSL code here
-import omar.wfs.app.GeoscriptClientService
+import omar.wfs.GeoscriptClientService
 
 beans = {
   geoscriptService(GeoscriptClientService)

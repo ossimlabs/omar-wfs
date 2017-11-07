@@ -1,4 +1,4 @@
-package wfs.app
+package omar.wfs
 
 class UrlMappings {
 

@@ -1,11 +1,10 @@
 package omar.wfs
 
 import grails.transaction.Transactional
+import groovy.json.JsonBuilder
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
-
-import grails.converters.JSON
 
 @Transactional(readOnly=true)
 class WebFeatureService
@@ -87,14 +86,17 @@ class WebFeatureService
         'java.sql.Timestamp': 'xsd:dateTime'
     ]
 
-
     def getCapabilities(GetCapabilitiesRequest wfsParams)
     {
-      println wfsParams
-
       def schemaLocation = grailsLinkGenerator.serverBaseURL
       def wfsEndpoint = grailsLinkGenerator.link( absolute: true, uri: '/wfs' )
       def model = geoscriptService.capabilitiesData
+
+      def requestType = "GET"
+      def requestMethod = "GetCapabilities"
+      Date startTime = new Date()
+      def responseTime
+      def requestInfoLog
 
       def x = {
         mkp.xmlDeclaration()
@@ -246,15 +248,28 @@ class WebFeatureService
       def xml = new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x )
       def contentType = 'application/xml'
 
+      Date endTime = new Date()
+      responseTime = Math.abs(startTime.getTime() - endTime.getTime())
+
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
+              requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
+              responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
+
+      log.info requestInfoLog.toString()
+
       [contentType: contentType, text: xml.toString()]
     }
 
     def describeFeatureType(DescribeFeatureTypeRequest wfsParams)
     {
-      println wfsParams
-
       def schema = geoscriptService.getSchemaInfoByTypeName(wfsParams.typeName)
       def schemaLocation = grailsLinkGenerator.serverBaseURL
+
+      def requestType = "GET"
+      def requestMethod = "DescribeFeatureType"
+      Date startTime = new Date()
+      def responseTime
+      def requestInfoLog
 
       def x = {
         mkp.xmlDeclaration()
@@ -289,18 +304,35 @@ class WebFeatureService
     }
 
       def xml = new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x )
-      def contentType = 'application/xml'
+      def contentType = 'text/xml'
 
-      [contentType: 'text/xml', text: xml.toString()]
+      Date endTime = new Date()
+      responseTime = Math.abs(startTime.getTime() - endTime.getTime())
+
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
+              requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
+              responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
+
+      log.info requestInfoLog.toString()
+
+      [contentType: contentType, text: xml.toString()]
     }
 
     def getFeature(GetFeatureRequest wfsParams)
     {
-      println wfsParams
-
       def (prefix, layerName) = wfsParams?.typeName?.split(':')
       def options = parseOptions(wfsParams)
       def format = parseOutputFormat(wfsParams?.outputFormat)
+
+      def requestType = "GET"
+      def requestMethod = "GetFeature"
+      Date startTime = new Date()
+      def responseTime
+      def responseSize
+      def requestInfoLog
+      def status
+      def filter = options?.filter
+      def maxFeatures = options?.max
 
       def results = geoscriptService.queryLayer(
         wfsParams?.typeName,
@@ -327,6 +359,18 @@ class WebFeatureService
       default:
         formattedResults = results
       }
+
+      Date endTime = new Date()
+      responseTime = Math.abs(startTime.getTime() - endTime.getTime())
+
+      status = results.features.size() > 0 ? 200 : 400
+      responseSize = formattedResults.toString().bytes.length
+
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
+              requestMethod: requestMethod, status: status, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"),
+              responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures, params: wfsParams.toString())
+
+      log.info requestInfoLog.toString()
 
       formattedResults
     }
