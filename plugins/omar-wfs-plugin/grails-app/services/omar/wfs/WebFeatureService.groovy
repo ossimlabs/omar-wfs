@@ -363,7 +363,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      status = results?.status
+      status = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
 
       requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
