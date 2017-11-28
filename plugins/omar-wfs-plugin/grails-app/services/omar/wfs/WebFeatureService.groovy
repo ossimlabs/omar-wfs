@@ -251,8 +251,8 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
-              requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
+              requestMethod: requestMethod, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
       log.info requestInfoLog.toString()
@@ -309,8 +309,8 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
-              requestMethod: requestMethod, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"), responseTime: responseTime,
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
+              requestMethod: requestMethod, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
       log.info requestInfoLog.toString()
@@ -366,8 +366,8 @@ class WebFeatureService
       status = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("YYYY-MM-DD HH:mm:ss.Ms"), requestType: requestType,
-              requestMethod: requestMethod, status: status, endTime: endTime.format("YYYY-MM-DD HH:mm:ss.Ms"),
+      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
+              requestMethod: requestMethod, status: status, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, params: wfsParams.toString())
 
