@@ -1,4 +1,24 @@
 ---
+logging:
+  config: classpath:logback.groovy
+
+omar:
+  wfs:
+    app:
+      geoscript:
+        # The url endpoint for the omar-geoscript service
+        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
+
+# Set the context path for the application
+#server:
+#  contextPath: /omar-wfs
+
+swagger:
+  schemes:
+    - HTTPS
+    - HTTP
+
+---
 grails:
     cors:
       enabled: true
@@ -146,18 +166,3 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
-
----
-omar:
-  wfs:
-    app:
-      geoscript:
-        url: http://localhost:8083/omar-geoscript/geoscriptApi
-
-swagger:
-  schemes:
-    - HTTPS
-    - HTTP
-
-logging:
-  config: classpath:logback.groovy
