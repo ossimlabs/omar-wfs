@@ -25,14 +25,14 @@ class WebFeatureService
     static final def outputFormats = [
       'application/gml+xml; version=3.2',
       'application/json',
-      // 'application/vnd.google-earth.kml xml',
-      // 'application/vnd.google-earth.kml+xml',
+      'application/vnd.google-earth.kml xml',
+      'application/vnd.google-earth.kml+xml',
       'csv',
       'GML2',
       'gml3',
       'gml32',
       'json',
-      // 'KML',
+      'KML',
       // 'SHAPE-ZIP',
       'text/xml; subtype=gml/2.1.2',
       'text/xml; subtype=gml/3.1.1',
@@ -522,8 +522,9 @@ class WebFeatureService
           format = 'CSV'
           break
     case 'KML':
-          'APPLICATION/VND.GOOGLE-EARTH.KMLl+XML'
-          format = 'CSV'
+    case 'APPLICATION/VND.GOOGLE-EARTH.KMLl+XML':
+    case 'APPLICATION/VND.GOOGLE-EARTH.KMLl XML':
+          format = 'KML'
           break
     }
 
