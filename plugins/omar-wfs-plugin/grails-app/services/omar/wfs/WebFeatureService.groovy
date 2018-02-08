@@ -1,10 +1,12 @@
 package omar.wfs
 
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import groovy.json.JsonBuilder
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
+
+import omar.core.DateUtil
 
 @Transactional(readOnly=true)
 class WebFeatureService
@@ -251,8 +253,8 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
-              requestMethod: requestMethod, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"), responseTime: responseTime,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+              requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
       log.info requestInfoLog.toString()
@@ -309,8 +311,8 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
-              requestMethod: requestMethod, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"), responseTime: responseTime,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+              requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
       log.info requestInfoLog.toString()
@@ -330,7 +332,7 @@ class WebFeatureService
       def responseTime
       def responseSize
       def requestInfoLog
-      def status
+      def httpStatus
       def filter = options?.filter
       def maxFeatures = options?.max
 
@@ -363,11 +365,11 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      status = results != null ? 200 : 400
+      httpStatus = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
 
-      requestInfoLog = new JsonBuilder(timestamp: startTime.format("yyyy-MM-dd hh:mm:ss.ms"), requestType: requestType,
-              requestMethod: requestMethod, status: status, endTime: endTime.format("yyyy-MM-dd hh:mm:ss.ms"),
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+              requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, params: wfsParams.toString())
 
