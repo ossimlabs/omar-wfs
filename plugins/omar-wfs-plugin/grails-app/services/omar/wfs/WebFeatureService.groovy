@@ -580,6 +580,11 @@ class WebFeatureService
   }
 
   def getKmlDescription( feature ) {
+
+println '*'*40
+println feature
+println '*'*40
+    
       def o2BaseUrl = grailsApplication.config.omar.o2.baseUrl
 
       def bounds = feature.ground_geom.envelopeInternal
