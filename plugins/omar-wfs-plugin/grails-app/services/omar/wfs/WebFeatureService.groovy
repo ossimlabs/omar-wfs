@@ -577,17 +577,33 @@ class WebFeatureService
       return [contentType: 'application/vnd.google-earth.kml+xml;', text: kmlWriter.buffer]
   }
 
-  def getKmlDescription( feature ) {
+  def getKmlDescription( def feature ) {
 
-println '*'*40
-println feature
-println '*'*40
-    
+
       def o2BaseUrl = grailsApplication.config.omar.o2.baseUrl
 
-      def bounds = feature.ground_geom.envelopeInternal
-      def centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
-      def centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+      def centerLon
+      def centerLat
+
+      if ( feature.ground_geom )
+      {
+        def bounds = feature.ground_geom.envelopeInternal
+        centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
+        centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+      }
+      else
+      {
+        println '*' * 40
+        println feature
+        println '*' * 40
+
+
+        def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }
+        def ycoords =  feature.geometry.coordinates[0][0].collect { it[1] }
+        centerLon = xcoords.sum() / xcoords.size()
+        centerLat = ycoords.sum() / ycoords.size()
+      }
+
       def location = "${centerLat},${centerLon}"
       def filter = "in(${feature.get("id")})"
       def tlvUrl = "${grailsApplication.config.omar.tlv.baseUrl}?" +
@@ -604,22 +620,22 @@ println '*'*40
           "version=1.1.0"
 
       def tableMap = [
-          "Acquistion Date": feature.acquisition_date ?: "",
-          "Azimuth Angle": feature.azimuth_angle ?: "",
-          "Bit Depth": feature.bit_depth ?: "",
-          "Cloud Cover": feature.cloud_cover ?: "",
-          "Country Code": feature.country_code ?: "",
-          "Filename": feature.filename,
-          "Grazing Angle": feature.grazing_angle ?: "",
+          "Acquistion Date": feature.acquisition_date ?: feature.properties.acquisition_date ?: "",
+          "Azimuth Angle": feature.azimuth_angle ?: feature.properties.azimuth_angle ?: "",
+          "Bit Depth": feature.bit_depth ?: feature.properties.bit_depth ?: "",
+          "Cloud Cover": feature.cloud_cover ?: feature.properties.cloud_cover ?: "",
+          "Country Code": feature.country_code ?: feature.properties.country_code ?: "",
+          "Filename": feature.filename ?: feature.properties.filename,
+          "Grazing Angle": feature.grazing_angle ?: feature.properties.grazing_angle ?: "",
           "GSD X/Y": (feature.gsdx && feature.gsdy) ? "${feature.gsdx} / ${feature.gsdy}" : "",
           "Image ID": feature.image_id ?: (feature.title ?: ""),
-          "Ingest Date": feature.ingest_date ?: "",
-          "NIIRS": feature.niirs ?: "",
-          "# of Bands": feature.number_of_bands ?: "",
-          "Security Class.": feature.security_classification ?: "",
-          "Sensor": feature.sensor_id ?: "",
-          "Sun Azimuth": feature.sun_azimuth ?: "",
-          "Sun Elevation": feature.sun_elevation ?: "",
+          "Ingest Date": feature.ingest_date ?: feature.properties.ingest_date ?: "",
+          "NIIRS": feature.niirs ?: feature.properties.niirs ?: "",
+          "# of Bands": feature.number_of_bands ?: feature.properties.number_of_bands ?: "",
+          "Security Class.": feature.security_classification ?: feature.properties.security_classification ?: "",
+          "Sensor": feature.sensor_id ?: feature.properties.sensor_id ?: "",
+          "Sun Azimuth": feature.sun_azimuth ?: feature.properties.sun_azimuth ?: "",
+          "Sun Elevation": feature.sun_elevation ?: feature.sun_elevation ?: "",
           "View:": "<a href = '${tlvUrl}'>Ortho</a>",
           "WFS": "<a href = '${wfsUrl}'>All Metadata</a>"
       ]
@@ -647,11 +663,24 @@ println '*'*40
       def kmlNode = {
           Placemark() {
               description { mkp.yieldUnescaped( "<![CDATA[${getKmlDescription(feature)}]]>" ) }
-              name( "${index + 1}: " + (feature.title ?: new File(feature.filename).name) )
+              name( "${index + 1}: " + (feature.title ?: new File(feature.filename ?: feature.properties.filename).name) )
 
-              def bounds = feature.ground_geom.envelopeInternal
-              def centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
-              def centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+              def centerLon
+              def centerLat
+
+              if (feature.ground_geom )
+              {
+                def bounds = feature.ground_geom.envelopeInternal
+                centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
+                centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+              }
+              else
+              {
+                def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }
+                def ycoords =  feature.geometry.coordinates[0][0].collect { it[1] }
+                centerLon = xcoords.sum() / xcoords.size()
+                centerLat = ycoords.sum() / ycoords.size()
+              }
 
               LookAt() {
                   altitude( 0 )
@@ -664,11 +693,26 @@ println '*'*40
               }
 
               // the footprint geometry
-              mkp.yieldUnescaped( feature.ground_geom.getKml() )
+              if  ( feature.ground_geom )
+              {
+                mkp.yieldUnescaped( feature.ground_geom.getKml() )
+              }
+              else
+              {
+                MultiGeometry {
+                  Polygon {
+                    outerBoundaryIs {
+                      LinearRing {
+                        coordinates(feature.geometry.coordinates[0][0].collect { it.join(',') }.join(' '))
+                      }
+                    }
+                  }
+                }
+              }
 
               Snippet()
 
-              switch (feature.sensor_id) {
+              switch (feature.sensor_id ?: feature.properties.sensor_id) {
                   case "msi": styleUrl( "#msi" ); break
                   case "vis": styleUrl( "#vis" ); break
                   default: styleUrl( "#default" ); break
@@ -689,7 +733,7 @@ println '*'*40
       def kmlNode = {
           GroundOverlay() {
               description { mkp.yieldUnescaped( "<![CDATA[${getKmlDescription(feature)}]]>" ) }
-              name( "${index + 1}: " + (feature.title ?: new File(feature.filename).name) )
+              name( "${index + 1}: " + (feature.title ?: new File(feature.filename ?: feature.properties.filename).name) )
 
               Icon() {
                   def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
@@ -705,9 +749,22 @@ println '*'*40
               }
 
               LookAt() {
-                  def bounds = feature.ground_geom.envelopeInternal
-                  def centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
-                  def centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+                  def centerLon
+                  def centerLat
+
+                  if ( feature.ground_geom)
+                  {
+                    def bounds = feature.ground_geom.envelopeInternal
+                    centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
+                    centerLat = ( bounds?.minY + bounds?.maxY ) * 0.5
+                  }
+                  else
+                  {
+                    def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }
+                    def ycoords =  feature.geometry.coordinates[0][0].collect { it[1] }
+                    centerLon = xcoords.sum() / xcoords.size()
+                    centerLat = ycoords.sum() / ycoords.size()
+                  }
 
                   altitude( 0 )
                   altitudeMode( "clampToGround" )
