@@ -605,7 +605,7 @@ class WebFeatureService
       }
 
       def location = "${centerLat},${centerLon}"
-      def filter = "in(${feature.get("id") - 'raster_entry.')}"
+      def filter = "in(${feature.get("id") - 'raster_entry.'})"
 
       def tlvUrl = grailsLinkGenerator.link(
         base: grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath,
