@@ -605,7 +605,7 @@ class WebFeatureService
       }
 
       def location = "${centerLat},${centerLon}"
-      def filter = "in(${feature.get("id")})"
+      def filter = "in(${feature.get("id")} - 'raster_entry.')"
 
 
       // def tlvUrl = "${grailsApplication.config.omar.tlv.baseUrl}?" +
@@ -689,7 +689,7 @@ class WebFeatureService
               def centerLon
               def centerLat
 
-              if (feature.ground_geom )
+              if ( feature.ground_geom )
               {
                 def bounds = feature.ground_geom.envelopeInternal
                 centerLon = ( bounds?.minX + bounds?.maxX ) * 0.5
@@ -758,7 +758,7 @@ class WebFeatureService
 
               Icon() {
                   // def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
-                  wmsParams.FILTER = "in(${feature.get("id")})"
+                  wmsParams.FILTER = "in(${feature.get("id") - 'raster_entry.'})"
                   // wmsParams.each() { wmsUrl += "${it.key}=${it.value}&" }
 
                   def o2BaseUrl = grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath
