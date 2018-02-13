@@ -607,12 +607,7 @@ class WebFeatureService
       }
 
       def location = "${centerLat},${centerLon}"
-      def filter = "in(${feature.get("id")} - 'raster_entry.')"
-
-
-      // def tlvUrl = "${grailsApplication.config.omar.tlv.baseUrl}?" +
-      //     "location=${location}&" +
-      //     "filter=${filter}"
+      def filter = "in(${feature.get("id") - 'raster_entry.')}"
 
       def tlvUrl = grailsLinkGenerator.link(
         base: grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath,
@@ -621,15 +616,6 @@ class WebFeatureService
           location: location,
           filter: filter
         ], absolute: true)
-
-      // def imageUrl = "${o2BaseUrl}/omar/#/mapOrtho?layers=${feature.get("id")}"
-
-      // def wfsUrl = "${grailsLinkGenerator.link(uri: '/wfs/getFeature', absolute: true)}?" +
-      //     "filter=in(${feature.get("id")})&" +
-      //     "request=GetFeature&" +
-      //     "service=WFS&&" +
-      //     "typeName=omar%3Araster_entry&" +
-      //     "version=1.1.0"
 
       def wfsUrl = grailsLinkGenerator.link(uri: '/wfs', params: [
         service: 'WFS',
