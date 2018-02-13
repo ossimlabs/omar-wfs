@@ -582,7 +582,7 @@ class WebFeatureService
   def getKmlDescription( def feature ) {
 
 
-      def o2BaseUrl = grailsApplication.config.omar.o2.baseUrl
+      def o2BaseUrl = grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath
 
       def centerLon
       def centerLat
@@ -608,18 +608,36 @@ class WebFeatureService
 
       def location = "${centerLat},${centerLon}"
       def filter = "in(${feature.get("id")})"
-      def tlvUrl = "${grailsApplication.config.omar.tlv.baseUrl}?" +
-          "location=${location}&" +
-          "filter=${filter}"
 
-      def imageUrl = "${o2BaseUrl}/omar/#/mapOrtho?layers=${feature.get("id")}"
 
-      def wfsUrl = "${grailsApplication.config.omar.wfs.baseUrl}/wfs/getFeature?" +
-          "filter=in(${feature.get("id")})&" +
-          "request=GetFeature&" +
-          "service=WFS&&" +
-          "typeName=omar%3Araster_entry&" +
-          "version=1.1.0"
+      // def tlvUrl = "${grailsApplication.config.omar.tlv.baseUrl}?" +
+      //     "location=${location}&" +
+      //     "filter=${filter}"
+
+      def tlvUrl = grailsLinkGenerator.link(
+        base: grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath,
+        uri: '/tlv',
+        params: [
+          location: location,
+          filter: filter
+        ], absolute: true)
+
+      // def imageUrl = "${o2BaseUrl}/omar/#/mapOrtho?layers=${feature.get("id")}"
+
+      // def wfsUrl = "${grailsLinkGenerator.link(uri: '/wfs/getFeature', absolute: true)}?" +
+      //     "filter=in(${feature.get("id")})&" +
+      //     "request=GetFeature&" +
+      //     "service=WFS&&" +
+      //     "typeName=omar%3Araster_entry&" +
+      //     "version=1.1.0"
+
+      def wfsUrl = grailsLinkGenerator.link(uri: '/wfs', params: [
+        service: 'WFS',
+        version: '1.1.0',
+        request: 'GetFeature',
+        typeName: 'omar:raster_entry',
+        filter: filter
+      ], absolute: true)
 
       def tableMap = [
           "Acquistion Date": feature.acquisition_date ?: feature.properties.acquisition_date ?: "",
@@ -650,9 +668,12 @@ class WebFeatureService
           description += "</tr>"
       }
 
+      def uiUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-ui', absolute: true)
+      def logoUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-ui/assets/o2-logo.png', absolute: true)
+
       description += "<tfoot><tr><td colspan='2'>"
-      description +=     "<a href = '${o2BaseUrl}'>"
-      description +=         "<img src = '${o2BaseUrl}/assets/o2-logo.png'/>"
+      description +=     "<a href = '${uiUrl}'>"
+      description +=         "<img src = '${logoUrl}/assets/o2-logo.png'/>"
       description +=     "</a>"
       description += "</td></tr></tfoot>"
       description += "</table>"
@@ -738,13 +759,17 @@ class WebFeatureService
               name( "${index + 1}: " + (feature.title ?: new File(feature.filename ?: feature.properties.filename).name) )
 
               Icon() {
-                  def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
+                  // def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
                   wmsParams.FILTER = "in(${feature.get("id")})"
-                  wmsParams.each() { wmsUrl += "${it.key}=${it.value}&" }
+                  // wmsParams.each() { wmsUrl += "${it.key}=${it.value}&" }
+
+                  def o2BaseUrl = grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath
+                  def wmsUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-wms/wms', params: wmsParams, absolute: true)
+
                   href { mkp.yieldUnescaped( "<![CDATA[${wmsUrl}]]>" ) }
                   viewBoundScale( 0.85 )
                   viewFormat(
-                      "BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&" + "WIDTH=[horizPixels]&HEIGHT=[vertPixels]"
+                      "BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&WIDTH=[horizPixels]&HEIGHT=[vertPixels]"
                   )
                   viewRefreshMode( "onStop" )
                   viewRefreshTime( 1 )
