@@ -622,7 +622,8 @@ class WebFeatureService
         version: '1.1.0',
         request: 'GetFeature',
         typeName: 'omar:raster_entry',
-        filter: filter
+        filter: filter,
+        outputFormat: 'JSON'
       ], absolute: true)
 
       def tableMap = [
@@ -655,11 +656,10 @@ class WebFeatureService
       }
 
       def uiUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-ui', absolute: true)
-      def logoUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-ui/assets/o2-logo.png', absolute: true)
 
       description += "<tfoot><tr><td colspan='2'>"
-      description +=     "<a href = '${uiUrl}'>"
-      description +=         "<img src = '${logoUrl}/assets/o2-logo.png'/>"
+      description +=     "<a href = '${uiUrl}/omar'>"
+      description +=         "<img src = '${uiUrl}/assets/o2-logo.png'/>"
       description +=     "</a>"
       description += "</td></tr></tfoot>"
       description += "</table>"
