@@ -57,6 +57,10 @@ class GeoscriptClientService
       params.sort = options.sort.collect { it.join(' ') }.join(',')
     }
 
+    if ( options.bbox ) {
+       params.bbox = JsonOutput.toJson(options.bbox)
+    }
+
     def newParams = params.collect {
       "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}"
     }.join('&')
