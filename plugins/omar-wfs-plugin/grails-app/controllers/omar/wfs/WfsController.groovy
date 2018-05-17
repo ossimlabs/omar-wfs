@@ -181,11 +181,17 @@ class WfsController
           @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="", paramType = 'query', dataType = 'integer', required=false),
+          @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'integer', required=false),
           @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'int', required=false),
   ])
-  def getFeature(/*GetFeatureRequest wfsParams*/)
-  {
+  def getFeature(/*GetFeatureRequest wfsParams*/) {
+    // prevent the whole database from being returned
+    if ( params.requestType !== "hits" ) {
+        if ( params.maxFeatures?.isNumber() && params.maxFeatures?.toInteger() > 1000 ) {
+            params.maxFeatures = 1000
+        }
+    }
+
 //    println wfsParams
     def wfsParams = new GetFeatureRequest()
 
