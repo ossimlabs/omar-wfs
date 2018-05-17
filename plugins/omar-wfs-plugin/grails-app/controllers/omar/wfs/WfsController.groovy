@@ -187,7 +187,7 @@ class WfsController
   def getFeature(/*GetFeatureRequest wfsParams*/) {
     // prevent the whole database from being returned
     if ( params.requestType != "hits" ) {
-        if ( !params.maxFeatures || params.maxFeatures > 1000 ) {
+        if ( !params.containsKey("maxFeatures") || params.maxFeatures == "" ) {
             params.maxFeatures = 1000
         }
     }
