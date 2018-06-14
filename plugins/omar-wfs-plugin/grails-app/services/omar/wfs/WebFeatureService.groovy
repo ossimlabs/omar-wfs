@@ -422,7 +422,7 @@ class WebFeatureService
   def getFeatureJSON(def results, def typeName, def version='1.1.0')
   {
     def slurper = new JsonSlurper()
-println results
+
     def x = {
       type 'FeatureCollection'
       totalFeatures results?.numberOfFeatures
