@@ -336,12 +336,17 @@ class WebFeatureService
       def httpStatus
       def filter = options?.filter
       def maxFeatures = options?.max
-
+      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
+      if(wfsParams?.resultType?.toLowerCase() == "hits")
+      {
+        includeNumberMatched = true
+      }
       def results = geoscriptService.queryLayer(
         wfsParams?.typeName,
         options,
         wfsParams?.resultType ?: 'results',
-        parseOutputFormat(wfsParams?.outputFormat)
+        parseOutputFormat(wfsParams?.outputFormat),
+        includeNumberMatched
       )
 
       def formattedResults
@@ -595,9 +600,9 @@ class WebFeatureService
       }
       else
       {
-        println '*' * 40
-        println feature
-        println '*' * 40
+        //println '*' * 40
+        //println feature
+        //println '*' * 40
 
 
         def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }
