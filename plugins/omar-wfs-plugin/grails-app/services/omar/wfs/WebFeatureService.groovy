@@ -381,28 +381,30 @@ class WebFeatureService
       responseSize = formattedResults.toString().bytes.length
         
       if(filter){
-        Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
-        Matcher compare_regex
-        ArrayList<String> country_code = new ArrayList<String>()
-        ArrayList<String> mission_id = new ArrayList<String>()
-        ArrayList<String> sensor_id = new ArrayList<String>()
+            keyword_countryCode = keyword_missionId = keyword_sensorId = "null"
 
-        for(String s : filter.split(' AND ')){
-            compare_regex = regex.matcher(s)
-          
-            if(s.contains('country_code') && compare_regex.find())
-                country_code.add(compare_regex.group(1))
+            Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
+            Matcher compare_regex
+            boolean first   // Boolean to track first regex match
 
-            else if(s.contains('mission_id') && compare_regex.find())
-                mission_id.add(compare_regex.group(1))
+            for(String s : filter.split(' AND ')){
+                compare_regex = regex.matcher(s)
+                first = true
+            
+                while(s.contains('country_code') && compare_regex.find()) { 
+                    if(first) { keyword_countryCode = compare_regex.group(1) + " "; first = false }
+                    else keyword_countryCode += compare_regex.group(1) + " "
+                }
 
-            else if(s.contains('sensor_id') && compare_regex.find())
-                sensor_id.add(compare_regex.group(1)) 
+                while(s.contains('mission_id') && compare_regex.find())
+                    if(first) { keyword_missionId = compare_regex.group(1) + " "; first = false }
+                    else keyword_missionId += compare_regex.group(1) + " "
+
+                while(s.contains('sensor_id') && compare_regex.find())
+                    if(first) { keyword_sensorId = compare_regex.group(1) + " "; first = false } 
+                    else keyword_sensorId += compare_regex.group(1) + " "
+            }     
         }
-        keyword_countryCode = !country_code.isEmpty() ? String.join(", ", country_code) : "-"
-        keyword_missionId = !mission_id.isEmpty() ? String.join(", ", mission_id) : "-"
-        keyword_sensorId = !sensor_id.isEmpty() ? String.join(", ", sensor_id) : "-"
-      }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
