@@ -381,7 +381,7 @@ class WebFeatureService
       responseSize = formattedResults.toString().bytes.length
         
       if(filter){
-            keyword_countryCode = keyword_missionId = keyword_sensorId = "null"
+            keyword_countryCode = keyword_missionId = keyword_sensorId = "-"
 
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
@@ -392,17 +392,17 @@ class WebFeatureService
                 first = true
             
                 while(s.contains('country_code') && compare_regex.find()) { 
-                    if(first) { keyword_countryCode = compare_regex.group(1) + " "; first = false }
-                    else keyword_countryCode += compare_regex.group(1) + " "
+                    if(first) { keyword_countryCode = compare_regex.group(1); first = false }
+                    else keyword_countryCode += " " + compare_regex.group(1)
                 }
 
                 while(s.contains('mission_id') && compare_regex.find())
-                    if(first) { keyword_missionId = compare_regex.group(1) + " "; first = false }
-                    else keyword_missionId += compare_regex.group(1) + " "
+                    if(first) { keyword_missionId = compare_regex.group(1); first = false }
+                    else keyword_missionId += " " + compare_regex.group(1)
 
                 while(s.contains('sensor_id') && compare_regex.find())
-                    if(first) { keyword_sensorId = compare_regex.group(1) + " "; first = false } 
-                    else keyword_sensorId += compare_regex.group(1) + " "
+                    if(first) { keyword_sensorId = compare_regex.group(1); first = false } 
+                    else keyword_sensorId += " " + compare_regex.group(1)
             }     
         }
 
