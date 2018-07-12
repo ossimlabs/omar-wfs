@@ -399,9 +399,9 @@ class WebFeatureService
             else if(s.contains('sensor_id') && compare_regex.find())
                 sensor_id.add(compare_regex.group(1)) 
         }
-        keyword_countryCode = !country_code.isEmpty() ? String.join(", ", country_code) : ""
-        keyword_missionId = !mission_id.isEmpty() ? String.join(", ", mission_id) : ""
-        keyword_sensorId = !sensor_id.isEmpty() ? String.join(", ", sensor_id) : ""
+        keyword_countryCode = !country_code.isEmpty() ? String.join(", ", country_code) : "-"
+        keyword_missionId = !mission_id.isEmpty() ? String.join(", ", mission_id) : "-"
+        keyword_sensorId = !sensor_id.isEmpty() ? String.join(", ", sensor_id) : "-"
       }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
