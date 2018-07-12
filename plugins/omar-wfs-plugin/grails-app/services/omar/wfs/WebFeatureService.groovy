@@ -5,6 +5,8 @@ import groovy.json.JsonBuilder
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
+import java.util.regex.Pattern
+import java.util.regex.Matcher
 
 import omar.core.DateUtil
 
