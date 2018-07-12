@@ -377,10 +377,34 @@ class WebFeatureService
       httpStatus = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
 
+      Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
+      Matcher compare_regex
+      ArrayList<String> country_code = new ArrayList<String>()
+      ArrayList<String> mission_id = new ArrayList<String>()
+      ArrayList<String> sensor_id = new ArrayList<String>()
+
+      for(String s : filter.split(' AND ')){
+          compare_regex = regex.matcher(s)
+          
+          if(s.contains('country_code') && compare_regex.find())
+              country_code.add(compare_regex.group(1))
+
+            else if(s.contains('mission_id') && compare_regex.find())
+              mission_id.add(compare_regex.group(1))
+
+            else if(s.contains('sensor_id') && compare_regex.find())
+              sensor_id.add(compare_regex.group(1)) 
+      }
+
+      def keyword_countryCode = String.join(", ", country_code)
+      def keyword_missionId = String.join(", ", mission_id)
+      def keyword_sensorId = String.join(", ", sensor_id)
+
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
-              numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, params: wfsParams.toString())
+              numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, params: wfsParams.toString(),
+              keyword_countryCode: keyword_countryCode, keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId)
 
       log.info requestInfoLog.toString()
 
