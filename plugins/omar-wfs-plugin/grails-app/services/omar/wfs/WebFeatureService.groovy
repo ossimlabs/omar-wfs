@@ -90,6 +90,15 @@ class WebFeatureService
         'String': 'xsd:string',
         'java.sql.Timestamp': 'xsd:dateTime'
     ]
+    String extractUsernameFromRequest(def request)
+    {
+      def userInfo = grailsApplication.config.omar.wfs.userInfo
+      String requestHeaderName = request.getHeader(userInfo.requestHeaderUserName)
+      String userInfoName = (requestHeaderName == null) ?
+      userInfo.requestHeaderUserNameDefault : requestHeaderName
+
+      userInfoName
+    }
 
     def getCapabilities(GetCapabilitiesRequest wfsParams)
     {

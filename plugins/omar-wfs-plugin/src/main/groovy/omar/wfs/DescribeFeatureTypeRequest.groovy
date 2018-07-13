@@ -11,7 +11,8 @@ import groovy.xml.StreamingMarkupBuilder
 class DescribeFeatureTypeRequest implements Validateable
 {
   static mapWith = 'none'
-
+  
+  String username
   String service
   String version
   String request
