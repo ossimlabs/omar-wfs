@@ -94,7 +94,7 @@ class WebFeatureService
     {
       def userInfo = grailsApplication.config.omar?.wfs?.app?.userInfo
       String requestHeaderName = request.getHeader(userInfo?.requestHeaderUserName)
-      String userInfoName = requestHeaderName? userInfo.requestHeaderUserNameDefault : requestHeaderName
+      String userInfoName = ((!requestHeaderName)? userInfo.requestHeaderUserNameDefault : requestHeaderName)
 
       userInfoName
     }
