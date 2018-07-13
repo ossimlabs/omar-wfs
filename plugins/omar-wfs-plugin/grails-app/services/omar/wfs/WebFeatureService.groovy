@@ -95,7 +95,6 @@ class WebFeatureService
       def userInfo = grailsApplication.config.omar?.wfs?.app?.userInfo
       String requestHeaderName = request.getHeader(userInfo?.requestHeaderUserName)
       String userInfoName = ((!requestHeaderName)? userInfo.requestHeaderUserNameDefault : requestHeaderName)
-
       userInfoName
     }
 
@@ -264,7 +263,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
