@@ -22,7 +22,7 @@ omar:
 
         # Configurable default name for the request header user (Default: Anonymous).
         # Used if no name is found in PKI cert.
-        requestHeaderUserNameDefault: Anonymous
+        requestHeaderUserNameDefault: anonymous
 
 # Set the context path for the application
 #server:
