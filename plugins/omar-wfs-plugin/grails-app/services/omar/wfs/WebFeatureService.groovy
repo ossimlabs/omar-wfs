@@ -344,7 +344,9 @@ class WebFeatureService
       def requestInfoLog
       def httpStatus
       def filter = options?.filter      
-      def keyword_countryCode, keyword_missionId, keyword_sensorId
+      def keyword_countryCode = "-"
+      def  keyword_missionId = "-"
+      def keyword_sensorId = "-"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
@@ -388,29 +390,29 @@ class WebFeatureService
       responseSize = formattedResults.toString().bytes.length
         
       if(filter){
-            keyword_countryCode = keyword_missionId = keyword_sensorId = "-"
+            ArrayList<String> countryCode = new ArrayList<String>()
+            ArrayList<String> missionId = new ArrayList<String>()
+            ArrayList<String> sensorId = new ArrayList<String>()
 
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
-            boolean first   // Boolean to track first regex match
 
             for(String s : filter.split(' AND ')){
                 compare_regex = regex.matcher(s)
-                first = true
             
-                while(s.contains('country_code') && compare_regex.find()) { 
-                    if(first) { keyword_countryCode = compare_regex.group(1); first = false }
-                    else keyword_countryCode += " " + compare_regex.group(1)
-                }
+                while(s.contains('country_code') && compare_regex.find()) 
+                  countryCode.add(compare_regex.group(1))
 
                 while(s.contains('mission_id') && compare_regex.find())
-                    if(first) { keyword_missionId = compare_regex.group(1); first = false }
-                    else keyword_missionId += " " + compare_regex.group(1)
+                  missionId.add(compare_regex.group(1))
 
                 while(s.contains('sensor_id') && compare_regex.find())
-                    if(first) { keyword_sensorId = compare_regex.group(1); first = false } 
-                    else keyword_sensorId += " " + compare_regex.group(1)
-            }     
+                  sensorId.add(compare_regex.group(1))
+            }
+
+            keyword_countryCode = countryCode.toArray()
+            keyword_missionId = missionId.toArray()
+            keyword_sensorId = sensorId.toArray()     
         }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
