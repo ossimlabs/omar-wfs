@@ -344,9 +344,7 @@ class WebFeatureService
       def requestInfoLog
       def httpStatus
       def filter = options?.filter      
-      def keyword_countryCode = "-"
-      def  keyword_missionId = "-"
-      def keyword_sensorId = "-"
+      def keyword_countryCode, keyword_missionId, keyword_sensorId 
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
@@ -397,7 +395,7 @@ class WebFeatureService
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
 
-            for(String s : filter.split(' AND ')){
+            filter?.split(' AND ').each{ s->
                 compare_regex = regex.matcher(s)
             
                 while(s.contains('country_code') && compare_regex.find()) 
@@ -410,9 +408,9 @@ class WebFeatureService
                   sensorId.add(compare_regex.group(1))
             }
 
-            keyword_countryCode = countryCode.toArray()
-            keyword_missionId = missionId.toArray()
-            keyword_sensorId = sensorId.toArray()     
+            keyword_countryCode = !countryCode.isEmpty() ? countryCode : ["-"]
+            keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
+            keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
         }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
