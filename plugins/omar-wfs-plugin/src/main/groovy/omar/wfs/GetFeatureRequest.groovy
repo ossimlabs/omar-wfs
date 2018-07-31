@@ -13,6 +13,8 @@ class GetFeatureRequest implements Validateable
 {
   static mapWith = 'none'
 
+  String username
+
   String service
   String version
   String request

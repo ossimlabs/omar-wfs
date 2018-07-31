@@ -5,6 +5,8 @@ import groovy.json.JsonBuilder
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
+import java.util.regex.Pattern
+import java.util.regex.Matcher
 
 import omar.core.DateUtil
 
@@ -88,6 +90,13 @@ class WebFeatureService
         'String': 'xsd:string',
         'java.sql.Timestamp': 'xsd:dateTime'
     ]
+    String extractUsernameFromRequest(def request)
+    {
+      def userInfo = grailsApplication.config.omar?.wfs?.app?.userInfo
+      String requestHeaderName = request.getHeader(userInfo?.requestHeaderUserName)
+      String userInfoName = ((!requestHeaderName)? userInfo.requestHeaderUserNameDefault : requestHeaderName)
+      userInfoName
+    }
 
     def getCapabilities(GetCapabilitiesRequest wfsParams)
     {
@@ -254,7 +263,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
@@ -312,7 +321,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
@@ -334,14 +343,22 @@ class WebFeatureService
       def responseSize
       def requestInfoLog
       def httpStatus
-      def filter = options?.filter
+      def filter = options?.filter      
+      def keyword_countryCode = "-"
+      def  keyword_missionId = "-"
+      def keyword_sensorId = "-"
       def maxFeatures = options?.max
-
+      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
+      if(wfsParams?.resultType?.toLowerCase() == "hits")
+      {
+        includeNumberMatched = true
+      }
       def results = geoscriptService.queryLayer(
         wfsParams?.typeName,
         options,
         wfsParams?.resultType ?: 'results',
-        parseOutputFormat(wfsParams?.outputFormat)
+        parseOutputFormat(wfsParams?.outputFormat),
+        includeNumberMatched
       )
 
       def formattedResults
@@ -371,11 +388,38 @@ class WebFeatureService
 
       httpStatus = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
+        
+      if(filter){
+            ArrayList<String> countryCode = new ArrayList<String>()
+            ArrayList<String> missionId = new ArrayList<String>()
+            ArrayList<String> sensorId = new ArrayList<String>()
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), requestType: requestType,
+            Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
+            Matcher compare_regex
+
+            for(String s : filter.split(' AND ')){
+                compare_regex = regex.matcher(s)
+            
+                while(s.contains('country_code') && compare_regex.find()) 
+                  countryCode.add(compare_regex.group(1))
+
+                while(s.contains('mission_id') && compare_regex.find())
+                  missionId.add(compare_regex.group(1))
+
+                while(s.contains('sensor_id') && compare_regex.find())
+                  sensorId.add(compare_regex.group(1))
+            }
+
+            keyword_countryCode = countryCode.toArray()
+            keyword_missionId = missionId.toArray()
+            keyword_sensorId = sensorId.toArray()     
+        }
+
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
-              numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, params: wfsParams.toString())
+              numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
+              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString())
 
       log.info requestInfoLog.toString()
 
@@ -595,9 +639,9 @@ class WebFeatureService
       }
       else
       {
-        println '*' * 40
-        println feature
-        println '*' * 40
+        //println '*' * 40
+        //println feature
+        //println '*' * 40
 
 
         def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }

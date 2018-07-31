@@ -49,6 +49,8 @@ class WfsController
 
       def cmd = new GetCapabilitiesRequest()
 
+      cmd.username = webFeatureService.extractUsernameFromRequest(request)
+
       switch ( request?.method?.toUpperCase() )
       {
       case 'GET':
@@ -132,6 +134,7 @@ class WfsController
 
     BindUtil.fixParamNames( GetCapabilitiesRequest, params )
     bindData( wfsParams, params )
+    wfsParams.username = webFeatureService.extractUsernameFromRequest(request)
 
     def results = webFeatureService.getCapabilities( wfsParams )
 
@@ -158,6 +161,8 @@ class WfsController
 
     BindUtil.fixParamNames( DescribeFeatureTypeRequest, params )
     bindData( wfsParams, params )
+    wfsParams.username = webFeatureService.extractUsernameFromRequest(request)
+
     def results = webFeatureService.describeFeatureType( wfsParams )
 
     // if(results.status != null) {
@@ -197,6 +202,7 @@ class WfsController
 
     BindUtil.fixParamNames( GetFeatureRequest, params )
     bindData( wfsParams, params )
+    wfsParams.username = webFeatureService.extractUsernameFromRequest(request)
 
     def results = webFeatureService.getFeature( wfsParams )
     if(results.status != null) {

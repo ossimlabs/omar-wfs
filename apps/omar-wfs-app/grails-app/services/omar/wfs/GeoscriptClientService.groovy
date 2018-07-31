@@ -26,13 +26,16 @@ class GeoscriptClientService
     new JsonSlurper().parse( url )
   }
 
-  def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null)
+  def queryLayer(String typeName, Map<String,Object> options, String resultType='results', String featureFormat=null, Boolean includeNumberMatched=null)
   {
     def params = [
       typeName: typeName,
       resultType: resultType
     ]
-
+    if(includeNumberMatched != null)
+    {
+      params.includeNumberMatched = includeNumberMatched
+    }
     if ( options.max ) {
       params.max = options.max
     }

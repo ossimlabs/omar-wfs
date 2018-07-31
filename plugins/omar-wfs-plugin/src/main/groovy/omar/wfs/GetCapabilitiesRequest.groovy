@@ -12,7 +12,7 @@ import groovy.xml.StreamingMarkupBuilder
 class GetCapabilitiesRequest implements Validateable
 {
   static mapWith = 'none'
-
+  String username
   String service
   String version
   String request
