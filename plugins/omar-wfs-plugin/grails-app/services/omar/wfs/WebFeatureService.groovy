@@ -345,6 +345,7 @@ class WebFeatureService
       def httpStatus
       def filter = options?.filter      
       def keyword_countryCode, keyword_missionId, keyword_sensorId 
+      def username = wfsParams.username ?: "null"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
@@ -413,7 +414,7 @@ class WebFeatureService
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
         }
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
