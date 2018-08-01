@@ -109,7 +109,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
-      def username = wfsParams.username ?: "null"
+      def username = wfsParams.username ?: "(null)"
 
       def x = {
         mkp.xmlDeclaration()
@@ -283,7 +283,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
-      def username = wfsParams.username ?: "null"      
+      def username = wfsParams.username ?: "(null)"      
 
       def x = {
         mkp.xmlDeclaration()
@@ -347,7 +347,7 @@ class WebFeatureService
       def httpStatus
       def filter = options?.filter      
       def keyword_countryCode, keyword_missionId, keyword_sensorId 
-      def username = wfsParams.username ?: "null"
+      def username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
