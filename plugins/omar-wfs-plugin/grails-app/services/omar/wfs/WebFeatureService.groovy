@@ -109,6 +109,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
+      def username = wfsParams.username ?: "null"
 
       def x = {
         mkp.xmlDeclaration()
@@ -263,7 +264,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
@@ -282,6 +283,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
+      def username = wfsParams.username ?: "null"      
 
       def x = {
         mkp.xmlDeclaration()
@@ -321,7 +323,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
