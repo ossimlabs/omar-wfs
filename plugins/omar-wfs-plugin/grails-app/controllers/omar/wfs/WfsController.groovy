@@ -187,7 +187,7 @@ class WfsController
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'integer', required=false),
-          @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'int', required=false),
+          @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'integer', required=false),
   ])
   def getFeature(/*GetFeatureRequest wfsParams*/) {
     // prevent the whole database from being returned
