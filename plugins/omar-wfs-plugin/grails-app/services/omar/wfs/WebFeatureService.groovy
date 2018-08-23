@@ -109,6 +109,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
+      def username = wfsParams.username ?: "(null)"
 
       def x = {
         mkp.xmlDeclaration()
@@ -263,7 +264,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
@@ -282,6 +283,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
+      def username = wfsParams.username ?: "(null)"      
 
       def x = {
         mkp.xmlDeclaration()
@@ -321,7 +323,7 @@ class WebFeatureService
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
@@ -344,9 +346,8 @@ class WebFeatureService
       def requestInfoLog
       def httpStatus
       def filter = options?.filter      
-      def keyword_countryCode = "-"
-      def  keyword_missionId = "-"
-      def keyword_sensorId = "-"
+      def keyword_countryCode, keyword_missionId, keyword_sensorId 
+      def username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
@@ -397,7 +398,7 @@ class WebFeatureService
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
 
-            for(String s : filter.split(' AND ')){
+            filter?.split(' AND ').each{ s->
                 compare_regex = regex.matcher(s)
             
                 while(s.contains('country_code') && compare_regex.find()) 
@@ -410,12 +411,12 @@ class WebFeatureService
                   sensorId.add(compare_regex.group(1))
             }
 
-            keyword_countryCode = countryCode.toArray()
-            keyword_missionId = missionId.toArray()
-            keyword_sensorId = sensorId.toArray()     
+            keyword_countryCode = !countryCode.isEmpty() ? countryCode : ["-"]
+            keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
+            keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
         }
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: wfsParams.username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
