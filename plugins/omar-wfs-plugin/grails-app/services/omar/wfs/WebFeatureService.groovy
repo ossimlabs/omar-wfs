@@ -380,6 +380,9 @@ class WebFeatureService
       case 'KML':
         formattedResults = getFeatureKML(results?.features, wfsParams)
         break
+      case 'WMS':
+        formattedResults = getFeatureJSON(results, wfsParams?.typeName)
+        break
       default:
         formattedResults = results
       }
@@ -493,6 +496,11 @@ class WebFeatureService
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
 
+  def getFeatureWMS(def results)
+  {
+
+  }
+
   def parseOptions(def wfsParams)
   {
     def wfsParamNames = [
@@ -576,6 +584,9 @@ class WebFeatureService
     case 'APPLICATION/VND.GOOGLE-EARTH.KMLl+XML':
     case 'APPLICATION/VND.GOOGLE-EARTH.KMLl XML':
           format = 'KML'
+          break
+    case: 'WMS':
+          format = 'WMS'
           break
     }
 
