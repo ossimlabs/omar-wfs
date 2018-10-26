@@ -585,7 +585,7 @@ class WebFeatureService
     case 'APPLICATION/VND.GOOGLE-EARTH.KMLl XML':
           format = 'KML'
           break
-    case: 'WMS':
+    case 'WMS':
           format = 'WMS'
           break
     }
