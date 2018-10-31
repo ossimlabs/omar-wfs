@@ -380,8 +380,9 @@ class WebFeatureService
       case 'KML':
         formattedResults = getFeatureKML(results?.features, wfsParams)
         break
-      case 'WMS':
-        formattedResults = getFeatureJSON(results, wfsParams?.typeName)
+      case 'WMS1_1_1':
+      case 'WMS1_3_0':
+        formattedResults = getFeatureWMS(results?.features?.id, format)
         break
       default:
         formattedResults = results
@@ -496,9 +497,183 @@ class WebFeatureService
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
 
-  def getFeatureWMS(def results)
+  def getFeatureWMS(def layerIds, def wmsVersion)
   {
+    def version = (wmsVersion == "WMS1_1_1") ? "1.1.1" : "1.3.0"
 
+    def contentType, buffer, responseTime, requestInfoLog
+    def schemaLocation = grailsLinkGenerator.link( absolute: true, uri: "/schemas/wms/1.3.0/capabilities_1_3_0.xsd" )
+    def docTypeLocation = grailsLinkGenerator.link( absolute: true, uri: "/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd" )
+    def model = geoscriptService.capabilitiesData
+
+    def requestType = "GET"
+    def requestMethod = "GetCapabilities"
+    Date startTime = new Date()
+
+    def x = {
+      mkp.xmlDeclaration()
+
+      if ( version == "1.1.1" )
+      {
+        mkp.yieldUnescaped """<!DOCTYPE WMT_MS_Capabilities SYSTEM "${docTypeLocation}">"""
+      }
+
+      def rootTag = (version == "1.1.1") ? "WMT_MS_Capabilities" : "WMS_Capabilities"
+      def rootAttributes = [version: version]
+
+      mkp.declareNamespace(
+              xlink: "http://www.w3.org/1999/xlink",
+      )
+
+      if ( version == "1.3.0" )
+      {
+        mkp.declareNamespace(
+                xsi: "http://www.w3.org/2001/XMLSchema-instance"
+        )
+
+        rootAttributes['xmlns'] = "http://www.opengis.net/wms"
+        rootAttributes['xsi:schemaLocation'] = "http://www.opengis.net/wms ${schemaLocation}"
+      }
+
+      "${rootTag}"( rootAttributes ) {
+
+        Service {
+          Name( serverData.Service.Name )
+          Title( serverData.Service.Title )
+          Abstract( serverData.Service.Abstract )
+          KeywordList {
+            serverData.Service.KeywordList.each { keyword ->
+              Keyword( keyword )
+            }
+          }
+          OnlineResource( 'xlink:type': "simple", 'xlink:href': serverData.Service.OnlineResource )
+          ContactInformation {
+            ContactPersonPrimary {
+              ContactPerson( serverData.Service.ContactInformation.ContactPersonPrimary.ContactPerson )
+              ContactOrganization( serverData.Service.ContactInformation.ContactPersonPrimary.ContactOrganization )
+            }
+            ContactPosition( serverData.Service.ContactInformation.ContactPosition )
+            ContactAddress {
+              AddressType( serverData.Service.ContactInformation.ContactAddress.AddressType )
+              Address( serverData.Service.ContactInformation.ContactAddress.Address )
+              City( serverData.Service.ContactInformation.ContactAddress.City )
+              StateOrProvince( serverData.Service.ContactInformation.ContactAddress.StateOrProvince )
+              PostCode( serverData.Service.ContactInformation.ContactAddress.PostCode )
+              Country( serverData.Service.ContactInformation.ContactAddress.Country )
+            }
+            ContactVoiceTelephone( serverData.Service.ContactInformation.ContactVoiceTelephone )
+            ContactFacsimileTelephone( serverData.Service.ContactInformation.ContactFacsimileTelephone )
+            ContactElectronicMailAddress( serverData.Service.ContactInformation.ContactElectronicMailAddress )
+          }
+          Fees( serverData.Service.Fees )
+          AccessConstraints( serverData.Service.AccessConstraints )
+        }
+        Capability {
+          Request {
+            GetCapabilities {
+              contentType = (version == '1.1.1') ? "application/vnd.ogc.wms_xml" : "text/xml"
+              Format( contentType )
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xlink:type': "simple",
+                            'xlink:href': grailsLinkGenerator.link( absolute: true, controller: 'wms', action: 'getCapabilities' ) )
+                  }
+                  Post {
+                    OnlineResource( 'xlink:type': "simple",
+                            'xlink:href': grailsLinkGenerator.link( absolute: true, controller: 'wms', action: 'getCapabilities' ) )
+                  }
+                }
+              }
+            }
+            GetMap {
+              serverData.Capability.Request.GetMap.Format.each { format ->
+                Format( format )
+              }
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xlink:type': "simple",
+                            'xlink:href': grailsLinkGenerator.link( absolute: true, controller: 'wms', action: 'getMap' ) )
+                  }
+                }
+              }
+            }
+          }
+          Exception {
+            serverData.Capability.Exception.Format.each { format ->
+              Format( format )
+            }
+          }
+          Layer {
+            Title( serverData.Capability.Layer.Title )
+            Abstract( serverData.Capability.Layer.Abstract )
+            def crsTag = (version == '1.1.1') ? "SRS" : "CRS"
+            layerIds?.each { layerId ->
+              "${crsTag}"( layerId )
+            }
+
+            if ( version == '1.3.0' )
+            {
+              EX_GeographicBoundingBox {
+                westBoundLongitude( serverData.Capability.Layer.BoundingBox.minLon )
+                eastBoundLongitude( serverData.Capability.Layer.BoundingBox.maxLon )
+                southBoundLatitude( serverData.Capability.Layer.BoundingBox.minLat )
+                northBoundLatitude( serverData.Capability.Layer.BoundingBox.maxLat )
+              }
+              BoundingBox( CRS: serverData.Capability.Layer.BoundingBox.crs,
+                      minx: serverData.Capability.Layer.BoundingBox.minLon,
+                      miny: serverData.Capability.Layer.BoundingBox.minLat,
+                      maxx: serverData.Capability.Layer.BoundingBox.maxLon,
+                      maxy: serverData.Capability.Layer.BoundingBox.maxLat
+              )
+            }
+            else
+            {
+              LatLonBoundingBox(
+                      minx: serverData.Capability.Layer.BoundingBox.minLon,
+                      miny: serverData.Capability.Layer.BoundingBox.minLat,
+                      maxx: serverData.Capability.Layer.BoundingBox.maxLon,
+                      maxy: serverData.Capability.Layer.BoundingBox.maxLat
+              )
+            }
+            model?.featureTypes?.each { featureType ->
+              Layer( queryable: "1", opaque: "0" ) {
+                Name( "${featureType.namespace.prefix}:${featureType.name}" )
+                Title( featureType.title )
+                Abstract( featureType.description )
+                Keywords {
+                  featureType.keywords.each { keyword ->
+                    Keyword( keyword )
+                  }
+                }
+                def bounds = featureType.geoBounds
+
+                "${crsTag}"( bounds?.proj )
+                if ( version == "1.3.0" )
+                {
+                  EX_GeographicBoundingBox {
+                    westBoundLongitude( bounds?.minX )
+                    eastBoundLongitude( bounds?.maxX )
+                    southBoundLatitude( bounds?.minY )
+                    northBoundLatitude( bounds?.maxY )
+                  }
+                }
+                else
+                {
+                  LatLonBoundingBox(
+                          minx: bounds?.minX,
+                          miny: bounds?.minY,
+                          maxx: bounds?.maxX,
+                          maxy: bounds?.maxY
+                  )
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   def parseOptions(def wfsParams)
@@ -585,8 +760,11 @@ class WebFeatureService
     case 'APPLICATION/VND.GOOGLE-EARTH.KMLl XML':
           format = 'KML'
           break
-    case 'WMS':
-          format = 'WMS'
+    case 'WMS111':
+          format = 'WMS1_1_1'
+          break
+    case 'WMS130':
+          format = 'WMS1_3_0'
           break
     }
 
