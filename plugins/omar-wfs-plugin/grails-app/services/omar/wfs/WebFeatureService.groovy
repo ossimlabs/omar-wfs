@@ -675,6 +675,10 @@ class WebFeatureService
         }
       }
     }
+
+    def xml = new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x )
+
+    [contentType: 'text/xml', text: xml.toString()]
   }
 
   def parseOptions(def wfsParams)
