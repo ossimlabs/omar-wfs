@@ -677,7 +677,7 @@ class WebFeatureService
       }
     }
 
-    [contentType: contentType, text: xml.toString()]
+    [contentType: contentType, text: x.toString()]
   }
 
   def parseOptions(def wfsParams)
