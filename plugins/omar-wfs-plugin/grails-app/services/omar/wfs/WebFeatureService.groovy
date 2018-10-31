@@ -500,6 +500,7 @@ class WebFeatureService
 
   def getFeatureWMS(def layerIds, def wmsVersion)
   {
+    def serverData = grailsApplication.config?.geoscript?.serverData
     def version = (wmsVersion == "WMS1_1_1") ? "1.1.1" : "1.3.0"
 
     def contentType, buffer, responseTime, requestInfoLog
@@ -675,6 +676,8 @@ class WebFeatureService
         }
       }
     }
+
+    [contentType: contentType, text: xml.toString()]
   }
 
   def parseOptions(def wfsParams)
