@@ -123,7 +123,7 @@ class WfsController
   @ApiOperation(value = "Get the capabilities of the server",
                 produces='application/xml',
                 httpMethod="GET",
-                nickname = "wfsGetCapabilities")
+                nickname = "getCapabilities")
   @ApiImplicitParams([
           @ApiImplicitParam(name = 'service', value = 'OGC Service type', allowableValues="WFS", defaultValue = 'WFS', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
