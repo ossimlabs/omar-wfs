@@ -7,7 +7,7 @@ class WfsInterceptor
 
   public WfsInterceptor()
   {
-    match( controller: 'wfs' )
+    match( controller: 'foo' )
     //println 'WfsInterceptor'
   }
 
