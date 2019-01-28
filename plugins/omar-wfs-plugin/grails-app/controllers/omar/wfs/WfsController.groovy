@@ -49,7 +49,9 @@ class WfsController
 
       def cmd = new GetCapabilitiesRequest()
 
+      println '(' * 20 
       cmd.username = webFeatureService.extractUsernameFromRequest(request)
+      println ')' * 20 
 
       switch ( request?.method?.toUpperCase() )
       {
@@ -110,6 +112,7 @@ class WfsController
       break
     default:
       println 'UNKNOWN'
+      throw new Exception('UNKNOWN REQUEST')
       break
 
     }
