@@ -3,6 +3,10 @@ package omar.wfs
 import omar.core.BindUtil
 import io.swagger.annotations.*
 
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
+import org.grails.web.util.WebUtils
+
 @Api(value = "/wfs",
      description = "WFS Support"
 )
@@ -86,6 +90,7 @@ class WfsController
       results = webFeatureService.describeFeatureType( cmd )
       break
     case "GETFEATURE":
+
 //      println 'GETFEATURE'
 //      forward action: 'getFeature'
 
@@ -116,7 +121,6 @@ class WfsController
 
 //    println '*' * 40
 
-    //render contentType: results.contentType, text: results.buffer
     render results
   }
 
@@ -215,6 +219,35 @@ class WfsController
     }
 
     //render contentType: results.contentType, text: results.buffer
-    render results
+
+    def outputBuffer
+    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
+
+    println("ACCEPT: ${acceptEncoding}, results: ${results}")
+
+    if (acceptEncoding != null && acceptEncoding == 'gzip'){
+      outputBuffer = gzippify(results.features)
+      response.setHeader 'Content-Encoding', acceptEncoding
+    } else {
+      outputBuffer = results.features
+    }
+
+    render contentType: results.contentType, text: outputBuffer, encoding: acceptEncoding
+  }
+
+  static String gzippify(String buffer){
+    def targetStream = new ByteArrayOutputStream()
+    def gzipStream = new GZIPOutputStream(targetStream)
+    gzipStream.write(buffer.toString().getBytes('UTF-8'))
+    gzipStream.close()
+    def zippedBytes = targetStream.toByteArray()
+    targetStream.close()
+    return zippedBytes.encodeBase64().toString()
+  }
+
+  static String ungzippify(String buffer) {
+    def inflaterStream = new GZIPInputStream(new ByteArrayInputStream(buffer.decodeBase64()))
+    def uncompressedStr = inflaterStream.getText('UTF-8')
+    return uncompressedStr
   }
 }
