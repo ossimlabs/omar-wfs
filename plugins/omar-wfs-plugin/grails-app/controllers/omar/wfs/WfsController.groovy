@@ -148,7 +148,18 @@ class WfsController
     // }
     //
     // render contentType: results.contentType, text: results.buffer
-    render results
+
+    def outputBuffer
+    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
+    if (acceptEncoding != null && acceptEncoding == 'gzip'){
+      outputBuffer = gzippify(results.text)
+      response.setHeader 'Content-Encoding', acceptEncoding
+    } else {
+      outputBuffer = results.text
+    }
+
+    render contentType: results.contentType, text: outputBuffer
+
   }
 
   @ApiOperation(value = "Describe the feature from the server",
@@ -223,8 +234,6 @@ class WfsController
     def outputBuffer
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
-    println("ACCEPT: ${acceptEncoding}, results: ${results}")
-
     if (acceptEncoding != null && acceptEncoding == 'gzip'){
       outputBuffer = gzippify(results.features)
       response.setHeader 'Content-Encoding', acceptEncoding
@@ -232,7 +241,7 @@ class WfsController
       outputBuffer = results.features
     }
 
-    render contentType: results.contentType, text: outputBuffer, encoding: acceptEncoding
+    render contentType: results.contentType, text: outputBuffer
   }
 
   static String gzippify(String buffer){
