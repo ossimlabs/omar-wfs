@@ -94,7 +94,7 @@ class WebFeatureService
     {
       def userInfo = grailsApplication.config.omar?.wfs?.app?.userInfo
       String requestHeaderName = request.getHeader(userInfo?.requestHeaderUserName)
-      String userInfoName = ((!requestHeaderName)? userInfo.requestHeaderUserNameDefault : requestHeaderName)
+      String userInfoName = requestHeaderName ?: userInfo.requestHeaderUserNameDefault 
       userInfoName
     }
 
@@ -846,7 +846,7 @@ class WebFeatureService
       }
 
       def location = "${centerLat},${centerLon}"
-      def filter = "in(${feature.get("id") - 'raster_entry.'})"
+      def filter = "in(${feature.get("id")?.toString() - 'raster_entry.'})"
 
       def tlvUrl = grailsLinkGenerator.link(
         base: grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath,
@@ -985,7 +985,7 @@ class WebFeatureService
 
               Icon() {
                   // def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
-                  wmsParams.FILTER = "in(${feature.get("id") - 'raster_entry.'})"
+                  wmsParams.FILTER = "in(${feature.get("id")?.toString() - 'raster_entry.'})"
                   // wmsParams.each() { wmsUrl += "${it.key}=${it.value}&" }
 
                   def o2BaseUrl = grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath

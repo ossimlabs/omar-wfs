@@ -115,6 +115,7 @@ class WfsController
       break
     default:
       println 'UNKNOWN'
+      throw new Exception('UNKNOWN REQUEST')
       break
 
     }
@@ -199,7 +200,7 @@ class WfsController
           @ApiImplicitParam(name = 'typeName', value = 'Type name', defaultValue="omar:raster_entry", paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'filter', value = 'Filter', paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="", allowableValues="results,hits", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32, WMS111, WMS130", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'integer', required=false),
