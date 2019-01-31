@@ -187,7 +187,17 @@ class WfsController
     // }
 
     //render contentType: results.contentType, text: results.buffer
-    render results
+
+    def outputBuffer
+    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
+    if (acceptEncoding != null && acceptEncoding == 'gzip'){
+      outputBuffer = gzippify(results.text)
+      response.setHeader 'Content-Encoding', acceptEncoding
+    } else {
+      outputBuffer = results.text
+    }
+
+    render contentType: results.contentType, text: outputBuffer
   }
 
   @ApiOperation(value = "Get features from the server",
