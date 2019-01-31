@@ -265,6 +265,10 @@ class WfsController
     return zippedBytes.encodeBase64().toString()
   }
 
+  static String gzippify(ArrayList list){
+    return gzippify(list.toString())
+  }
+
   static String ungzippify(String buffer) {
     def inflaterStream = new GZIPInputStream(new ByteArrayInputStream(buffer.decodeBase64()))
     def uncompressedStr = inflaterStream.getText('UTF-8')
