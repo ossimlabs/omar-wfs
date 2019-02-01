@@ -421,8 +421,25 @@ class WebFeatureService
         }
 
       // TODO Remove after testing
-      def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
-      log.info Grp
+      //def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
+      model?.featureTypes?.each { featureType ->
+        FeatureType( "xmlns:${featureType.namespace.prefix}":  featureType.namespace.uri) {
+          Name("${featureType.namespace.prefix}:${featureType.name}")
+          Title(featureType.title)
+          Abstract(featureType.description)
+          ows.Keywords {
+            featureType.keywords.each { keyword ->
+              ows.Keyword(keyword)
+            }
+          }
+          DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
+          ows.WGS84BoundingBox {
+            def bounds = featureType.geoBounds
+            ows.LowerCorner("${bounds.minX} ${bounds.minY}")
+            ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
+          }
+        log.info ows.LowerCorner.toString()
+        log.info ows.UpperCorner.toString()
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
