@@ -422,8 +422,9 @@ class WebFeatureService
 
       // TODO Remove after testing
       def Grp = (POINT\(([-0-9.]*)[\s]([-0-9.]*)
+      log.info Grp
 
-      requestInfoLog = new JsonBuilder(ParsedGroup: Grp,timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
+      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
