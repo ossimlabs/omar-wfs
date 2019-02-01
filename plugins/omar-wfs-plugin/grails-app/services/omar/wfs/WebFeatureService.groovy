@@ -16,7 +16,6 @@ class WebFeatureService
     def grailsLinkGenerator
     def geoscriptService
     def grailsApplication
-}
 
     static final def ogcNamespaces = [
       wfs: 'http://www.opengis.net/wfs',
@@ -211,13 +210,14 @@ class WebFeatureService
                   ows.Keyword(keyword)
                 }
               }
-                println("I am here")
               DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
               ows.WGS84BoundingBox {
                 def bounds = featureType.geoBounds
                 ows.LowerCorner("${bounds.minX} ${bounds.minX}")
                 ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
-                println(ows.LowerCorner.toString())
+                log.info("I'm Here")
+                log.info(ows.LowerCorner())
+                log.info(ows.UpperrCorner())
               }
             }
           }
@@ -424,31 +424,7 @@ class WebFeatureService
         }
 
       // TODO Remove after testing
-      def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
-      println("I am here2")
-      // println(ows.LowerCorner.toString())
-        /*
-        model?.featureTypes?.each { featureType ->
-          FeatureType("xmlns:${featureType.namespace.prefix}": featureType.namespace.uri) {
-            Name("${featureType.namespace.prefix}:${featureType.name}")
-            Title(featureType.title)
-            Abstract(featureType.description)
-            ows.Keywords {
-              featureType.keywords.each { keyword ->
-                ows.Keyword(keyword)
-              }
-            }
-            DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
-            ows.WGS84BoundingBox {
-              def bounds = featureType.geoBounds
-              ows.LowerCorner("${bounds.minX} ${bounds.minY}")
-              ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
-            }
-            log.info ows.LowerCorner.toString()
-            log.info ows.UpperCorner.toString()
-          }
-        }
-      */
+      //println(POINT\(([-0-9.]*)[\s]([-0-9.]*)
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
