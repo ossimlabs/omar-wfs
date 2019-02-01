@@ -423,7 +423,7 @@ class WebFeatureService
       // TODO Remove after testing
       //def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
       model?.featureTypes?.each { featureType ->
-        FeatureType( "xmlns:${featureType.namespace.prefix}":  featureType.namespace.uri) {
+        FeatureType("xmlns:${featureType.namespace.prefix}": featureType.namespace.uri) {
           Name("${featureType.namespace.prefix}:${featureType.name}")
           Title(featureType.title)
           Abstract(featureType.description)
@@ -438,8 +438,10 @@ class WebFeatureService
             ows.LowerCorner("${bounds.minX} ${bounds.minY}")
             ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
           }
-        log.info ows.LowerCorner.toString()
-        log.info ows.UpperCorner.toString()
+          log.info ows.LowerCorner.toString()
+          log.info ows.UpperCorner.toString()
+        }
+      }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
