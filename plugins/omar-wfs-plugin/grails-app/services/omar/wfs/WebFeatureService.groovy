@@ -217,6 +217,7 @@ class WebFeatureService
                 def bounds = featureType.geoBounds
                 ows.LowerCorner("${bounds.minX} ${bounds.minX}")
                 ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
+                println(ows.LowerCorner.toString())
               }
             }
           }
@@ -425,6 +426,7 @@ class WebFeatureService
       // TODO Remove after testing
       def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
       println("I am here2")
+      println(ows.LowerCorner.toString())
         /*
         model?.featureTypes?.each { featureType ->
           FeatureType("xmlns:${featureType.namespace.prefix}": featureType.namespace.uri) {
