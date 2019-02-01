@@ -421,7 +421,7 @@ class WebFeatureService
         }
 
       // TODO Remove after testing
-      def Grp = (POINT\(([-0-9.]*)[\s]([-0-9.]*)
+      def Grp = "Test" // (POINT\(([-0-9.]*)[\s]([-0-9.]*)
       log.info Grp
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
