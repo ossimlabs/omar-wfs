@@ -215,6 +215,9 @@ class WebFeatureService
                 def bounds = featureType.geoBounds
                 ows.LowerCorner("${bounds.minX} ${bounds.minX}")
                 ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
+                log.info("I'm Here")
+                log.info(ows.LowerCorner())
+                log.info(ows.UpperrCorner())
               }
             }
           }
@@ -419,6 +422,9 @@ class WebFeatureService
             keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
         }
+
+      // TODO Remove after testing
+      //println(POINT\(([-0-9.]*)[\s]([-0-9.]*)
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
