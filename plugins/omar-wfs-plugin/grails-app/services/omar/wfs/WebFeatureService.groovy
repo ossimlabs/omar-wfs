@@ -213,11 +213,12 @@ class WebFeatureService
               DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
               ows.WGS84BoundingBox {
                 def bounds = featureType.geoBounds
-                ows.LowerCorner("${bounds.minX} ${bounds.minX}")
+                ows.LowerCorner("${bounds.minX} ${bounds.minY}")
                 ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
                 log.info("I'm Here")
                 log.info(ows.LowerCorner())
                 log.info(ows.UpperrCorner())
+                log.info("I'm Here2")
               }
             }
           }
