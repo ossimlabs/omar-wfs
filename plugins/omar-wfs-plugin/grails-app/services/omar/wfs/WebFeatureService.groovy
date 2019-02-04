@@ -423,7 +423,8 @@ class WebFeatureService
       // TODO Remove after testing
       //log.info POINT\(([-0-9.]*)[\s]([-0-9.]*).results
       log.info "Here Now"
-      log.info results
+      log.info results.features
+      log.info "Here Now 2"
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
