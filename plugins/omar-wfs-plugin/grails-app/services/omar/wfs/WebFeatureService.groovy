@@ -364,6 +364,7 @@ class WebFeatureService
 
       def formattedResults
 
+      log.info "Logging value of format"
       log.info format
 
       switch (format)
