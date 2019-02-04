@@ -364,6 +364,9 @@ class WebFeatureService
 
       def formattedResults
 
+      // TODO remove, les
+      log.info format
+
       switch (format)
       {
       case 'GML2':
