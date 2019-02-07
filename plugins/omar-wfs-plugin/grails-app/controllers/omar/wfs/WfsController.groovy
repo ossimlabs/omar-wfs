@@ -1,10 +1,9 @@
 package omar.wfs
 
 import omar.core.BindUtil
+import omar.core.OmarWebUtils
 import io.swagger.annotations.*
 
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
 import org.grails.web.util.WebUtils
 
 @Api(value = "/wfs",
@@ -39,11 +38,6 @@ class WfsController
     }
 
     def results
-
-//    println wfsParams
-
-//    println '*' * 40
-//    println op
 
     switch ( op?.toUpperCase() )
     {
@@ -120,8 +114,6 @@ class WfsController
 
     }
 
-//    println '*' * 40
-
     render results
   }
 
@@ -144,23 +136,9 @@ class WfsController
 
     def results = webFeatureService.getCapabilities( wfsParams )
 
-    // if(results.status != null) {
-    //   response.status = results.status
-    // }
-    //
-    // render contentType: results.contentType, text: results.buffer
-
-    def outputBuffer
-    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
-    if (acceptEncoding != null && acceptEncoding == 'gzip'){
-      outputBuffer = gzippify(results.text)
-      response.setHeader 'Content-Encoding', acceptEncoding
-    } else {
-      outputBuffer = results.text
-    }
+    String outputBuffer = encodeResponse(results.text)
 
     render contentType: results.contentType, text: outputBuffer
-
   }
 
   @ApiOperation(value = "Describe the feature from the server",
@@ -182,20 +160,7 @@ class WfsController
 
     def results = webFeatureService.describeFeatureType( wfsParams )
 
-    // if(results.status != null) {
-    //   response.status = results.status
-    // }
-
-    //render contentType: results.contentType, text: results.buffer
-
-    def outputBuffer
-    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
-    if (acceptEncoding != null && acceptEncoding == 'gzip'){
-      outputBuffer = gzippify(results.text)
-      response.setHeader 'Content-Encoding', acceptEncoding
-    } else {
-      outputBuffer = results.text
-    }
+    String outputBuffer = encodeResponse(results.text)
 
     render contentType: results.contentType, text: outputBuffer
   }
@@ -224,7 +189,6 @@ class WfsController
         }
     }
 
-//    println wfsParams
     def wfsParams = new GetFeatureRequest()
 
     BindUtil.fixParamNames( GetFeatureRequest, params )
@@ -240,38 +204,22 @@ class WfsController
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
     }
 
-    //render contentType: results.contentType, text: results.buffer
-
-    def outputBuffer
-    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
-
-    if (acceptEncoding != null && acceptEncoding == 'gzip'){
-      outputBuffer = gzippify(results.features)
-      response.setHeader 'Content-Encoding', acceptEncoding
-    } else {
-      outputBuffer = results.features
-    }
+    String outputBuffer = encodeResponse(results.features)
 
     render contentType: results.contentType, text: outputBuffer
   }
 
-  static String gzippify(String buffer){
-    def targetStream = new ByteArrayOutputStream()
-    def gzipStream = new GZIPOutputStream(targetStream)
-    gzipStream.write(buffer.toString().getBytes('UTF-8'))
-    gzipStream.close()
-    def zippedBytes = targetStream.toByteArray()
-    targetStream.close()
-    return zippedBytes.encodeBase64().toString()
-  }
+  private String encodeResponse(String resultsText) {
+    String responseText
+    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
-  static String gzippify(ArrayList list){
-    return gzippify(list.toString())
-  }
+    if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){
+      responseText = OmarWebUtils.gzippify(resultsText)
+      response.setHeader 'Content-Encoding', acceptEncoding
+    } else {
+      responseText = resultsText
+    }
 
-  static String ungzippify(String buffer) {
-    def inflaterStream = new GZIPInputStream(new ByteArrayInputStream(buffer.decodeBase64()))
-    def uncompressedStr = inflaterStream.getText('UTF-8')
-    return uncompressedStr
+    return responseText
   }
 }
