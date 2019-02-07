@@ -1,7 +1,10 @@
 package omar.wfs
 
 import omar.core.BindUtil
+import omar.core.OmarWebUtils
 import io.swagger.annotations.*
+
+import org.grails.web.util.WebUtils
 
 @Api(value = "/wfs",
      description = "WFS Support"
@@ -35,11 +38,6 @@ class WfsController
     }
 
     def results
-
-//    println wfsParams
-
-//    println '*' * 40
-//    println op
 
     switch ( op?.toUpperCase() )
     {
@@ -86,6 +84,7 @@ class WfsController
       results = webFeatureService.describeFeatureType( cmd )
       break
     case "GETFEATURE":
+
 //      println 'GETFEATURE'
 //      forward action: 'getFeature'
 
@@ -115,9 +114,6 @@ class WfsController
 
     }
 
-//    println '*' * 40
-
-    //render contentType: results.contentType, text: results.buffer
     render results
   }
 
@@ -140,12 +136,9 @@ class WfsController
 
     def results = webFeatureService.getCapabilities( wfsParams )
 
-    // if(results.status != null) {
-    //   response.status = results.status
-    // }
-    //
-    // render contentType: results.contentType, text: results.buffer
-    render results
+    String outputBuffer = encodeResponse(results.text)
+
+    render contentType: results.contentType, text: outputBuffer
   }
 
   @ApiOperation(value = "Describe the feature from the server",
@@ -167,12 +160,9 @@ class WfsController
 
     def results = webFeatureService.describeFeatureType( wfsParams )
 
-    // if(results.status != null) {
-    //   response.status = results.status
-    // }
+    String outputBuffer = encodeResponse(results.text)
 
-    //render contentType: results.contentType, text: results.buffer
-    render results
+    render contentType: results.contentType, text: outputBuffer
   }
 
   @ApiOperation(value = "Get features from the server",
@@ -199,7 +189,6 @@ class WfsController
         }
     }
 
-//    println wfsParams
     def wfsParams = new GetFeatureRequest()
 
     BindUtil.fixParamNames( GetFeatureRequest, params )
@@ -215,7 +204,22 @@ class WfsController
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
     }
 
-    //render contentType: results.contentType, text: results.buffer
-    render results
+    String outputBuffer = encodeResponse(results.features)
+
+    render contentType: results.contentType, text: outputBuffer
+  }
+
+  private String encodeResponse(String resultsText) {
+    String responseText
+    String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
+
+    if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){
+      responseText = OmarWebUtils.gzippify(resultsText)
+      response.setHeader 'Content-Encoding', acceptEncoding
+    } else {
+      responseText = resultsText
+    }
+
+    return responseText
   }
 }
