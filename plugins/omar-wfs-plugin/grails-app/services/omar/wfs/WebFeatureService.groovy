@@ -213,7 +213,7 @@ class WebFeatureService
               DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
               ows.WGS84BoundingBox {
                 def bounds = featureType.geoBounds
-                ows.LowerCorner("${bounds.minX} ${bounds.minX}")
+                ows.LowerCorner("${bounds.minX} ${bounds.minY}")
                 ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
               }
             }
@@ -419,6 +419,11 @@ class WebFeatureService
             keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
         }
+
+      // TODO Remove after testing
+      //log.info POINT\(([-0-9.]*)[\s]([-0-9.]*).results
+      //log.info "Here Now"
+      //log.info results.features
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
