@@ -420,15 +420,15 @@ class WebFeatureService
 
             // TODO : Remove debug code
             log.info ("##################################################")
-            Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
-            Matcher matcher = pattern.matcher(filter)
-        /*
+            Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)");
+            Matcher matcher = pattern.matcher(filter);
+        //  Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
+        //  Matcher matcher = pattern.matcher(filter)
             while (matcher.find()) {
               log.info ("IN matcher  ##################################################")
               log.info (matcher.start())
               log.info (matcher.end())
             }
-            */
         /*
             point.add(matcher.group(1))
             point.add(matcher.group(2))
