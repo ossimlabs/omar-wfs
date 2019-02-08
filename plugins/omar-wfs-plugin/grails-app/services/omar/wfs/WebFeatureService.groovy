@@ -423,8 +423,8 @@ class WebFeatureService
             Pattern pattern = Pattern.compile("'POINT\\(([-0-9.]*)[\\s]([-0-9.]*)'")
             Matcher matcher
             matcher = pattern.matcher(filter)
-            point.add(matcher.group(1))
         /*
+            point.add(matcher.group(1))
             point.add(matcher.group(2))
             log.info ("Group 1 ##################################################")
             log.info (matcher.group(1))
