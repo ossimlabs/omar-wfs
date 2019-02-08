@@ -420,8 +420,9 @@ class WebFeatureService
 
             // TODO : Remove debug code
             log.info ("##################################################")
-            Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)");
-            Matcher matcher = pattern.matcher(filter);
+            String s = "INTERSECTS(ground_geom,POINT(-94.00566957630706 29.954858619890043))"
+            Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
+            Matcher matcher = pattern.matcher(s)
         //  Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
         //  Matcher matcher = pattern.matcher(filter)
             while (matcher.find()) {
