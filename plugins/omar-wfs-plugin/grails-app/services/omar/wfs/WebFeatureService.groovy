@@ -422,10 +422,10 @@ class WebFeatureService
             log.info ("##################################################")
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
-            keyword_latitude = matcher.group(1)
-            keyword_longitude = matcher.group(2)
             while (matcher.find()) {
               log.info ("IN matcher  ##################################################")
+              keyword_latitude = matcher.group(1)
+              keyword_longitude = matcher.group(2)
               log.info (matcher.group(1))
               log.info (matcher.group(2))
               log.info ("LEAVING matcher  ##################################################")
