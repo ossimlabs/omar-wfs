@@ -419,10 +419,10 @@ class WebFeatureService
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
 
             // TODO : Remove debug code
-        /*
             log.info ("##################################################")
             Pattern pattern = Pattern.compile("'POINT\\(([-0-9.]*)[\\s]([-0-9.]*)'")
             Matcher matcher
+        /*
             matcher = pattern.matcher(filter)
             point.add(matcher.group(1))
             point.add(matcher.group(2))
