@@ -345,6 +345,7 @@ class WebFeatureService
       def httpStatus
       def filter = options?.filter      
       def keyword_countryCode, keyword_missionId, keyword_sensorId
+      def keyword_latitude, keyword_longitude
       def username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
@@ -396,7 +397,6 @@ class WebFeatureService
             ArrayList<String> countryCode = new ArrayList<String>()
             ArrayList<String> missionId = new ArrayList<String>()
             ArrayList<String> sensorId = new ArrayList<String>()
-            ArrayList<String> point = new ArrayList<String>()
 
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
@@ -422,21 +422,14 @@ class WebFeatureService
             log.info ("##################################################")
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
+            keyword_latitude = matcher.group(1)
+            keyword_longitude = matcher.group(2)
             while (matcher.find()) {
               log.info ("IN matcher  ##################################################")
               log.info (matcher.group(1))
               log.info (matcher.group(2))
               log.info ("LEAVING matcher  ##################################################")
             }
-        /*
-            point.add(matcher.group(1))
-            point.add(matcher.group(2))
-            log.info ("Group 1 ##################################################")
-            log.info (matcher.group(1))
-            log.info ("Group 2 ##################################################")
-            log.info (matcher.group(2))
-            log.info ("##################################################")
-            */
         }
 
       // TODO Remove after testing
