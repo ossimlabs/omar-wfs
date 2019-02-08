@@ -420,7 +420,6 @@ class WebFeatureService
 
             // TODO : Remove debug code
             log.info ("##################################################")
-            filter?.split
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
             while (matcher.find()) {
