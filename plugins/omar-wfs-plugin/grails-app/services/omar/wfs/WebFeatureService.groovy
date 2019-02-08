@@ -268,8 +268,6 @@ class WebFeatureService
               requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
               responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
-      log.info requestInfoLog.toString()
-
       [contentType: contentType, text: xml.toString()]
     }
 
@@ -346,7 +344,7 @@ class WebFeatureService
       def requestInfoLog
       def httpStatus
       def filter = options?.filter      
-      def keyword_countryCode, keyword_missionId, keyword_sensorId 
+      def keyword_countryCode, keyword_missionId, keyword_sensorId
       def username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
       Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
@@ -363,9 +361,6 @@ class WebFeatureService
       )
 
       def formattedResults
-
-      log.info "Logging value of format"
-      log.info format
 
       switch (format)
       {
@@ -401,6 +396,7 @@ class WebFeatureService
             ArrayList<String> countryCode = new ArrayList<String>()
             ArrayList<String> missionId = new ArrayList<String>()
             ArrayList<String> sensorId = new ArrayList<String>()
+            ArrayList<String> point = new ArrayList<String>()
 
             Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
             Matcher compare_regex
@@ -421,12 +417,26 @@ class WebFeatureService
             keyword_countryCode = !countryCode.isEmpty() ? countryCode : ["-"]
             keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
+
+            // TODO : Remove debug code
+            log.info ("##################################################")
+            Pattern pattern = Pattern.compile("'POINT\\(([-0-9.]*)[\\s]([-0-9.]*)'")
+            Matcher matcher
+            matcher = pattern.matcher(filter)
+            point.add(matcher.group(1))
+            point.add(matcher.group(2))
+            log.info ("Group 1 ##################################################")
+            log.info (matcher.group(1))
+            log.info ("Group 2 ##################################################")
+            log.info (matcher.group(2))
+            log.info ("##################################################")
         }
 
       // TODO Remove after testing
-      //log.info POINT\(([-0-9.]*)[\s]([-0-9.]*).results
-      //log.info "Here Now"
-      //log.info results.features
+      //def point = POINT\(([-0-9.]*)[\s]([-0-9.]*).filter
+      //  if (point) {}
+
+      // def keyword_longitude, keyword_latitude
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
