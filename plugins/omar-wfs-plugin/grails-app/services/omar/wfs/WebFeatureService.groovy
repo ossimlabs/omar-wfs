@@ -424,8 +424,8 @@ class WebFeatureService
             Matcher matcher
             matcher = pattern.matcher(filter)
             point.add(matcher.group(1))
-            point.add(matcher.group(2))
         /*
+            point.add(matcher.group(2))
             log.info ("Group 1 ##################################################")
             log.info (matcher.group(1))
             log.info ("Group 2 ##################################################")
