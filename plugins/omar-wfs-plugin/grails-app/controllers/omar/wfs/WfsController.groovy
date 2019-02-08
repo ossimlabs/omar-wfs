@@ -1,50 +1,50 @@
 package omar.wfs
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
+import io.swagger.annotations.ApiOperation
 import omar.core.BindUtil
 import omar.core.OmarWebUtils
-import io.swagger.annotations.*
-
 import org.grails.web.util.WebUtils
+
+import java.nio.charset.StandardCharsets
 
 @Api(value = "/wfs",
      description = "WFS Support"
 )
 class WfsController
 {
-  def webFeatureService
+  WebFeatureService webFeatureService
 
-  static defaultAction = "index"
+  static int DEFAULT_MAX_FEATURES = 1000
 
-  static allowedMethods = [index: ['GET', 'POST', 'OPTIONS']]
+  static String defaultAction = "index"
 
   def index()
   {
-    def wfsParams = params - params.subMap( ['controller', 'format', 'action'] )
-    def op = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }
+    Map wfsParams = params - params.subMap( ['controller', 'format', 'action'] )
+    String operation = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }
 
     switch ( request?.method?.toUpperCase() )
     {
     case 'GET':
-      op = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }?.value
+      operation = wfsParams.find { it.key.equalsIgnoreCase( 'request' ) }?.value
       break
     case 'POST':
-      op = request?.XML?.name()
+      operation = request?.XML?.name()
       break
     case 'OPTIONS':
       def timestamp = new Date().format( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" )
-//      println "OPTIONS: ${timestamp}"
       render contentType: 'text/plain', text: timestamp
       break
     }
 
     def results
 
-    switch ( op?.toUpperCase() )
+    switch ( operation?.toUpperCase() )
     {
     case "GETCAPABILITIES":
-//      println 'GETCAPABILITIES'
-//      forward action: 'getCapabilities'
-
       def cmd = new GetCapabilitiesRequest()
 
       cmd.username = webFeatureService.extractUsernameFromRequest(request)
@@ -63,9 +63,6 @@ class WfsController
       results = webFeatureService.getCapabilities( cmd )
       break
     case "DESCRIBEFEATURETYPE":
-//      println 'DESCRIBEFEATURETYPE'
-//      forward action: 'describeFeatureType'
-
       def cmd = new DescribeFeatureTypeRequest()
 
       switch ( request?.method?.toUpperCase() )
@@ -79,42 +76,38 @@ class WfsController
         break
       }
 
-      //println "${request?.method?.toUpperCase()} - ${op} - ${cmd}"
-
       results = webFeatureService.describeFeatureType( cmd )
       break
     case "GETFEATURE":
-
-//      println 'GETFEATURE'
-//      forward action: 'getFeature'
-
       def cmd = new GetFeatureRequest()
 
       switch ( request?.method?.toUpperCase() )
       {
       case 'GET':
-        // println 'GET'
         BindUtil.fixParamNames( GetFeatureRequest, wfsParams )
         bindData( cmd, wfsParams )
         break
       case 'POST':
-        // println 'POST'
         cmd = cmd.fromXML( request.XML )
         break
       }
 
-      //println "${request?.method?.toUpperCase()} - ${op} - ${cmd}"
-
       results = webFeatureService.getFeature( cmd )
       break
     default:
-      println 'UNKNOWN'
       throw new Exception('UNKNOWN REQUEST')
-      break
-
     }
 
-    render results
+    String outputBuffer
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat)
+    if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
+      outputBuffer = encodeResponse(results)
+      render outputBuffer
+    } else {
+      outputBuffer = encodeResponse(results.text)
+      render 'contentType': results.contentType, 'text': outputBuffer
+    }
+
   }
 
   @ApiOperation(value = "Get the capabilities of the server",
@@ -126,9 +119,9 @@ class WfsController
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="GetCapabilities", defaultValue = 'GetCapabilities', paramType = 'query', dataType = 'string', required=true),
   ])
-  def getCapabilities(/*GetCapabilitiesRequest wfsParams*/)
+  void getCapabilities()
   {
-    def wfsParams = new GetCapabilitiesRequest()
+    GetCapabilitiesRequest wfsParams = new GetCapabilitiesRequest()
 
     BindUtil.fixParamNames( GetCapabilitiesRequest, params )
     bindData( wfsParams, params )
@@ -152,7 +145,7 @@ class WfsController
   ])
   def describeFeatureType(/*DescribeFeatureTypeRequest wfsParams*/)
   {
-    def wfsParams = new DescribeFeatureTypeRequest()
+    DescribeFeatureTypeRequest wfsParams = new DescribeFeatureTypeRequest()
 
     BindUtil.fixParamNames( DescribeFeatureTypeRequest, params )
     bindData( wfsParams, params )
@@ -185,7 +178,7 @@ class WfsController
     // prevent the whole database from being returned
     if ( params.requestType != "hits" ) {
         if ( !params.containsKey("maxFeatures") || !params.maxFeatures ) {
-            params.maxFeatures = 1000
+            params.maxFeatures = DEFAULT_MAX_FEATURES
         }
     }
 
@@ -209,17 +202,21 @@ class WfsController
     render contentType: results.contentType, text: outputBuffer
   }
 
-  private String encodeResponse(String resultsText) {
-    String responseText
+  private String encodeResponse(ArrayList list){
+    return encodeResponse(list.toString())
+  }
+
+  private String encodeResponse(String inputText) {
+    String outputText
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
     if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){
-      responseText = OmarWebUtils.gzippify(resultsText)
+      outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
       response.setHeader 'Content-Encoding', acceptEncoding
     } else {
-      responseText = resultsText
+      outputText = inputText
     }
 
-    return responseText
+    return outputText
   }
 }
