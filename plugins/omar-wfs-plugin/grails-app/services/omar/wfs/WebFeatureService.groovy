@@ -418,31 +418,18 @@ class WebFeatureService
             keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
 
-            // TODO : Remove debug code
-            log.info ("##################################################")
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
-            while (matcher.find()) {
-              log.info ("IN matcher  ##################################################")
-              keyword_latitude = matcher.group(1)
-              keyword_longitude = matcher.group(2)
-              log.info (matcher.group(1))
-              log.info (matcher.group(2))
-              log.info ("LEAVING matcher  ##################################################")
-            }
+            matcher.find()
+            keyword_latitude = matcher.group(2)
+            keyword_longitude = matcher.group(1)
         }
-
-      // TODO Remove after testing
-      //def point = POINT\(([-0-9.]*)[\s]([-0-9.]*).filter
-      //  if (point) {}
-
-      // def keyword_longitude, keyword_latitude
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
-              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString())
+              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString(), keyword_latitude: keyword_latitude, keyword_longitude: keyword_longitude)
 
       log.info requestInfoLog.toString()
 
