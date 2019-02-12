@@ -429,7 +429,7 @@ class WebFeatureService
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
-              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString())
+              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString(), keyword_latitude: keyword_latitude, keyword_longitude: keyword_longitude)
 
       log.info requestInfoLog.toString()
 
