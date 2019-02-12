@@ -425,12 +425,6 @@ class WebFeatureService
             keyword_longitude = matcher.group(2)
         }
 
-      // TODO Remove after testing
-      //def point = POINT\(([-0-9.]*)[\s]([-0-9.]*).filter
-      //  if (point) {}
-
-      // def keyword_longitude, keyword_latitude
-
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
               requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
               responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
