@@ -421,8 +421,8 @@ class WebFeatureService
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
             matcher.find()
-            keyword_latitude = matcher.group(1)
-            keyword_longitude = matcher.group(2)
+            keyword_latitude = matcher.group(2)
+            keyword_longitude = matcher.group(1)
         }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
