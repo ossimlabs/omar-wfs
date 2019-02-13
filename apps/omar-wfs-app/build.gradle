@@ -13,6 +13,10 @@ buildscript {
     classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
     classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.10"
   }
+  if(System.env.OMAR_COMMON_PROPERTIES)
+  {
+    apply from: System.env.OMAR_COMMON_PROPERTIES
+  }
 }
 
 plugins {
