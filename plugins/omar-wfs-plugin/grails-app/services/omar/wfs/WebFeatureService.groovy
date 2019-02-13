@@ -502,6 +502,8 @@ class WebFeatureService
      def jsonWriter = new StringWriter()
      def jsonBuilder = new StreamingJsonBuilder(jsonWriter)
      jsonBuilder(x)
+      
+     println "DEBUG 1-- REMOVE ME: Json = $jsonWriter"
 
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
