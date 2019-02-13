@@ -437,6 +437,7 @@ class WebFeatureService
 
       log.info requestInfoLog.toString()
 
+      println "DEBUG 2-- REMOVE ME: $formattedResults"
       formattedResults
     }
 
