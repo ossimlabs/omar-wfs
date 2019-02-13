@@ -418,11 +418,15 @@ class WebFeatureService
             keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
             keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
 
+          try {
             Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
             Matcher matcher = pattern.matcher(filter)
             matcher.find()
             keyword_latitude = matcher.group(2)
             keyword_longitude = matcher.group(1)
+          } catch (IllegalStateException e) {
+            // Ignore as no matches for group 1 and 2 were found.
+          }
         }
 
       requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
@@ -433,6 +437,7 @@ class WebFeatureService
 
       log.info requestInfoLog.toString()
 
+      println "DEBUG 2-- REMOVE ME: $formattedResults"
       formattedResults
     }
 
@@ -498,6 +503,8 @@ class WebFeatureService
      def jsonWriter = new StringWriter()
      def jsonBuilder = new StreamingJsonBuilder(jsonWriter)
      jsonBuilder(x)
+      
+     println "DEBUG 1-- REMOVE ME: Json = $jsonWriter"
 
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
