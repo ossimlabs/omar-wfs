@@ -32,7 +32,6 @@ group "io.ossim.omar.plugins"
 
 ext {
   grailsVersion = project.grailsVersion
-  gradleWrapperVersion = project.gradleWrapperVersion
 }
 
 repositories {

@@ -33,7 +33,6 @@ group "io.ossim.omar.apps"
 
 ext {
   grailsVersion = project.grailsVersion
-  gradleWrapperVersion = project.gradleWrapperVersion
 }
 
 assets {
