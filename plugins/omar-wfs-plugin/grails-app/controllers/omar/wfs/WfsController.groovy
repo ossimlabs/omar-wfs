@@ -208,8 +208,8 @@ class WfsController
     }
   }
 
-  private String encodeResponse(ArrayList list){
-    return encodeResponse(list.toString())
+  private String encodeResponse(Object obj){
+    return encodeResponse(obj.toString())
   }
 
   private String encodeResponse(String inputText) {
