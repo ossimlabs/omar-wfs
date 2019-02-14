@@ -119,7 +119,7 @@ class WfsController
           @ApiImplicitParam(name = 'version', value = 'Version to request', allowableValues="1.1.0", defaultValue = '1.1.0', paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'request', value = 'Request type', allowableValues="GetCapabilities", defaultValue = 'GetCapabilities', paramType = 'query', dataType = 'string', required=true),
   ])
-  void getCapabilities()
+  def getCapabilities()
   {
     GetCapabilitiesRequest wfsParams = new GetCapabilitiesRequest()
 
