@@ -197,9 +197,15 @@ class WfsController
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
     }
 
-    String outputBuffer = encodeResponse(results.features)
-
-    render contentType: results.contentType, text: outputBuffer
+    String outputBuffer
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat)
+    if (format == null) {
+      outputBuffer = encodeResponse(results)
+      render outputBuffer
+    } else {
+      outputBuffer = encodeResponse(results.text)
+      render 'contentType': results.contentType, 'text': outputBuffer
+    }
   }
 
   private String encodeResponse(ArrayList list){
