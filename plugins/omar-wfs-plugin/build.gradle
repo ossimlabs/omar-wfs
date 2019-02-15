@@ -1,19 +1,12 @@
 buildscript {
-  ext {
-    grailsVersion = project.grailsVersion
-    baseImage = ""
-  }
   repositories {
     mavenLocal()
-    maven { url = ossimlabsMavenUrl }
+    maven { url ossimMavenProxy }
   }
   dependencies {
     classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.10"
-  }
-  if(System.env.OMAR_COMMON_PROPERTIES)
-  {
-    apply from: System.env.OMAR_COMMON_PROPERTIES
+    classpath 'io.ossim:gradleDefaults:1.4-SNAPSHOT'
   }
 }
 
@@ -34,14 +27,17 @@ apply plugin: "maven-publish"
 
 group "io.ossim.omar.plugins"
 
-ext {
-  grailsVersion = project.grailsVersion
-}
-
 repositories {
   mavenLocal()
-  maven { url = ossimlabsMavenUrl }
+  maven { url ossimMavenProxy }
 }
+
+io.ossim.gradleDefaults.Variables.setAdditionalVariables(project)
+io.ossim.gradleDefaults.Variables.setVersionVariables(project)
+version "${buildVersion}-${buildVersionTag}"
+jarDestination = "${projectDir}/build/libs/${project.name}-${version}.jar"
+io.ossim.gradleDefaults.Publications.addPublication(project, groupName, name, "${buildVersion}-${buildVersionTag}")
+io.ossim.gradleDefaults.Publications.addRepository(project, mavenPublishUrl, mavenRepoUsername, mavenRepoPassword)
 
 dependencyManagement {
    imports {
@@ -98,12 +94,4 @@ dependencies {
 
 assets {
   packagePlugin = true
-}
-
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      from components.java
-    }
-  }
 }
