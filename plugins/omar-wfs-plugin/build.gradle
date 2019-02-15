@@ -25,13 +25,12 @@ apply plugin: "asset-pipeline"
 apply plugin: "java"
 apply plugin: "maven-publish"
 
-group "io.ossim.omar.plugins"
-
 repositories {
   mavenLocal()
   maven { url ossimMavenProxy }
 }
 
+sourceSets.main.output.classesDir = 'build/classes/groovy/main'
 io.ossim.gradleDefaults.Variables.setAdditionalVariables(project)
 io.ossim.gradleDefaults.Variables.setVersionVariables(project)
 version "${buildVersion}-${buildVersionTag}"
