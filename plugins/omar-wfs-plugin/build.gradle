@@ -59,6 +59,7 @@ dependencies {
     compile "io.ossim.omar.plugins:omar-core-plugin:+"
     compile "io.ossim.omar.plugins:omar-hibernate-spatial-plugin:+"
   }
+  compile "io.swagger:swagger-annotations:1.5.15"
   compile "org.grails:grails-core"
   compile "org.grails:grails-web-boot"
   compile "org.grails:grails-logging"
