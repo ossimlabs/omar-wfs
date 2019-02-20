@@ -1,11 +1,11 @@
 pluginManagement {
   repositories {
-    maven { url = ossimlabsMavenUrl }
-//    gradlePluginPortal()
+    maven { url ossimMavenProxy }
   }
 }
 
-include 'omar-wfs-app', 'omar-wfs-plugin'
+include 'omar-wfs-app',
+        'omar-wfs-plugin'
 
 project(':omar-wfs-app').projectDir = "${rootProject.projectDir}/apps/omar-wfs-app" as File
 project(':omar-wfs-plugin').projectDir = "${rootProject.projectDir}/plugins/omar-wfs-plugin" as File

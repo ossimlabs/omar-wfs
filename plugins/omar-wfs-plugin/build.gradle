@@ -1,19 +1,12 @@
 buildscript {
-  ext {
-    grailsVersion = project.grailsVersion
-    baseImage = ""
-  }
   repositories {
     mavenLocal()
-    maven { url = ossimlabsMavenUrl }
+    maven { url ossimMavenProxy }
   }
   dependencies {
     classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.10"
-  }
-  if(System.env.OMAR_COMMON_PROPERTIES)
-  {
-    apply from: System.env.OMAR_COMMON_PROPERTIES
+    classpath 'io.ossim:gradleDefaults:1.4-SNAPSHOT'
   }
 }
 
@@ -32,16 +25,18 @@ apply plugin: "asset-pipeline"
 apply plugin: "java"
 apply plugin: "maven-publish"
 
-group "io.ossim.omar.plugins"
-
-ext {
-  grailsVersion = project.grailsVersion
-}
-
 repositories {
   mavenLocal()
-  maven { url = ossimlabsMavenUrl }
+  maven { url ossimMavenProxy }
 }
+
+sourceSets.main.output.classesDir = 'build/classes/groovy/main'
+io.ossim.gradleDefaults.Variables.setAdditionalVariables(project)
+io.ossim.gradleDefaults.Variables.setVersionVariables(project)
+version "${buildVersion}-${buildVersionTag}"
+jarDestination = "${projectDir}/build/libs/${project.name}-${version}.jar"
+io.ossim.gradleDefaults.Publications.addPublication(project, groupName, name, "${buildVersion}-${buildVersionTag}")
+io.ossim.gradleDefaults.Publications.addRepository(project, mavenPublishUrl, mavenRepoUsername, mavenRepoPassword)
 
 dependencyManagement {
    imports {
@@ -64,6 +59,10 @@ dependencies {
     compile "io.ossim.omar.plugins:omar-core-plugin:+"
     compile "io.ossim.omar.plugins:omar-hibernate-spatial-plugin:+"
   }
+  compile "io.swagger:swagger-annotations:1.5.15"
+  compile "io.swagger:swagger-models:1.5.15"
+  compile "org.grails.plugins:actuator-ui:1.1"
+
   compile "org.grails:grails-core"
   compile "org.grails:grails-web-boot"
   compile "org.grails:grails-logging"
@@ -98,12 +97,4 @@ dependencies {
 
 assets {
   packagePlugin = true
-}
-
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      from components.java
-    }
-  }
 }
