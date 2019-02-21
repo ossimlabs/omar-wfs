@@ -363,7 +363,7 @@ class WebFeatureService
         includeNumberMatched
       )
 
-      def formattedResults = getFeatureForFormat(format, results, wfsParams)
+      def formattedResults = getFeatureForFormat(format, wfsParams, results)
 
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
