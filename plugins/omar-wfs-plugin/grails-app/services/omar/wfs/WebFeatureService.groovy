@@ -462,11 +462,10 @@ class WebFeatureService
   private Location getPointLocationOrNull(String text) {
     // Groovy regex literal and "match" operator
     final Matcher pointLocation = text =~ ~/POINT\(([-0-9.]+)[\s]+([-0-9.]+)/
-    pointLocation.find() // Must be called before accessing groups to find the first match
 
     Location locationOrNull = null
     try {
-      if (pointLocation.matches()) {
+      if (pointLocation.find()) {
         double longitude = pointLocation.group(1).toDouble()
         double latitude = pointLocation.group(2).toDouble()
         locationOrNull = new Location(latitude, longitude)
@@ -550,8 +549,6 @@ class WebFeatureService
      def jsonBuilder = new StreamingJsonBuilder(jsonWriter)
      jsonBuilder(x)
       
-     println "DEBUG 1-- REMOVE ME: Json = $jsonWriter"
-
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
 
