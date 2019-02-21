@@ -346,11 +346,11 @@ class WebFeatureService
       def requestInfoLog
       def httpStatus
       String filter = options?.filter
-      def keyword_countryCode, keyword_missionId, keyword_sensorId
+      String keywordCountryCode, keywordMissionId, keywordSensorId
       Location searchLocation
-      def username = wfsParams.username ?: "(null)"
+      String username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
-      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
+      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched ?: false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
       {
         includeNumberMatched = true
@@ -363,31 +363,7 @@ class WebFeatureService
         includeNumberMatched
       )
 
-      def formattedResults
-
-      switch (format)
-      {
-      case 'GML2':
-      case 'GML3':
-      case 'GML3_2':
-        formattedResults = getFeatureGML(results, wfsParams?.typeName)
-        break
-      case 'JSON':
-        formattedResults = getFeatureJSON(results, wfsParams?.typeName)
-        break
-      case 'CSV':
-        formattedResults = [contentType: 'text/csv', text: results.features]
-        break
-      case 'KML':
-        formattedResults = getFeatureKML(results?.features, wfsParams)
-        break
-      case 'WMS1_1_1':
-      case 'WMS1_3_0':
-        formattedResults = getFeatureWMS(results?.features?.id, format)
-        break
-      default:
-        formattedResults = results
-      }
+      def formattedResults = getFeatureForFormat(format, results, wfsParams)
 
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
@@ -416,9 +392,9 @@ class WebFeatureService
             sensorId.add(compare_regex.group(1))
         }
 
-        keyword_countryCode = !countryCode.isEmpty() ? countryCode : ["-"]
-        keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
-        keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
+        keywordCountryCode = !countryCode.isEmpty() ? countryCode : ["-"]
+        keywordMissionId = !missionId.isEmpty() ? missionId : ["-"]
+        keywordSensorId = !sensorId.isEmpty() ? sensorId : ["-"]
 
         // The point location is only available in the filter when zoomed in the UI.
         // We want to use the point location to exclude large search areas.
@@ -437,9 +413,9 @@ class WebFeatureService
               maxFeatures: maxFeatures,
               numberOfFeatures: results?.numberOfFeatures,
               numberMatched: results?.numberMatched,
-              keyword_countryCode: keyword_countryCode,
-              keyword_missionId: keyword_missionId,
-              keyword_sensorId: keyword_sensorId,
+              keyword_countryCode: keywordCountryCode,
+              keyword_missionId: keywordMissionId,
+              keyword_sensorId: keywordSensorId,
               params: wfsParams.toString(),
               location: searchLocation
       )
@@ -448,6 +424,35 @@ class WebFeatureService
 
       return formattedResults
     }
+
+  // FIXME: Returns dynamic type as some branches return different objects.
+  // FIXME: queryLayerResults is unknown type from the call: geoscriptService.queryLayer
+  private def getFeatureForFormat(String format, def wfsParams, def queryLayerResults) {
+    def formattedResults
+    switch (format) {
+      case 'GML2':
+      case 'GML3':
+      case 'GML3_2':
+        formattedResults = getFeatureGML(queryLayerResults, wfsParams?.typeName)
+        break
+      case 'JSON':
+        formattedResults = getFeatureJSON(queryLayerResults, wfsParams?.typeName)
+        break
+      case 'CSV':
+        formattedResults = [contentType: 'text/csv', text: queryLayerResults.features]
+        break
+      case 'KML':
+        formattedResults = getFeatureKML(queryLayerResults?.features, wfsParams)
+        break
+      case 'WMS1_1_1':
+      case 'WMS1_3_0':
+        formattedResults = getFeatureWMS(queryLayerResults?.features?.id, format)
+        break
+      default:
+        formattedResults = queryLayerResults
+    }
+    return formattedResults
+  }
 
   /**
    * Returns the location of the first point parsed by the regex "POINT\(([-0-9.]+)[\s]+([-0-9.]+)"
