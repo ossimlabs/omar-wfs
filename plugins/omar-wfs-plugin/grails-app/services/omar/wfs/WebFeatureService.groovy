@@ -420,7 +420,7 @@ class WebFeatureService
               location: searchLocation
       )
 
-      log.info requestInfoLog
+      log.info requestInfoLog.toString()
 
       return formattedResults
     }
