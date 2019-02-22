@@ -2,9 +2,11 @@ package omar.wfs
 
 import grails.gorm.transactions.Transactional
 import groovy.json.JsonBuilder
+import groovy.transform.CompileStatic
 import groovy.xml.StreamingMarkupBuilder
 import groovy.json.StreamingJsonBuilder
 import groovy.json.JsonSlurper
+
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -333,22 +335,22 @@ class WebFeatureService
     def getFeature(GetFeatureRequest wfsParams)
     {
       def (prefix, layerName) = wfsParams?.typeName?.split(':')
-      def options = parseOptions(wfsParams)
-      def format = parseOutputFormat(wfsParams?.outputFormat)
+      Map<Object, Object> options = parseOptions(wfsParams)
+      String format = parseOutputFormat(wfsParams?.outputFormat)
 
-      def requestType = "GET"
-      def requestMethod = "GetFeature"
+      String requestType = "GET"
+      String requestMethod = "GetFeature"
       Date startTime = new Date()
       def responseTime
       def responseSize
       def requestInfoLog
       def httpStatus
-      def filter = options?.filter      
-      def keyword_countryCode, keyword_missionId, keyword_sensorId
-      def keyword_latitude, keyword_longitude
-      def username = wfsParams.username ?: "(null)"
+      String filter = options?.filter
+      String keywordCountryCode, keywordMissionId, keywordSensorId
+      Location searchLocation
+      String username = wfsParams.username ?: "(null)"
       def maxFeatures = options?.max
-      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched?:false
+      Boolean includeNumberMatched =  grailsApplication.config?.omar?.wfs?.includeNumberMatched ?: false
       if(wfsParams?.resultType?.toLowerCase() == "hits")
       {
         includeNumberMatched = true
@@ -361,31 +363,7 @@ class WebFeatureService
         includeNumberMatched
       )
 
-      def formattedResults
-
-      switch (format)
-      {
-      case 'GML2':
-      case 'GML3':
-      case 'GML3_2':
-        formattedResults = getFeatureGML(results, wfsParams?.typeName)
-        break
-      case 'JSON':
-        formattedResults = getFeatureJSON(results, wfsParams?.typeName)
-        break
-      case 'CSV':
-        formattedResults = [contentType: 'text/csv', text: results.features]
-        break
-      case 'KML':
-        formattedResults = getFeatureKML(results?.features, wfsParams)
-        break
-      case 'WMS1_1_1':
-      case 'WMS1_3_0':
-        formattedResults = getFeatureWMS(results?.features?.id, format)
-        break
-      default:
-        formattedResults = results
-      }
+      def formattedResults = getFeatureForFormat(format, wfsParams, results)
 
       Date endTime = new Date()
       responseTime = Math.abs(startTime.getTime() - endTime.getTime())
@@ -393,53 +371,120 @@ class WebFeatureService
       httpStatus = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
         
-      if(filter){
-            ArrayList<String> countryCode = new ArrayList<String>()
-            ArrayList<String> missionId = new ArrayList<String>()
-            ArrayList<String> sensorId = new ArrayList<String>()
+      if(filter) {
+        List<String> countryCode = new ArrayList<String>()
+        List<String> missionId = new ArrayList<String>()
+        List<String> sensorId = new ArrayList<String>()
 
-            Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
-            Matcher compare_regex
+        Pattern regex = Pattern.compile("'%(.*?)%'")   // Regex for capturing filter criteria
+        Matcher compare_regex
 
-            filter?.split(' AND ').each{ s->
-                compare_regex = regex.matcher(s)
-            
-                while(s.contains('country_code') && compare_regex.find()) 
-                  countryCode.add(compare_regex.group(1))
+        filter.split(' AND ').each { s ->
+          compare_regex = regex.matcher(s)
 
-                while(s.contains('mission_id') && compare_regex.find())
-                  missionId.add(compare_regex.group(1))
+          while (s.contains('country_code') && compare_regex.find())
+            countryCode.add(compare_regex.group(1))
 
-                while(s.contains('sensor_id') && compare_regex.find())
-                  sensorId.add(compare_regex.group(1))
-            }
+          while (s.contains('mission_id') && compare_regex.find())
+            missionId.add(compare_regex.group(1))
 
-            keyword_countryCode = !countryCode.isEmpty() ? countryCode : ["-"]
-            keyword_missionId = !missionId.isEmpty() ? missionId : ["-"]
-            keyword_sensorId = !sensorId.isEmpty() ? sensorId : ["-"]
-
-          try {
-            Pattern pattern = Pattern.compile("POINT\\(([-0-9.]*)[\\s]([-0-9.]*)")
-            Matcher matcher = pattern.matcher(filter)
-            matcher.find()
-            keyword_latitude = matcher.group(2)
-            keyword_longitude = matcher.group(1)
-          } catch (IllegalStateException e) {
-            // Ignore as no matches for group 1 and 2 were found.
-          }
+          while (s.contains('sensor_id') && compare_regex.find())
+            sensorId.add(compare_regex.group(1))
         }
 
-      requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
-              requestMethod: requestMethod, httpStatus: httpStatus, endTime: DateUtil.formatUTC(endTime),
-              responseTime: responseTime, responseSize: responseSize, filter: filter, maxFeatures: maxFeatures,
-              numberOfFeatures: results?.numberOfFeatures, numberMatched: results?.numberMatched, keyword_countryCode: keyword_countryCode,
-              keyword_missionId: keyword_missionId, keyword_sensorId: keyword_sensorId, params: wfsParams.toString(), keyword_latitude: keyword_latitude, keyword_longitude: keyword_longitude)
+        keywordCountryCode = !countryCode.isEmpty() ? countryCode : ["-"]
+        keywordMissionId = !missionId.isEmpty() ? missionId : ["-"]
+        keywordSensorId = !sensorId.isEmpty() ? sensorId : ["-"]
+
+        // The point location is only available in the filter when zoomed in the UI.
+        // We want to use the point location to exclude large search areas.
+        searchLocation = getPointLocationOrNull(filter)
+      }
+
+      requestInfoLog = new JsonBuilder(
+              timestamp: DateUtil.formatUTC(startTime),
+              username: username, requestType: requestType,
+              requestMethod: requestMethod,
+              httpStatus: httpStatus,
+              endTime: DateUtil.formatUTC(endTime),
+              responseTime: responseTime,
+              responseSize: responseSize,
+              filter: filter,
+              maxFeatures: maxFeatures,
+              numberOfFeatures: results?.numberOfFeatures,
+              numberMatched: results?.numberMatched,
+              keyword_countryCode: keywordCountryCode,
+              keyword_missionId: keywordMissionId,
+              keyword_sensorId: keywordSensorId,
+              params: wfsParams.toString(),
+              location: searchLocation
+      )
 
       log.info requestInfoLog.toString()
 
-      if (format == 'JSON') println "DEBUG 2-- REMOVE ME: $formattedResults"
-      formattedResults
+      return formattedResults
     }
+
+  // FIXME: Returns dynamic type as some branches return different objects.
+  // FIXME: queryLayerResults is unknown type from the call: geoscriptService.queryLayer
+  private def getFeatureForFormat(String format, def wfsParams, def queryLayerResults) {
+    def formattedResults
+    switch (format) {
+      case 'GML2':
+      case 'GML3':
+      case 'GML3_2':
+        formattedResults = getFeatureGML(queryLayerResults, wfsParams?.typeName)
+        break
+      case 'JSON':
+        formattedResults = getFeatureJSON(queryLayerResults, wfsParams?.typeName)
+        break
+      case 'CSV':
+        formattedResults = [contentType: 'text/csv', text: queryLayerResults.features]
+        break
+      case 'KML':
+        formattedResults = getFeatureKML(queryLayerResults?.features, wfsParams)
+        break
+      case 'WMS1_1_1':
+      case 'WMS1_3_0':
+        formattedResults = getFeatureWMS(queryLayerResults?.features?.id, format)
+        break
+      default:
+        formattedResults = queryLayerResults
+    }
+    return formattedResults
+  }
+
+  /**
+   * Returns the location of the first point parsed by the regex "POINT\(([-0-9.]+)[\s]+([-0-9.]+)"
+   * or null if a not found.
+   */
+  @CompileStatic
+  private Location getPointLocationOrNull(String text) {
+    // Groovy regex literal and "match" operator
+    final Matcher pointLocation = text =~ ~/POINT\(([-0-9.]+)[\s]+([-0-9.]+)/
+
+    Location locationOrNull = null
+    try {
+      if (pointLocation.find()) {
+        double longitude = pointLocation.group(1).toDouble()
+        double latitude = pointLocation.group(2).toDouble()
+        locationOrNull = new Location(latitude, longitude)
+      }
+    } catch (NumberFormatException e) {
+      // Ignore exception because we handle it by returning null
+    }
+    return locationOrNull
+  }
+
+  @CompileStatic
+  private class Location {
+    final double lat
+    final double lon
+    Location(double lat, double lon) {
+      this.lat = lat
+      this.lon = lon
+    }
+  }
 
   def getFeatureGML(def results, def typeName, def version='1.1.0')
   {
@@ -504,8 +549,6 @@ class WebFeatureService
      def jsonBuilder = new StreamingJsonBuilder(jsonWriter)
      jsonBuilder(x)
       
-     println "DEBUG 1-- REMOVE ME: Json = $jsonWriter"
-
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
 
