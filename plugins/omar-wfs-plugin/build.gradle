@@ -97,6 +97,8 @@ dependencies {
   testRuntime "net.sourceforge.htmlunit:htmlunit:2.29"
 }
 
+bootRepackage.enabled = false
+
 assets {
   packagePlugin = true
 }
