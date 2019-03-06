@@ -92,6 +92,10 @@ class WfsController
         break
       }
 
+      if ( !cmd.outputFormat ) {        
+        cmd.outputFormat = 'GML3'
+      } 
+      
       results = webFeatureService.getFeature( cmd )
       break
     default:
@@ -99,7 +103,7 @@ class WfsController
     }
 
     String outputBuffer
-    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat)
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
     if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
       outputBuffer = encodeResponse(results)
       render outputBuffer
@@ -175,6 +179,7 @@ class WfsController
           @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'integer', required=false),
   ])
   def getFeature(/*GetFeatureRequest wfsParams*/) {
+    println 'FOO'
     // prevent the whole database from being returned
     if ( params.requestType != "hits" ) {
         if ( !params.containsKey("maxFeatures") || !params.maxFeatures ) {
@@ -186,6 +191,11 @@ class WfsController
 
     BindUtil.fixParamNames( GetFeatureRequest, params )
     bindData( wfsParams, params )
+
+    if ( !cmd.outputFormat ) {        
+      cmd.outputFormat = 'GML3'
+    } 
+
     wfsParams.username = webFeatureService.extractUsernameFromRequest(request)
 
     def results = webFeatureService.getFeature( wfsParams )
@@ -198,7 +208,7 @@ class WfsController
     }
 
     String outputBuffer
-    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat)
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
     if (format == null) {
       outputBuffer = encodeResponse(results)
       render outputBuffer
