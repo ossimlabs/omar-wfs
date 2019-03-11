@@ -192,10 +192,6 @@ class WfsController
     BindUtil.fixParamNames( GetFeatureRequest, params )
     bindData( wfsParams, params )
 
-    if ( !cmd.outputFormat ) {        
-      cmd.outputFormat = 'GML3'
-    } 
-
     wfsParams.username = webFeatureService.extractUsernameFromRequest(request)
 
     def results = webFeatureService.getFeature( wfsParams )
