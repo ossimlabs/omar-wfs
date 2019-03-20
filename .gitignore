@@ -18,4 +18,5 @@ apps/omar-app/.asscache
 *.db
 .asscache
 *.log
+docker/*.jar
 

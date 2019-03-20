@@ -102,6 +102,12 @@ class WfsController
       throw new Exception('UNKNOWN REQUEST')
     }
 
+    if(results.filename) {
+      response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
+    } else {
+      response.setHeader("Content-Disposition", "attachment;filename=omar-wfs-getFeature-export.kml")
+    }
+
     String outputBuffer
     String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
     if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
@@ -179,7 +185,6 @@ class WfsController
           @ApiImplicitParam(name = 'startIndex', value = 'Starting offset', defaultValue="", paramType = 'query', dataType = 'integer', required=false),
   ])
   def getFeature(/*GetFeatureRequest wfsParams*/) {
-    println 'FOO'
     // prevent the whole database from being returned
     if ( params.requestType != "hits" ) {
         if ( !params.containsKey("maxFeatures") || !params.maxFeatures ) {
@@ -201,6 +206,8 @@ class WfsController
 
     if(results.filename) {
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
+    } else {
+      response.setHeader("Content-Disposition", "attachment;filename=omar-wfs-getFeature-export.kml")
     }
 
     String outputBuffer
