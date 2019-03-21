@@ -869,7 +869,6 @@ class WebFeatureService
       def kmlBuilder = new StreamingMarkupBuilder()
       kmlWriter << kmlBuilder.bind( kmlNode )
 
-
       return [contentType: 'application/vnd.google-earth.kml+xml;', text: kmlWriter.buffer]
   }
 
