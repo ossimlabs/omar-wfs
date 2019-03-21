@@ -20,6 +20,7 @@ class WfsController
   static int DEFAULT_MAX_FEATURES = 1000
 
   static String defaultAction = "index"
+  static String defaultFilename = "omar-wfs-getFeature-export.kml"
 
   def index()
   {
@@ -105,7 +106,7 @@ class WfsController
     if(results.filename) {
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
     } else {
-      response.setHeader("Content-Disposition", "attachment;filename=omar-wfs-getFeature-export.kml")
+      response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
     }
 
     String outputBuffer
@@ -207,7 +208,7 @@ class WfsController
     if(results.filename) {
       response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
     } else {
-      response.setHeader("Content-Disposition", "attachment;filename=omar-wfs-getFeature-export.kml")
+      response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
     }
 
     String outputBuffer
