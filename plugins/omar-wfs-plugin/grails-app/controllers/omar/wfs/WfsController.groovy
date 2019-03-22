@@ -103,14 +103,17 @@ class WfsController
       throw new Exception('UNKNOWN REQUEST')
     }
 
-    if(results.filename) {
-      response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
-    } else {
-      response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
+
+    if (operation?.toUpperCase()?.equals("GETFEATURE") && format == 'KML'){
+      if(results.filename) {
+        response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
+      } else {
+        response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
+      }
     }
 
     String outputBuffer
-    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
     if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
       outputBuffer = encodeResponse(results)
       render outputBuffer
@@ -205,14 +208,17 @@ class WfsController
       response.status = results.status
     }
 
-    if(results.filename) {
-      response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
-    } else {
-      response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
+    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
+
+    if (format == 'KML'){
+      if(results.filename) {
+        response.setHeader("Content-Disposition", "attachment;filename=${results.filename}")
+      } else {
+        response.setHeader("Content-Disposition", "attachment;filename=${defaultFilename}")
+      }
     }
 
     String outputBuffer
-    String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
     if (format == null) {
       outputBuffer = encodeResponse(results)
       render outputBuffer
