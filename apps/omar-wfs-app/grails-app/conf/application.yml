@@ -16,14 +16,6 @@ omar:
         # The url endpoint for the omar-geoscript service
         url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
 
-      userInfo:
-        # Configurable request header name parameter
-        requestHeaderUserName: username
-
-        # Configurable default name for the request header user (Default: Anonymous).
-        # Used if no name is found in PKI cert.
-        requestHeaderUserNameDefault: anonymous
-
 # Set the context path for the application
 server:
   contextPath: /omar-wfs
@@ -32,6 +24,14 @@ swagger:
   schemes:
     - HTTPS
     - HTTP
+
+userInfo:
+    # Configurable request header name parameter
+    requestHeaderUserName: username
+
+    # Configurable default name for the request header user (Default: Anonymous).
+    # Used if no name is found in PKI cert.
+    requestHeaderUserNameDefault: Anonymous
 
 ---
 grails:

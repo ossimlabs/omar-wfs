@@ -94,7 +94,7 @@ class WebFeatureService
     ]
     String extractUsernameFromRequest(def request)
     {
-      def userInfo = grailsApplication.config.omar?.wfs?.app?.userInfo
+      def userInfo = grailsApplication.config.userInfo
       String requestHeaderName = request.getHeader(userInfo?.requestHeaderUserName)
       String userInfoName = requestHeaderName ?: userInfo.requestHeaderUserNameDefault 
       userInfoName
@@ -283,7 +283,7 @@ class WebFeatureService
       Date startTime = new Date()
       def responseTime
       def requestInfoLog
-      def username = wfsParams.username ?: "(null)"      
+      def username = wfsParams.username ?: "(null)"
 
       def x = {
         mkp.xmlDeclaration()
@@ -370,7 +370,7 @@ class WebFeatureService
 
       httpStatus = results != null ? 200 : 400
       responseSize = formattedResults.toString().bytes.length
-        
+
       if(filter) {
         List<String> countryCode = new ArrayList<String>()
         List<String> missionId = new ArrayList<String>()
@@ -548,7 +548,7 @@ class WebFeatureService
      def jsonWriter = new StringWriter()
      def jsonBuilder = new StreamingJsonBuilder(jsonWriter)
      jsonBuilder(x)
-      
+
     [contentType: 'application/json', text: jsonWriter.toString()]
   }
 
