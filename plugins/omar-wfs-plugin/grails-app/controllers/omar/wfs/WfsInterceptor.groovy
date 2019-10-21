@@ -15,18 +15,18 @@ class WfsInterceptor
   {
 //    println actionName
 
-    switch ( actionName?.toUpperCase() )
-    {
-    case 'GETCAPABILITIES':
-      BindUtil.fixParamNames( GetFeatureRequest, params )
-      break
-    case 'DESCRIBEFEATURETYPE':
-      BindUtil.fixParamNames( DescribeFeatureTypeRequest, params )
-      break
-    case 'GETFEATURE':
-      BindUtil.fixParamNames( GetFeatureRequest, params )
-      break
-    }
+    // switch ( actionName?.toUpperCase() )
+    // {
+    // case 'GETCAPABILITIES':
+    //   BindUtil.fixParamNames( GetFeatureRequest, params )
+    //   break
+    // case 'DESCRIBEFEATURETYPE':
+    //   BindUtil.fixParamNames( DescribeFeatureTypeRequest, params )
+    //   break
+    // case 'GETFEATURE':
+    //   BindUtil.fixParamNames( GetFeatureRequest, params )
+    //   break
+    // }
 
     //println params
 

@@ -1,4 +1,4 @@
-package omar.wfs
+package omar.wfs.app
 
 class BootStrap {
 
