@@ -1,50 +1,8 @@
 ---
-logging:
-  config: classpath:logback.groovy
-
-omar:
-  wfs:
-    # we have a variable that will allow us to override the result
-    # to include numberMatch.  By default this is off.  I do not see
-    # numberMatch as part of the spec only the numberOfFeatures that is in the result
-    # set.  We will default this to false because this is an expensive operation
-    # when enabled for it will do a count query and a result query when
-    # the return type is of type "results" instead of "hits".
-    includeNumberMatched: false
-    app:
-      geoscript:
-        # The url endpoint for the omar-geoscript service
-        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi
-
-# Set the context path for the application
-server:
-  contextPath: /omar-wfs
-
-swagger:
-  schemes:
-    - HTTPS
-    - HTTP
-
-userInfo:
-    # Configurable request header name parameter
-    requestHeaderUserName: username
-
-    # Configurable default name for the request header user (Default: Anonymous).
-    # Used if no name is found in PKI cert.
-    requestHeaderUserNameDefault: Anonymous
-
----
 grails:
-    cors:
-      enabled: true
-    resources:
-        pattern: '/**'
     profile: web
     codegen:
-        defaultPackage: omar.wfs
-    spring:
-        transactionManagement:
-            proxies: false
+        defaultPackage: omar.wfs.app
     gorm:
         reactor:
             # Whether to translate GORM events into Reactor events
@@ -56,31 +14,26 @@ info:
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
 spring:
+    jmx:
+        unique-names: true
     main:
         banner-mode: "off"
     groovy:
         template:
             check-template-location: false
+    devtools:
+        restart:
+            additional-exclude:
+                - '*.gsp'
+                - '**/*.gsp'
+                - '*.gson'
+                - '**/*.gson'
+                - 'logback.groovy'
+                - '*.properties'
+management:
+    endpoints:
+        enabled-by-default: false
 
-# Spring Actuator Endpoints are Disabled by Default
-endpoints:
-  enabled: true
-  health:
-    enabled: true
-  actuator:
-    sensitive: false
-  beans:
-    sensitive: false
-  metrics:
-    sensitive: false
-  configprops:
-    sensitive: false
-  trace:
-    sensitive: false
-  mappings:
-    sensitive: false
-  env:
-    sensitive: false
 ---
 grails:
     mime:
@@ -130,12 +83,13 @@ grails:
             htmlcodec: xml
             codecs:
                 expression: html
-                scriptlets: html
+                scriptlet: html
                 taglib: none
                 staticparts: none
-endpoints:
-    jmx:
-        unique-names: true
+management:
+    endpoints:
+        jmx:
+            unique-names: true
 
 ---
 hibernate:
@@ -161,7 +115,7 @@ environments:
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     production:
         dataSource:
-            dbCreate: update
+            dbCreate: none
             url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             properties:
                 jmxEnabled: true
@@ -181,3 +135,62 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+---
+server:
+    servlet:
+        context-path: /omar-wfs
+    contextPath: ${server.servlet.context-path}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    env:
+      enabled: true
+      sensitive: fasle
+    health:
+      enabled: true
+    
+grails:
+    cors:
+        enabled: true
+    resources:
+        pattern: '/**'
+    servlet:
+        version: 3.0
+---
+spring:
+  application:
+    name: omar-wfs
+  cloud:
+    discovery:
+      enabled: ${SPRING_CLOUD_DISCOVERY_ENABLED:false}
+    service-registry:
+      auto-registration:
+        enabled: ${spring.cloud.discovery.enabled}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://omar-eureka-server:8761/omar-eureka-server/eureka}
+  instance:
+    preferIpAddress: true
+---
+logging:
+  config: classpath:logback.groovy
+
+omar:
+  wfs:
+    # we have a variable that will allow us to override the result
+    # to include numberMatch.  By default this is off.  I do not see
+    # numberMatch as part of the spec only the numberOfFeatures that is in the result
+    # set.  We will default this to false because this is an expensive operation
+    # when enabled for it will do a count query and a result query when
+    # the return type is of type "results" instead of "hits".
+    includeNumberMatched: false
+    app:
+      geoscript:
+        # The url endpoint for the omar-geoscript service
+        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi    

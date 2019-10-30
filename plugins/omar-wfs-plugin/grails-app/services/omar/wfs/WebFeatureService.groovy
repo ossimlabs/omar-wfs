@@ -12,7 +12,7 @@ import java.util.regex.Matcher
 
 import omar.core.DateUtil
 
-@Transactional(readOnly=true)
+//@Transactional(readOnly=true)
 class WebFeatureService
 {
     def grailsLinkGenerator
@@ -245,7 +245,7 @@ class WebFeatureService
                 ogc.SimpleArithmetic()
                 ogc.Functions {
                   ogc.FunctionNames {
-                    model?.functions.each {function ->
+                    model?.functionNames.each {function ->
                       ogc.FunctionName( nArgs: function.argCount, function.name)
                     }
                   }
@@ -274,7 +274,7 @@ class WebFeatureService
     }
 
     def describeFeatureType(DescribeFeatureTypeRequest wfsParams)
-    {
+    {      
       def schema = geoscriptService.getSchemaInfoByTypeName(wfsParams.typeName)
       def schemaLocation = grailsLinkGenerator.serverBaseURL
 

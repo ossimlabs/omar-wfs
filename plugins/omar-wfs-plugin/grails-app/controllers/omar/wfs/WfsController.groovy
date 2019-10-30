@@ -78,6 +78,7 @@ class WfsController
       }
 
       results = webFeatureService.describeFeatureType( cmd )
+
       break
     case "GETFEATURE":
       def cmd = new GetFeatureRequest()
@@ -121,7 +122,6 @@ class WfsController
       outputBuffer = encodeResponse(results.text)
       render 'contentType': results.contentType, 'text': outputBuffer
     }
-
   }
 
   @ApiOperation(value = "Get the capabilities of the server",
