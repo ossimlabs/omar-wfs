@@ -225,11 +225,9 @@ class WfsController
       outputBuffer = encodeResponse(results)
       render outputBuffer
     } else {
-      outputBuffer = encodeResponse(results.text)
+      encodeResponse(results.text)
       response.setHeader 'Content-Type', results.contentType	    
-	def zipStream = new GZIPOutputStream( response.outputStream )  
-	zipStream.write( outputBuffer.getBytes() )  
-	zipStream.close()  
+	
 	response.outputStream
 	   
       //response.outputStream.flush()	    
@@ -247,8 +245,12 @@ class WfsController
     String fooHeader = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('cheese')
 
     if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM) || fooHeader?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){ println "I am using GZIP!"
+															   
+	def zipStream = new GZIPOutputStream( response.outputStream )  
+	zipStream.write( inputText.getBytes() )  
+	zipStream.close()  
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
-     outputText = inputText
+
       response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
       outputText = inputText
