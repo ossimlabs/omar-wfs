@@ -227,7 +227,7 @@ class WfsController
     } else {
       outputBuffer = encodeResponse(results.text)
       response.setHeader 'Content-Type', results.contentType
-      response.setHeader 'Content-Length', outputBuffer.size()
+      response.setHeader 'Content-Length', "${ outputBuffer.size() }"
       response.outputStream << outputBuffer
       response.outputStream.flush()	    
       //render 'contentType': results.contentType, 'text': outputBuffer
