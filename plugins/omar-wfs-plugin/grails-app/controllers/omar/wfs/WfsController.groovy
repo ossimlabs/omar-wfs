@@ -226,7 +226,10 @@ class WfsController
       render outputBuffer
     } else {
       outputBuffer = encodeResponse(results.text)
-      render 'contentType': results.contentType, 'text': outputBuffer
+      response.setHeader 'Content-Type', results.contentType
+      response.outputStream << outputBuffer
+      response.outputStream.flush()	    
+      //render 'contentType': results.contentType, 'text': outputBuffer
     }
   }
 
@@ -247,7 +250,7 @@ class WfsController
 	zipStream.close()
 	def zippedBytes = targetStream.toByteArray()
 	targetStream.close()
-	outputText = zippedBytes.encodeBase64()
+	outputText = zippedBytes//.encodeBase64()
 println outputText
       response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
