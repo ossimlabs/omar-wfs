@@ -1,5 +1,7 @@
 package omar.wfs
 
+import java.util.zip.GZIPOutputStream
+
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -238,7 +240,14 @@ class WfsController
     String fooHeader = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('cheese')
 
     if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM) || fooHeader?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){ println "I am using GZIP!"
-      outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
+      //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
+     def targetStream = new ByteArrayOutputStream()
+	def zipStream = new GZIPOutputStream(targetStream)
+	zipStream.write(inputText.getBytes('UTF-8'))
+	zipStream.close()
+	def zippedBytes = targetStream.toByteArray()
+	targetStream.close()
+	outputText = zippedBytes.encodeBase64()
 println outputText
       response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
