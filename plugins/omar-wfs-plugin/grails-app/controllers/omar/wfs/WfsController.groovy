@@ -226,10 +226,13 @@ class WfsController
       render outputBuffer
     } else {
       outputBuffer = encodeResponse(results.text)
-      response.setHeader 'Content-Type', results.contentType
-      response.setHeader 'Content-Length', "${ outputBuffer.size() }"
-      response.outputStream << outputBuffer
-      response.outputStream.flush()	    
+      response.setHeader 'Content-Type', results.contentType	    
+	def zipStream = new GZIPOutputStream( response.outputStream )  
+	zipStream.write( outputBuffer.getBytes() )  
+	zipStream.close()  
+	response.outputStream
+	   
+      //response.outputStream.flush()	    
       //render 'contentType': results.contentType, 'text': outputBuffer
     }
   }
@@ -245,14 +248,7 @@ class WfsController
 
     if (acceptEncoding?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM) || fooHeader?.equals(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){ println "I am using GZIP!"
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
-     def targetStream = new ByteArrayOutputStream()
-	def zipStream = new GZIPOutputStream(targetStream)
-	zipStream.write(inputText.getBytes('UTF-8'))
-	zipStream.close()
-	def zippedBytes = targetStream.toByteArray()
-	targetStream.close()
-	outputText = zippedBytes//.encodeBase64()
-println outputText
+     outputText = inputText
       response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
       outputText = inputText
