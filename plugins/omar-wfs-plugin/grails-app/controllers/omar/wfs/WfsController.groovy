@@ -247,7 +247,7 @@ class WfsController
 	zipStream.close()
 	def zippedBytes = targetStream.toByteArray()
 	targetStream.close()
-	outputText = zippedBytes
+	outputText = zippedBytes.encodeBase64()
 println outputText
       response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
