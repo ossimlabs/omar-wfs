@@ -238,7 +238,7 @@ class WfsController
 
     if (acceptEncoding?.contains(OmarWebUtils.GZIP_ENCODE_HEADER_PARAM)){ println "I am using GZIP!"
       outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
-      response.setHeader 'Content-Encoding', acceptEncoding
+      response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM
     } else {
       outputText = inputText
     }
