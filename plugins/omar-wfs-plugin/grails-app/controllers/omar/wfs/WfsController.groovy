@@ -1,6 +1,5 @@
 package omar.wfs
 
-import java.util.zip.GZIPOutputStream
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
@@ -243,12 +242,13 @@ class WfsController
 
     if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { println "I am using GZIP!"
         response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM												   
-	def targetStream = new ByteArrayOutputStream()
-	def zipStream = new GZIPOutputStream( targetStream )  
-	zipStream.write( inputText.getBytes() )  
-	zipStream.close()  
+	//def targetStream = new ByteArrayOutputStream()
+	//def zipStream = new GZIPOutputStream( targetStream )  
+	//zipStream.write( inputText.getBytes() )  
+	//zipStream.close()  
+	//targetStream.writeTo( response.outputStream )
+	def targetStream = OmarWebUtils.gzippify( inputText )
 	targetStream.writeTo( response.outputStream )
-
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
 
 	return null
