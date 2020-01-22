@@ -247,8 +247,8 @@ class WfsController
 	def zipStream = new GZIPOutputStream( targetStream )  
 	zipStream.write( inputText.getBytes() )  
 	zipStream.close()  
-	println response.outputStream.class
-       return targetStream
+	response.outputStream = targetStream 
+		targetStream.flush()							    		
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
 
 	return null
