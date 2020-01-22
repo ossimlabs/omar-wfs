@@ -244,11 +244,11 @@ class WfsController
     if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { println "I am using GZIP!"
         response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM												   
 	def targetStream = new ByteArrayOutputStream()
-	def zipStream = new GZIPOutputStream( response.outputStream /*targetStream*/ )  
+	def zipStream = new GZIPOutputStream( targetStream )  
 	zipStream.write( inputText.getBytes() )  
 	zipStream.close()  
 	println response.outputStream.class
-       //response.outputStream << targetStream
+       response.outputStream = targetStream
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
 
 	return null
