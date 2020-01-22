@@ -249,7 +249,8 @@ class WfsController
 	//targetStream.writeTo( response.outputStream )
 					println inputText									    
 	def targetStream = OmarWebUtils.gzippify( inputText )
-	    println targetStream.class
+	    println targetStream
+    	    println targetStream.class
 				    		
 	targetStream.writeTo( response.outputStream )
       //outputText = OmarWebUtils.gzippify(inputText, StandardCharsets.UTF_8.name())
