@@ -240,7 +240,7 @@ class WfsController
   }
 
   private String encodeResponse(String inputText) {
-    String outputText
+    def outputText
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
     if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
