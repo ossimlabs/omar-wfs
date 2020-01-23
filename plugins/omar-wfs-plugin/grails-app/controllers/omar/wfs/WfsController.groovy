@@ -115,14 +115,14 @@ class WfsController
       }
     }
 
-    String outputBuffer
-    if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
-      outputBuffer = encodeResponse(results)
-	    println results
+    response.setHeader 'Content-Type', results.contentType
+    def outputBuffer = encodeResponse( results.text )
+    if ( outputBuffer instanceof ByteArrayOutputStream ) {
+      outputBuffer.writeTo( response.outputStream )
+      response.outputStream.flush()
+    }
+    else { 
       render outputBuffer
-    } else {
-      outputBuffer = encodeResponse(results.text)
-      render 'contentType': results.contentType, 'text': outputBuffer
     }
   }
 
