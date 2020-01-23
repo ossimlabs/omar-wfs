@@ -241,9 +241,10 @@ class WfsController
     String outputText
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
-    if ( acceptEncoding?.contains( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
+    if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
         response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM									    
 	def targetStream = OmarWebUtils.gzippify( inputText, StandardCharsets.UTF_8.name() )
+	  println targetStream.class
 	targetStream.writeTo( response.outputStream )
 
 	return null
