@@ -224,7 +224,7 @@ class WfsController
       response.setHeader 'Content-Type', results.contentType
     }
     String outputBuffer = encodeResponse( results.text )
-    if ( outputBuffer instaceof ByteArrayOutputStream ) {
+    if ( outputBuffer instanceof ByteArrayOutputStream ) {
       outbutBuffer.writeTo( response.outputStream )
       response.outputStream.flush()
     }
