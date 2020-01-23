@@ -223,8 +223,10 @@ class WfsController
     if ( format != null ) {
       response.setHeader 'Content-Type', results.contentType
     }
-    String outputBuffer = encodeResponse( results.text )
-    if ( outputBuffer instanceof ByteArrayOutputStream ) {
+    def outputBuffer = encodeResponse( results.text )
+	  println outputBuffer
+	  println outputBuffer.class
+    if ( outputBuffer instanceof ByteArrayOutputStream ) { println "Using BAOS"
       outbutBuffer.writeTo( response.outputStream )
       response.outputStream.flush()
     }
