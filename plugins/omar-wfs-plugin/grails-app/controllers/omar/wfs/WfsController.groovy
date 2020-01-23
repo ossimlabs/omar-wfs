@@ -223,13 +223,13 @@ class WfsController
     if ( format != null ) {
       response.setHeader 'Content-Type', results.contentType
     }
-    String outputBuffer = encodeResponse( results )
-    if ( outputBuffer ) {
-      render outputBuffer
-    }
-    else { println "I am flushing."
+    String outputBuffer = encodeResponse( results.text )
+    if ( outputBuffer instaceof ByteArrayOutputStream ) {
+      outbutBuffer.writeTo( response.outputStream )
       response.outputStream.flush()
-      return
+    }
+    else { 
+      render outputBuffer
     }
   }
 
@@ -243,13 +243,10 @@ class WfsController
 
     if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
         response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM									    
-	def targetStream = OmarWebUtils.gzippify( inputText, StandardCharsets.UTF_8.name() )
-	  println targetStream.class
-	targetStream.writeTo( response.outputStream )
-
-	return null
+	outputText = OmarWebUtils.gzippify( inputText, StandardCharsets.UTF_8.name() )
     } else {
-      return inputText
+        outputText = inputText
     }
+	return outputText
   }
 }
