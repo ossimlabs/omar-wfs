@@ -239,7 +239,7 @@ class WfsController
     return encodeResponse(obj.toString())
   }
 
-  private String encodeResponse(String inputText) {
+  private encodeResponse(String inputText) {
     def outputText
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
