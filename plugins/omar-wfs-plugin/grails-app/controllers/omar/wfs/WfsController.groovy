@@ -118,6 +118,7 @@ class WfsController
     String outputBuffer
     if (operation?.toUpperCase()?.equals("GETFEATURE") && format == null) {
       outputBuffer = encodeResponse(results)
+	    println results
       render outputBuffer
     } else {
       outputBuffer = encodeResponse(results.text)
@@ -144,9 +145,15 @@ class WfsController
 
     def results = webFeatureService.getCapabilities( wfsParams )
 
-    String outputBuffer = encodeResponse(results.text)
-
-    render contentType: results.contentType, text: outputBuffer
+    response.setHeader 'Content-Type', results.contentType
+    def outputBuffer = encodeResponse( results.text )
+    if ( outputBuffer instanceof ByteArrayOutputStream ) {
+      outputBuffer.writeTo( response.outputStream )
+      response.outputStream.flush()
+    }
+    else { 
+      render outputBuffer
+    }
   }
 
   @ApiOperation(value = "Describe the feature from the server",
@@ -168,9 +175,15 @@ class WfsController
 
     def results = webFeatureService.describeFeatureType( wfsParams )
 
-    String outputBuffer = encodeResponse(results.text)
-
-    render contentType: results.contentType, text: outputBuffer
+    response.setHeader 'Content-Type', results.contentType
+    def outputBuffer = encodeResponse( results.text )
+    if ( outputBuffer instanceof ByteArrayOutputStream ) {
+      outputBuffer.writeTo( response.outputStream )
+      response.outputStream.flush()
+    }
+    else { 
+      render outputBuffer
+    }
   }
 
   @ApiOperation(value = "Get features from the server",
@@ -224,7 +237,6 @@ class WfsController
       response.setHeader 'Content-Type', results.contentType
     }
     def outputBuffer = encodeResponse( results.text )
-	  println outputBuffer.class
     if ( outputBuffer instanceof ByteArrayOutputStream ) {
       outputBuffer.writeTo( response.outputStream )
       response.outputStream.flush()
@@ -242,7 +254,7 @@ class WfsController
     def outputText
     String acceptEncoding = WebUtils.retrieveGrailsWebRequest().getCurrentRequest().getHeader('accept-encoding')
 
-    if ( acceptEncoding?.equals( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
+    if ( acceptEncoding?.contains( OmarWebUtils.GZIP_ENCODE_HEADER_PARAM ) ) { 
         response.setHeader 'Content-Encoding', OmarWebUtils.GZIP_ENCODE_HEADER_PARAM									    
 	outputText = OmarWebUtils.gzippify( inputText, StandardCharsets.UTF_8.name() )
     } else {
