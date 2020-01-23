@@ -227,8 +227,9 @@ class WfsController
     if ( outputBuffer ) {
       render outputBuffer
     }
-    else {
+    else { println "I am flushing."
       response.outputStream.flush()
+      return
     }
   }
 
