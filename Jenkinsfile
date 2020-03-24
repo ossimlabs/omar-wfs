@@ -68,17 +68,19 @@ node("${BUILD_NODE}"){
         }
     }
     
-    try {
-        stage('SonarQube analysis') {
+    stage ('Sonarqube')
+    {
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
             withSonarQubeEnv('sonarqube') {
-                sh """
-                    pushd ./gradlew --info sonarqube
-                    popd
-                """
+                sh "${scannerHome}/bin/sonar-scanner"
             }
-        }  
-    } catch(e) {
-        echo e.toString()
+            timeout(time: 10, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
     }
 
     try {
