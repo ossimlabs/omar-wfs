@@ -67,6 +67,19 @@ node("${BUILD_NODE}"){
             """
         }
     }
+    
+    try {
+        stage('SonarQube analysis') {
+            withSonarQubeEnv('sonarqube') {
+                sh """
+                    pushd ./gradlew --info sonarqube
+                    popd
+                """
+            }
+        }  
+    } catch(e) {
+        echo e.toString()
+    }
 
     try {
         stage ("OpenShift Tag Image")
