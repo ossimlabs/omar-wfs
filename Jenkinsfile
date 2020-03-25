@@ -68,18 +68,9 @@ node("${BUILD_NODE}"){
         }
     }
     
-    stage ('Sonarqube')
-    {
-        environment {
-            scannerHome = tool 'SonarQubeScanner'
-        }
-        steps {
-            withSonarQubeEnv('SonarQubeOssim') {
-                sh "${scannerHome}/bin/sonar-scanner"
-            }
-            timeout(time: 10, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-            }
+    stage('SonarQube analysis') {
+        withSonarQubeEnv(credentialsId: '3a6154edb38172a82ad75d6529fd0e7b706a0179', installationName: 'SonarQubeOssim') {
+            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
         }
     }
 
