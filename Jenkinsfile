@@ -1,6 +1,6 @@
 properties([
     parameters ([
-        string(name: 'BUILD_NODE', defaultValue: 'POD_LABEL', description: 'The build node to run on'),
+        string(name: 'BUILD_NODE', defaultValue: 'omar-build', description: 'The build node to run on'),
         booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
         string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
@@ -35,7 +35,7 @@ podTemplate(
   ]
 )
 {
-  node(POD_LABEL){
+  node("${BUILD_NODE}"){
 
       stage("Checkout branch $BRANCH_NAME")
       {
