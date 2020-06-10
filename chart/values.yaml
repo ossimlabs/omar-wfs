@@ -1,4 +1,4 @@
-# Default values for omar-wms.
+# Default values for omar-wfs.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -8,22 +8,52 @@ appName: omar-wfs
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
-  imagePullSecret: "registry-creds"
-  ossimDataPvcName: ossim-data-pvc
+  imagePullSecret:
+    registry: null
+    username: null
+    password: null
+  hostname: omar-dev.ossim.io
+
+  createIngress: true
+  useTls: false
+  useTLSClientAuth: false
+  sslCertSecretName: null
+  authSslCertSecretName: null
+
+  createImagePullSecret: true
+  useImagePullSecret: true
+  
+  createHpa: true
+
+  useSpringConfigServer: false
+
+# These variables can be overridden because of the use of the 'pluck' function:
+# - createIngress
+# - useTls
+# - useTlsClientAuth
+# - createImagePullSecret
+# - createHpa
+# - createPVs
+# - useSpringConfigServer
 
 resources:
   limits:
     cpu: 1500m
     memory: 1000Mi
   requests:
-    cpu: 40m
+    cpu: 500m
     memory: 500Mi
-    
+
+minReplicas: 1
+maxReplicas: 5
+targetCpu: 50
+
 image:
   name: omar-wfs-app
   tag: dev
-  pull-policy: IfNotPresent
+  pullPolicy: Always
 
+ingressPath: /omar-wfs
 internalPort: 8080
 externalPort: 8080
 
@@ -35,12 +65,12 @@ livenessProbe:
   timeoutSeconds: 3
 
 readinessProbe:
-  path: /omar-wfs/actuator/health
   failureThreshold: 15
   initialDelaySeconds: 30
   periodSeconds: 15
   successThreshold: 1
   timeoutSeconds: 3
+  path: /omar-wfs/actuator/health
 
 terminationGracePeriodSeconds: 30
 
