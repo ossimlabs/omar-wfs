@@ -262,37 +262,48 @@ subprojects { project ->
     }    
 }
 
+task downloadFile {
+
+    def address='https://omar-dev.ossim.io/omar-wfs/api/toJson'
+    def target='"${project.rootDir}/generated'
+
+    new File("${address.tokenize('/')[-1]}").withOutputStream { out ->
+        new URL(address).withInputStream { from ->  out << from; }
+    }
+}
+
+
 String getConfigurationProperty( String envVar, String sysProp )
 {
 	System.getenv( envVar ) ?: project.findProperty( sysProp )
 }
-
-class RunAsyncTask extends DefaultTask {
-    @TaskAction
-    def startAsync() {
-        ExecutorService es = Executors.newSingleThreadExecutor()
-        es.submit({
-            project.javaexec {
-                classpath = project.sourceSets.main.runtimeClasspath
-                main = "Main"
-            }
-        } as Callable)
-    }
-}
-
-task helloAsync(type: RunAsyncTask, dependsOn: ':omar-wfs-app:bootRun') {
-    doLast {
-        println "Hello"
-        sleep(2 * 1000)
-    }
-}
-
-task aimee {
-    doFirst {
-        println "Start"
-    }
-    dependsOn ':omar-wfs-app:bootRun'
-    doLast {
-        println "Finish"
-    }
-}
+//
+//class RunAsyncTask extends DefaultTask {
+//    @TaskAction
+//    def startAsync() {
+//        ExecutorService es = Executors.newSingleThreadExecutor()
+//        es.submit({
+//            project.javaexec {
+//                classpath = project.sourceSets.main.runtimeClasspath
+//                main = "Main"
+//            }
+//        } as Callable)
+//    }
+//}
+//
+//task helloAsync(type: RunAsyncTask, dependsOn: ':omar-wfs-app:bootRun') {
+//    doLast {
+//        println "Hello"
+//        sleep(2 * 1000)
+//    }
+//}
+//
+//task aimee {
+//    doFirst {
+//        println "Start"
+//    }
+//    dependsOn ':omar-wfs-app:bootRun'
+//    doLast {
+//        println "Finish"
+//    }
+//}
