@@ -77,12 +77,7 @@ podTemplate(
                           usernameVariable: 'MAVEN_REPO_USERNAME',
                           passwordVariable: 'MAVEN_REPO_PASSWORD']])
           {
-            sh """
-            ./gradlew publish \
-                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-            """
-          }
-        }
+        load "common-variables.groovy"
     }
     stage('Docker build') {
       container('docker') {
@@ -107,6 +102,35 @@ podTemplate(
               mkdir packaged-chart
               helm package -d packaged-chart chart
             """
+    }
+    try {
+    stage('SonarQube analysis') {
+        withSonarQubeEnv(credentialsId: '3a6154edb38172a82ad75d6529fd0e7b706a0179', installationName: 'SonarQubeOssim') {
+            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
+        }
+    }
+   }
+   catch(Throwable e) {
+   //Ignoring errors, SonarQube stage is optional.
+   e.printStackTrace()
+   }
+
+
+    try {
+        stage ("OpenShift Tag Image")
+        {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                            credentialsId: 'openshiftCredentials',
+                            usernameVariable: 'OPENSHIFT_USERNAME',
+                            passwordVariable: 'OPENSHIFT_PASSWORD']])
+            {
+                // Run all tasks on the app. This includes pushing to OpenShift and S3.
+                sh """
+                    ./gradlew openshiftTagImage \
+                        -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+
+                """
+            }
         }
       }
       stage('Upload chart'){
