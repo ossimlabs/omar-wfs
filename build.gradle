@@ -3,6 +3,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
 import java.util.concurrent.*
 
+
 buildscript {
     repositories {
         maven { url ossimMavenProxy }
@@ -13,122 +14,117 @@ buildscript {
         classpath "org.grails.plugins:hibernate5:${hibernate5PluginVersion}"
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:${webdriverGradlePluginVersion}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:${assetPipelineVersion}"
-		classpath "io.ossim:gradleDefaults:${ gradleDefaultsVersion }"
-		classpath "com.bmuschko:gradle-docker-plugin:${gradleDockerPluginVersion}"
+        classpath "io.ossim:gradleDefaults:${gradleDefaultsVersion}"
+        classpath "com.bmuschko:gradle-docker-plugin:${gradleDockerPluginVersion}"
     }
 }
 
 plugins {
-	id 'groovy'
+    id 'groovy'
     id 'java'
     id "com.github.ben-manes.versions" version "0.27.0"
     id "org.sonarqube" version "2.8"
 }
 
 subprojects { project ->
-	boolean isGrailsApp = project.name.endsWith( '-app' )
-	boolean isGrailsPlugin = project.name.endsWith( '-plugin' )
-	boolean isGrailsProject = isGrailsApp || isGrailsPlugin
+    boolean isGrailsApp = project.name.endsWith('-app')
+    boolean isGrailsPlugin = project.name.endsWith('-plugin')
+    boolean isGrailsProject = isGrailsApp || isGrailsPlugin
 
     io.ossim.gradleDefaults.Variables.setAdditionalVariables(project)
     io.ossim.gradleDefaults.Variables.setVersionVariables(project)
     project.version "${buildVersion}-${buildVersionTag}"
     project.group groupName
 
-    apply plugin:"eclipse"
-    apply plugin:"idea"
+    apply plugin: "eclipse"
+    apply plugin: "idea"
 
-    if ( isGrailsProject )    
-    {
-        if ( isGrailsApp )
-        {
+    if (isGrailsProject) {
+        if (isGrailsApp) {
             apply plugin: 'com.bmuschko.docker-remote-api'
 
             ext {
-                dockerBuildDir = "${ rootProject.projectDir }/docker"
-                jarDestination = "${ project.projectDir }/build/libs/${ project.name }-${ version }.jar"
-                
+                dockerBuildDir = "${rootProject.projectDir}/docker"
+                jarDestination = "${project.projectDir}/build/libs/${project.name}-${version}.jar"
+
                 dockerImageName = project.name
                 dockerBuildTag = project.dockerImageTag
-                buildArguments = [ "BASE_IMAGE": "${ dockerRegistryUrl }/${ dockerBaseImage }:${ dockerFromTag }" ]
-                
-                openshiftUrl = getConfigurationProperty( 'OPENSHIFT_URL', 'openshiftUrl' )
-                openshiftUsername = getConfigurationProperty( 'OPENSHIFT_USERNAME', 'openshiftUsername' )
-                openshiftPassword = getConfigurationProperty( 'OPENSHIFT_PASSWORD', 'openshiftPassword' )                
-                openshiftProjectName =  getConfigurationProperty( 'OPENSHIFT_PROJECT_NAME', 'openshiftProjectName' )
+                buildArguments = ["BASE_IMAGE": "${dockerRegistryUrl}/${dockerBaseImage}:${dockerFromTag}"]
+
+                openshiftUrl = getConfigurationProperty('OPENSHIFT_URL', 'openshiftUrl')
+                openshiftUsername = getConfigurationProperty('OPENSHIFT_USERNAME', 'openshiftUsername')
+                openshiftPassword = getConfigurationProperty('OPENSHIFT_PASSWORD', 'openshiftPassword')
+                openshiftProjectName = getConfigurationProperty('OPENSHIFT_PROJECT_NAME', 'openshiftProjectName')
             }
 
             io.ossim.gradleDefaults.Openshift.addOpenshiftTasks(
-                project, 
-                openshiftUrl, 
-                openshiftUsername, 
-                openshiftPassword, 
-                openshiftProjectName, 
-                openshiftServiceName,  
-                dockerRegistryUrl, 
-                dockerImageName, 
-                dockerImageTag
+                    project,
+                    openshiftUrl,
+                    openshiftUsername,
+                    openshiftPassword,
+                    openshiftProjectName,
+                    openshiftServiceName,
+                    dockerRegistryUrl,
+                    dockerImageName,
+                    dockerImageTag
             )
 
             docker {
                 registryCredentials {
-                    url = dockerRegistryPrivateUrl 
-                    username = getConfigurationProperty( 'DOCKER_REGISTRY_USERNAME', 'dockerRegistryUsername' )
-                    password = getConfigurationProperty( 'DOCKER_REGISTRY_PASSWORD', 'dockerRegistryPassword' )
+                    url = dockerRegistryPrivateUrl
+                    username = getConfigurationProperty('DOCKER_REGISTRY_USERNAME', 'dockerRegistryUsername')
+                    password = getConfigurationProperty('DOCKER_REGISTRY_PASSWORD', 'dockerRegistryPassword')
                 }
             }
 
             // Copy the built jar to the docker directory
-            task copyJarToDockerDir( type: Copy ) {
+            task copyJarToDockerDir(type: Copy) {
                 doFirst {
-                    println "Copying ${ jarDestination } to ${ dockerBuildDir }"
+                    println "Copying ${jarDestination} to ${dockerBuildDir}"
                 }
                 from jarDestination
                 into dockerBuildDir
             }
 
 
-            task buildDockerImage( type: DockerBuildImage, dependsOn: copyJarToDockerDir ) {
-                inputDir = project.file( dockerBuildDir )
-                tags.add( "${ dockerImageName }:${ dockerBuildTag }" )
+            task buildDockerImage(type: DockerBuildImage, dependsOn: copyJarToDockerDir) {
+                inputDir = project.file(dockerBuildDir)
+                tags.add("${dockerImageName}:${dockerBuildTag}")
                 buildArgs = buildArguments
                 doFirst {
-                    if ( buildArguments )
-                    {
-                        println( "Using ${ buildArguments } as build args" )
+                    if (buildArguments) {
+                        println("Using ${buildArguments} as build args")
                     }
                 }
             }
 
-            task tagDockerImage( type: DockerTagImage, dependsOn: buildDockerImage ) {
-                imageId = "${ dockerImageName }:${ dockerBuildTag }"
+            task tagDockerImage(type: DockerTagImage, dependsOn: buildDockerImage) {
+                imageId = "${dockerImageName}:${dockerBuildTag}"
                 tag = dockerBuildTag
-                repository = "${ dockerRegistryUrl }/${ dockerImageName }"
+                repository = "${dockerRegistryUrl}/${dockerImageName}"
             }
 
-            task pushDockerImage( type: DockerPushImage, dependsOn: 'tagDockerImage' ) {
-                imageName = "${ dockerRegistryUrl }/${ dockerImageName }"
+            task pushDockerImage(type: DockerPushImage, dependsOn: 'tagDockerImage') {
+                imageName = "${dockerRegistryUrl}/${dockerImageName}"
                 tag = dockerBuildTag
             }
 
-            apply plugin:"org.grails.grails-web"
-            apply plugin:"com.github.erdi.webdriver-binaries"
-        }
-        else if ( isGrailsPlugin ) 
-        {
-            apply plugin:"org.grails.grails-plugin"
-            apply plugin:"org.grails.grails-plugin-publish"
+            apply plugin: "org.grails.grails-web"
+            apply plugin: "com.github.erdi.webdriver-binaries"
+        } else if (isGrailsPlugin) {
+            apply plugin: "org.grails.grails-plugin"
+            apply plugin: "org.grails.grails-plugin-publish"
 
             ext {
                 jarDestination = "${project.projectDir}/build/libs/${project.name}-${version}.jar"
             }
 
             io.ossim.gradleDefaults.Publications.addPublication(project, groupName, name, "${buildVersion}-${buildVersionTag}")
-            io.ossim.gradleDefaults.Publications.addRepository(project, mavenPublishUrl, mavenRepoUsername, mavenRepoPassword)            
+            io.ossim.gradleDefaults.Publications.addRepository(project, mavenPublishUrl, mavenRepoUsername, mavenRepoPassword)
         }
 
-        apply plugin:"asset-pipeline"
-        apply plugin:"org.grails.grails-gsp"
+        apply plugin: "asset-pipeline"
+        apply plugin: "org.grails.grails-gsp"
 
         repositories {
             mavenLocal()
@@ -143,8 +139,7 @@ subprojects { project ->
             }
         }
 
-        if ( isGrailsApp )
-        {
+        if (isGrailsApp) {
             dependencyManagement {
                 imports {
                     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
@@ -178,8 +173,7 @@ subprojects { project ->
             testCompile "org.mockito:mockito-core"
             testCompile "org.grails:grails-web-testing-support"
 
-            if ( isGrailsApp )
-            {
+            if (isGrailsApp) {
                 compile "org.grails.plugins:events"
                 compile "org.grails.plugins:hibernate5"
                 compile "org.hibernate:hibernate-core:${hibernateCoreVersion}"
@@ -197,9 +191,7 @@ subprojects { project ->
 
                 compile 'org.springframework.cloud:spring-cloud-starter-config'
                 compile "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
-            }
-            else if ( isGrailsPlugin ) 
-            {
+            } else if (isGrailsPlugin) {
                 profile "org.grails.profiles:web-plugin"
                 //testCompile "org.grails:grails-plugin-testing"
             }
@@ -207,17 +199,16 @@ subprojects { project ->
 
         bootRun {
             jvmArgs(
-                '-Dspring.output.ansi.enabled=always', 
-                '-noverify', 
-                '-XX:TieredStopAtLevel=1',
-                '-Xmx1024m')
+                    '-Dspring.output.ansi.enabled=always',
+                    '-noverify',
+                    '-XX:TieredStopAtLevel=1',
+                    '-Xmx1024m')
             sourceResources sourceSets.main
             String springProfilesActive = 'spring.profiles.active'
             systemProperty springProfilesActive, System.getProperty(springProfilesActive)
         }
 
-        if ( isGrailsApp )
-        {
+        if (isGrailsApp) {
             webdriverBinaries {
                 chromedriver '2.45.0'
                 geckodriver '0.24.0'
@@ -229,9 +220,7 @@ subprojects { project ->
                 systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
                 systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
             }
-        }
-        else if ( isGrailsPlugin )
-        {
+        } else if (isGrailsPlugin) {
             // enable if you wish to package this plugin as a standalone application
             bootJar.enabled = false
             grailsPublish {
@@ -244,66 +233,52 @@ subprojects { project ->
                 }
                 title = "My Plugin"
                 desc = "Full plugin description"
-                developers = [johndoe:"John Doe"]
+                developers = [johndoe: "John Doe"]
             }
         }
 
         assets {
-            if ( isGrailsApp )
-            {
+            if (isGrailsApp) {
                 minifyJs = true
                 minifyCss = true
-            }
-            else if ( isGrailsPlugin )
-            {
+            } else if (isGrailsPlugin) {
                 packagePlugin = true
             }
         }
-    }    
-}
-
-task downloadFile {
-
-    def address='https://omar-dev.ossim.io/omar-wfs/api/toJson'
-    def target='"${project.rootDir}/generated'
-
-    new File("${address.tokenize('/')[-1]}").withOutputStream { out ->
-        new URL(address).withInputStream { from ->  out << from; }
     }
 }
 
 
-String getConfigurationProperty( String envVar, String sysProp )
-{
-	System.getenv( envVar ) ?: project.findProperty( sysProp )
+
+task downloadFile {
+    println "About to start..."
+    doFirst {
+        println "Start"
+        Process myProcess
+        try {
+            myProcess = Runtime.getRuntime().exec("./gradlew bootRun")
+            BufferedReader input = new BufferedReader(new InputStreamReader(myProcess.getInputStream()))
+            String line;
+
+            while (!(line = input.readLine()).contains("Grails application running at http://localhost:8080/omar-wfs")) {
+                System.out.println(line);
+            }
+            def address = 'http://localhost:8080/omar-wfs/api/toJson'
+            def target = '${project.rootDir}/generated'
+            new File("${address.tokenize('/')[-1]}").withOutputStream { out ->
+                new URL(address).withInputStream { from -> out << from; }
+            }
+        }
+    finally {
+        if (myProcess != null) myProcess.destroy()
+    }
+    }
+
+    doLast {
+        println "Stop"
+    }
 }
-//
-//class RunAsyncTask extends DefaultTask {
-//    @TaskAction
-//    def startAsync() {
-//        ExecutorService es = Executors.newSingleThreadExecutor()
-//        es.submit({
-//            project.javaexec {
-//                classpath = project.sourceSets.main.runtimeClasspath
-//                main = "Main"
-//            }
-//        } as Callable)
-//    }
-//}
-//
-//task helloAsync(type: RunAsyncTask, dependsOn: ':omar-wfs-app:bootRun') {
-//    doLast {
-//        println "Hello"
-//        sleep(2 * 1000)
-//    }
-//}
-//
-//task aimee {
-//    doFirst {
-//        println "Start"
-//    }
-//    dependsOn ':omar-wfs-app:bootRun'
-//    doLast {
-//        println "Finish"
-//    }
-//}
+
+String getConfigurationProperty(String envVar, String sysProp) {
+    System.getenv(envVar) ?: project.findProperty(sysProp)
+}

@@ -38,6 +38,16 @@ node("${BUILD_NODE}"){
         archiveArtifacts "plugins/*/build/libs/*.jar"
         archiveArtifacts "apps/*/build/libs/*.jar"
     }
+    //TODO
+    stage ("Assemble") {
+            sh """
+            ./gradlew downloadFile \
+                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+            """
+            archiveArtifacts "toJson"
+            //archiveArtifacts "plugins/*/build/libs/*.jar"
+            //archiveArtifacts "apps/*/build/libs/*.jar"
+        }
 
     stage ("Publish Nexus")
     {
@@ -67,12 +77,18 @@ node("${BUILD_NODE}"){
             """
         }
     }
-    
+    try {
     stage('SonarQube analysis') {
         withSonarQubeEnv(credentialsId: '3a6154edb38172a82ad75d6529fd0e7b706a0179', installationName: 'SonarQubeOssim') {
             sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
         }
     }
+   }
+   catch(Throwable e) {
+   //Ignoring errors, SonarQube stage is optional.
+   e.printStackTrace()
+   }
+
 
     try {
         stage ("OpenShift Tag Image")
