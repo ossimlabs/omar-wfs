@@ -248,35 +248,38 @@ subprojects { project ->
     }
 }
 
+//task downloadFile {
+//    println "About to start..."
+//    doFirst {
+//        println "Start"
+//        Process myProcess
+//        try {
+//            myProcess = Runtime.getRuntime().exec("./gradlew bootRun")
+//            BufferedReader input = new BufferedReader(new InputStreamReader(myProcess.getInputStream()))
+//            String line;
+//
+//            while (!(line = input.readLine()).contains("Grails application running at http://localhost:8080/omar-wfs")) {
+//                System.out.println(line);
+//            }
+//            def address = 'http://localhost:8080/omar-wfs/api/toJson'
+//            def target = '${project.rootDir}/generated'
+//            new File("${address.tokenize('/')[-1]}").withOutputStream { out ->
+//                new URL(address).withInputStream { from -> out << from; }
+//            }
+//        }
+//    finally {
+//        if (myProcess != null) myProcess.destroy()
+//    }
+//    }
+//
+//    doLast {
+//        println "Stop"
+//    }
+//}
 
-
-task downloadFile {
-    println "About to start..."
-    doFirst {
-        println "Start"
-        Process myProcess
-        try {
-            myProcess = Runtime.getRuntime().exec("./gradlew bootRun")
-            BufferedReader input = new BufferedReader(new InputStreamReader(myProcess.getInputStream()))
-            String line;
-
-            while (!(line = input.readLine()).contains("Grails application running at http://localhost:8080/omar-wfs")) {
-                System.out.println(line);
-            }
-            def address = 'http://localhost:8080/omar-wfs/api/toJson'
-            def target = '${project.rootDir}/generated'
-            new File("${address.tokenize('/')[-1]}").withOutputStream { out ->
-                new URL(address).withInputStream { from -> out << from; }
-            }
-        }
-    finally {
-        if (myProcess != null) myProcess.destroy()
-    }
-    }
-
-    doLast {
-        println "Stop"
-    }
+apply plugin: "io.ossim.swagger.doc"
+swaggerDoc {
+    prefix = "omar"
 }
 
 String getConfigurationProperty(String envVar, String sysProp) {
