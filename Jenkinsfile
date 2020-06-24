@@ -85,8 +85,16 @@ podTemplate(
           sh """
             docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:${BRANCH_NAME} ./docker
           """
-        }
-      }
+    }}}
+
+    stage ("Assemble") {
+        sh """
+        ./gradlew assemble \
+            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+        """
+        archiveArtifacts "plugins/*/build/libs/*.jar"
+        archiveArtifacts "apps/*/build/libs/*.jar"
+    }
       stage('Docker push'){
         container('docker') {
           withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
