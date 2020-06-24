@@ -44,9 +44,8 @@ node("${BUILD_NODE}"){
             ./gradlew downloadFile \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-            archiveArtifacts "toJson"
-            //archiveArtifacts "plugins/*/build/libs/*.jar"
-            //archiveArtifacts "apps/*/build/libs/*.jar"
+            archiveArtifacts "swaggerJson.Json"
+
         }
 
     stage ("Publish Nexus")
