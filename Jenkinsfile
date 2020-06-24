@@ -38,15 +38,13 @@ node("${BUILD_NODE}"){
         archiveArtifacts "plugins/*/build/libs/*.jar"
         archiveArtifacts "apps/*/build/libs/*.jar"
     }
-    //TODO
-    stage ("Assemble") {
+
+    stage ("Generate Swagger Spec") {
             sh """
-            ./gradlew downloadFile \
+            ./gradlew :omar-wfs-plugin:generateSwaggerDocs \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-            archiveArtifacts "toJson"
-            //archiveArtifacts "plugins/*/build/libs/*.jar"
-            //archiveArtifacts "apps/*/build/libs/*.jar"
+            archiveArtifacts "plugins/*/build/swaggerSpec.json"
         }
 
     stage ("Publish Nexus")
