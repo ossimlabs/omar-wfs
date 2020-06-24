@@ -102,6 +102,13 @@ podTemplate(
               docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:${BRANCH_NAME}
           """
           }
+
+    stage ("Generate Swagger Spec") {
+            sh """
+            ./gradlew :omar-wfs-plugin:generateSwaggerDocs \
+                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+            """
+            archiveArtifacts "plugins/*/build/swaggerSpec.json"
         }
       }
       stage('Package chart'){
