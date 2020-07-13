@@ -47,7 +47,6 @@ podTemplate(
       {
           checkout(scm)
       }
-
       stage("Load Variables")
       {
         withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
@@ -119,10 +118,12 @@ podTemplate(
               """
 
     stage ("Run Cypress Test") {
+        container ('docker') {
             sh """
             npx cypress run \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
+        }
     }
 
     stage ("Publish Nexus")

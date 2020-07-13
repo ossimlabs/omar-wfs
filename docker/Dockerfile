@@ -9,6 +9,7 @@ COPY run.sh $HOME
 #####################################
 RUN apk update \
     && apk add --update nodejs npm
+# may need to add something here about going to the proper path
 RUN npm install cypress --save-dev
 #####################################
 RUN chown 1001:0 -R $HOME && \
