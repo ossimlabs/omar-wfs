@@ -11,6 +11,24 @@ properties([
     disableConcurrentBuilds()
 ])
 
+podTemplate(
+  containers: [
+    containerTemplate(
+      name: 'docker',
+      image: 'docker:19.03.11',
+      ttyEnabled: true,
+      command: 'cat',
+      privileged: true
+    ),
+  ],
+  volumes: [
+    hostPathVolume(
+      hostPath: '/var/run/docker.sock',
+      mountPath: '/var/run/docker.sock'
+    ),
+  ]
+)
+
 node("${BUILD_NODE}"){
 
     stage("Checkout branch $BRANCH_NAME")
@@ -48,10 +66,12 @@ node("${BUILD_NODE}"){
         }
 
     stage ("Run Cypress Test") {
+        container ('docker') {
             sh """
             npx cypress run \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
+        }
     }
 
     stage ("Publish Nexus")
