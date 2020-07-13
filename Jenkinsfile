@@ -47,6 +47,13 @@ node("${BUILD_NODE}"){
             archiveArtifacts "plugins/*/build/swaggerSpec.json"
         }
 
+    stage ("Run Cypress Test") {
+            sh """
+            npx cypress run \
+                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+            """
+    }
+
     stage ("Publish Nexus")
     {
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
