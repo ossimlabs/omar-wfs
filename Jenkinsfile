@@ -118,12 +118,10 @@ podTemplate(
               """
 
     stage ("Run Cypress Test") {
-        container ('docker') {
             sh """
             npx cypress run \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-        }
     }
 
     stage ("Publish Nexus")
