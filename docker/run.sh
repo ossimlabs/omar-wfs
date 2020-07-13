@@ -25,3 +25,7 @@ export JAR_FILE=`find ${HOME} -maxdepth 1 -name "*.jar"`
 
 echo "java ${JAVA_OPTS} -jar ${JAR_FILE}"
 java ${JAVA_OPTS} -jar ${JAR_FILE}
+
+apk update \ & apk add --update nodejs npm
+# may need to add something here about going to the proper path
+npm install cypress --save-dev
