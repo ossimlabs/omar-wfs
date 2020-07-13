@@ -6,6 +6,11 @@ FROM nexus-docker-public-hosted.ossim.io/openjdk8:alpine-slim
 ENV HOME /home/omar
 RUN adduser -D -h $HOME -s /sbin/nologin -u 1001 omar
 COPY run.sh $HOME
+#####################################
+RUN apk update \
+    && apk add --update nodejs npm
+RUN npm install cypress --save-dev
+#####################################
 RUN chown 1001:0 -R $HOME && \
     chmod 777 $HOME && \
     chmod 777 $HOME/*.sh
