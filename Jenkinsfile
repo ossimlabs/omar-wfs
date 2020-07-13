@@ -11,23 +11,23 @@ properties([
     disableConcurrentBuilds()
 ])
 
-podTemplate(
-  containers: [
-    containerTemplate(
-      name: 'docker',
-      image: 'docker:19.03.11',
-      ttyEnabled: true,
-      command: 'cat',
-      privileged: true
-    ),
-  ],
-  volumes: [
-    hostPathVolume(
-      hostPath: '/var/run/docker.sock',
-      mountPath: '/var/run/docker.sock'
-    ),
-  ]
-)
+// podTemplate(
+//   containers: [
+//     containerTemplate(
+//       name: 'docker',
+//       image: 'docker:19.03.11',
+//       ttyEnabled: true,
+//       command: 'cat',
+//       privileged: true
+//     ),
+//   ],
+//   volumes: [
+//     hostPathVolume(
+//       hostPath: '/var/run/docker.sock',
+//       mountPath: '/var/run/docker.sock'
+//     ),
+//   ]
+// )
 
 node("${BUILD_NODE}"){
 
