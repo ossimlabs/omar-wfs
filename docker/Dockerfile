@@ -17,9 +17,3 @@ WORKDIR $HOME
 EXPOSE 8080
 COPY *.jar $HOME/
 CMD ["/bin/sh", "/home/omar/run.sh"]
-#####################################
-RUN apk update \
-    && apk add --update nodejs npm
-# may need to add something here about going to the proper path
-RUN npm install cypress --save-dev
-#####################################
