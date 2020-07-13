@@ -116,6 +116,25 @@ podTemplate(
           sh """
               mkdir packaged-chart
               helm package -d packaged-chart chart
+              """
+
+    stage ("Run Cypress Test") {
+            sh """
+            npx cypress run \
+                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+            """
+    }
+
+    stage ("Publish Nexus")
+    {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                        credentialsId: 'nexusCredentials',
+                        usernameVariable: 'MAVEN_REPO_USERNAME',
+                        passwordVariable: 'MAVEN_REPO_PASSWORD']])
+        {
+            sh """
+            ./gradlew publish \
+                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
     }
     try {
