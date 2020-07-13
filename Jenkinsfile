@@ -119,9 +119,10 @@ podTemplate(
 
     stage ("Run Cypress Test") {
             sh """
-            docker run -v $PWD:/e2e -w /e2e cypress/included:3.2.0 \
+            docker run -v $PWD:/e2e -w /e2e cypress/included:3.2.0 > testData.txt\
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
+            archiveArtifacts "testData.txt"
     }
 
     stage ("Publish Nexus")
