@@ -100,7 +100,7 @@ node(POD_LABEL){
     }
 
     stage ("Publish Docker App") {
-    container('docker') {
+    //container('docker') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'dockerCredentials',
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
@@ -112,7 +112,7 @@ node(POD_LABEL){
             ./gradlew pushDockerImage \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-            }
+        //    }
         }
     }
     try {
