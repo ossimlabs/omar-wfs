@@ -2,7 +2,6 @@ properties([
     parameters ([
         string(name: 'POD_LABEL', defaultValue: 'omar-build', description: 'The build node to run on'),
         booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run')
-        string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
     pipelineTriggers([
             [$class: "GitHubPushTrigger"]
