@@ -104,7 +104,7 @@ node(POD_LABEL){
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'dockerCredentials',
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
-                        passwordVariable: 'DOCKER_REGISTRY_PASSWORD']])
+                        passwordVariable: 'DOCKER_REGISTRY_PASSWORD']]) {
 
 
             // Run all tasks on the app. This includes pushing to OpenShift and S3.
@@ -112,6 +112,7 @@ node(POD_LABEL){
             ./gradlew pushDockerImage \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
+            }
         }
     }
     try {
