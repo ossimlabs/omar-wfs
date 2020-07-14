@@ -27,6 +27,7 @@ podTemplate(
                 ),
         ]
 )
+{
 node("${BUILD_NODE}"){
 
     stage("Checkout branch $BRANCH_NAME")
@@ -141,4 +142,5 @@ node("${BUILD_NODE}"){
         if ("${CLEAN_WORKSPACE}" == "true")
             step([$class: 'WsCleanup'])
     }
+}
 }
