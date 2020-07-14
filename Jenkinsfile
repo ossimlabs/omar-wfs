@@ -49,10 +49,12 @@ node("${BUILD_NODE}"){
 
     stage ("Run Cypress Test") {
             sh """
-            docker run -v $PWD:/e2e -w /e2e cypress/included:3.2.0 > testData.txt\
+            npx cypress run \
+            mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json \
+            marge mochawesome-bundle.json -o mochawesome-report/html \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-            archiveArtifacts "testData.txt"
+            archiveArtifacts "mochawesome-report/html/mochawesome-bundle.html"
     }
 
     stage ("Publish Nexus")

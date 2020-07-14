@@ -1,4 +1,8 @@
 {
   "projectId": "iskp2p",
-  "baseUrl": "https://omar.ossim.io/omar-wfs"
+  "baseUrl": "https://omar.ossim.io/omar-wfs",
+  "reporter": "cypress-multi-reporters",
+  "reporterOptions": {
+    "configFile": "reporter-config.json"
+  }
 }

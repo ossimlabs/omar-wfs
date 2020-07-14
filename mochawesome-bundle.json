@@ -1,0 +1,201 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2020-07-13T23:57:57.196Z",
+    "end": "2020-07-13T23:57:57.196Z",
+    "duration": 5827,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "6e827d6d-0a29-4d4b-8b54-cf40bb6396d4",
+      "title": "",
+      "fullFile": "cypress/integration/APITesting.js",
+      "file": "cypress/integration/APITesting.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+          "title": "Automated tests for the omar-wfs methods",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should test 200 code for describeFeatureType default values",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test 200 code for describeFeatureType default values",
+              "timedOut": null,
+              "duration": 5324,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response.status).to.eq(200);\n});",
+              "err": {},
+              "uuid": "b3caf4c5-0e0b-47a0-86a5-0689558add6f",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should test response header for describeFeatureType",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test response header for describeFeatureType",
+              "timedOut": null,
+              "duration": 136,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response).to.have.property(\"headers\");\n});",
+              "err": {},
+              "uuid": "289c9c3d-4347-4cdb-9f5a-7c4c66da7fec",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should test 200 code for getCapabilities default values",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test 200 code for getCapabilities default values",
+              "timedOut": null,
+              "duration": 59,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response.status).to.eq(200);\n});",
+              "err": {},
+              "uuid": "bf77d01c-5607-4dd1-a685-9bcbb4627475",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should test response header for getCapabilities",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test response header for getCapabilities",
+              "timedOut": null,
+              "duration": 56,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response).to.have.property(\"headers\");\n});",
+              "err": {},
+              "uuid": "781f3633-694a-406d-b7d8-d52e0c172f33",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should test 200 code for getFeature default values",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test 200 code for getFeature default values",
+              "timedOut": null,
+              "duration": 126,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response.status).to.eq(200);\n});",
+              "err": {},
+              "uuid": "5720f910-765b-4215-8a70-a206316f1bc6",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should test response header for getFeature",
+              "fullTitle": "Automated tests for the omar-wfs methods Should test response header for getFeature",
+              "timedOut": null,
+              "duration": 126,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.request(method, path + request).then(function (response) {\n  expect(response).to.have.property(\"headers\");\n});",
+              "err": {},
+              "uuid": "b867aaf5-25f5-4dac-b630-cbabdfaddb0e",
+              "parentUUID": "9cb8ee99-84c0-4a3c-8260-139cec56390f",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "b3caf4c5-0e0b-47a0-86a5-0689558add6f",
+            "289c9c3d-4347-4cdb-9f5a-7c4c66da7fec",
+            "bf77d01c-5607-4dd1-a685-9bcbb4627475",
+            "781f3633-694a-406d-b7d8-d52e0c172f33",
+            "5720f910-765b-4215-8a70-a206316f1bc6",
+            "b867aaf5-25f5-4dac-b630-cbabdfaddb0e"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 5827,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "6.1.1"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "mochawesome-report",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "5.1.0"
+    }
+  }
+}
