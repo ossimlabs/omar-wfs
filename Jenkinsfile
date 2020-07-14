@@ -21,27 +21,15 @@ podTemplate(
               command: 'cat',
               privileged: true
             ),
-           containerTemplate(
-              name: 'jnlp',
-              image: "${params.DOCKER_REGISTRY}/jnlp-agent:latest",
-              ttyEnabled: true,
-              envVars: [
-                envVar(key: 'JENKINS_CERT_FILE', value: '/secrets/cert.pem')
-              ]
-            ),
-            containerTemplate(
-              name: 'cypress',
-              image: 'cypress/base:12.14.1',
-              ttyEnabled: true,
-              command: 'cat',
-              privileged: true
-            )
-         ],
+                containerTemplate(
+                        name: 'cypress',
+                        image: 'cypress/base:12.14.1',
+                        ttyEnabled: true,
+                        command: 'cat',
+                        privileged: true
+                )
+        ],
         volumes: [
-           secretVolume(
-              mountPath: '/secrets',
-              secretName: 'ca-cert'
-            ),
                 hostPathVolume(
                         hostPath: '/var/run/docker.sock',
                         mountPath: '/var/run/docker.sock'
@@ -112,7 +100,7 @@ node(POD_LABEL){
     }
 
     stage ("Publish Docker App") {
-    //container('docker') {
+    container('docker') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'dockerCredentials',
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
@@ -124,7 +112,7 @@ node(POD_LABEL){
             ./gradlew pushDockerImage \
                 -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
             """
-        //    }
+            }
         }
     }
     try {
