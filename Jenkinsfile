@@ -189,5 +189,9 @@ podTemplate(
       if ("${CLEAN_WORKSPACE}" == "true")
         step([$class: 'WsCleanup'])
     }
+<<<<<<< HEAD
   }
+=======
+}
+>>>>>>> Fix Jenkins error
 }
