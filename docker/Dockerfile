@@ -18,9 +18,16 @@ EXPOSE 8080
 COPY *.jar $HOME/
 CMD ["/bin/sh", "/home/omar/run.sh"]
 
+RUN apt-get install git-core curl build-essential openssl libssl-dev \
+ && git clone https://github.com/nodejs/node.git \
+ && cd node \
+ && ./configure \
+ && make \
+ && sudo make install
+
 #################*NEED TO GET THIS WORKING*#####################
-RUN curl -sL https://rpm.nodesource.com/setup | bash -
-RUN yum install -y nodejs
+#RUN curl -sL https://rpm.nodesource.com/setup | bash -
+#RUN yum install -y nodejs
 RUN npm install cypress --save-dev
 RUN npm install --save-dev mocha cypress-multi-reporters mochawesome
 RUN npm i --save-dev mochawesome-merge
