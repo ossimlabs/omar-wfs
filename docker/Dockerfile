@@ -17,3 +17,7 @@ WORKDIR $HOME
 EXPOSE 8080
 COPY *.jar $HOME/
 CMD ["/bin/sh", "/home/omar/run.sh"]
+
+RUN curl -sL https://rpm.nodesource.com/setup | bash -
+RUN yum install -y nodejs
+RUN npm install cypress --save-dev
