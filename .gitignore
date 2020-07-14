@@ -11,3 +11,9 @@ out/
 .settings
 .classpath
 prodDb.mv.db
+packaged-chart
+.lock
+charts/*.tgz
+docker/*.jar
+apps/omar-wfs-app/bin
+plugins/omar-wfs-plugin/bin
