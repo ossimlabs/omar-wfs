@@ -5,9 +5,9 @@
     "passes": 0,
     "pending": 0,
     "failures": 0,
-    "start": "2020-07-14T15:39:22.821Z",
-    "end": "2020-07-14T15:39:22.825Z",
-    "duration": 4,
+    "start": "2020-07-14T15:46:28.627Z",
+    "end": "2020-07-14T15:46:28.628Z",
+    "duration": 1,
     "testsRegistered": 0,
     "passPercent": null,
     "pendingPercent": null,
@@ -39,7 +39,7 @@
       "options": {
         "id": "default",
         "reportDir": "mochawesome-report",
-        "overwrite": true,
+        "overwrite": false,
         "html": false,
         "json": true
       },

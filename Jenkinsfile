@@ -32,6 +32,13 @@ podTemplate(
       command: 'cat',
       ttyEnabled: true
     ),
+    containerTemplate(
+                            name: 'cypress',
+                            image: 'cypress/base:12.14.1',
+                            ttyEnabled: true,
+                            command: 'cat',
+                            privileged: true
+                    )
   ],
   volumes: [
     hostPathVolume(
@@ -42,7 +49,6 @@ podTemplate(
 )
 {
   node(POD_LABEL){
-
       stage("Checkout branch $BRANCH_NAME")
       {
           checkout(scm)
@@ -118,13 +124,15 @@ podTemplate(
               """
 
     stage ("Run Cypress Test") {
+        container('cypress') {
             sh """
-            npx cypress run \
-            mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json \
-            marge mochawesome-bundle.json -o mochawesome-report/html \
-                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-            """
-            archiveArtifacts "mochawesome-report/html/mochawesome-bundle.html"
+                        npx cypress run \
+                        mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json \
+                        marge mochawesome-bundle.json -o mochawesome-report/html \
+                            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+                        """
+                        archiveArtifacts "mochawesome-report/html/mochawesome-bundle.html"
+        }
     }
 
     stage ("Publish Nexus")
