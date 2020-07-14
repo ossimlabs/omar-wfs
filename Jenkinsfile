@@ -2,6 +2,7 @@ properties([
     parameters ([
         string(name: 'BUILD_NODE', defaultValue: 'omar-build', description: 'The build node to run on'),
         booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run')
+        string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
     pipelineTriggers([
             [$class: "GitHubPushTrigger"]
@@ -12,6 +13,13 @@ properties([
 ])
 podTemplate(
         containers: [
+           containerTemplate(
+              name: 'docker',
+              image: 'docker:19.03.11',
+              ttyEnabled: true,
+              command: 'cat',
+              privileged: true
+            ),
                 containerTemplate(
                         name: 'cypress',
                         image: 'cypress/base:12.14.1',
@@ -90,13 +98,14 @@ node(POD_LABEL){
         }
     }
 
-    stage ("Publish Docker App")
-    {
+    stage ("Publish Docker App") {
+    container('docker') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
                         credentialsId: 'dockerCredentials',
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
                         passwordVariable: 'DOCKER_REGISTRY_PASSWORD']])
-        {
+
+
             // Run all tasks on the app. This includes pushing to OpenShift and S3.
             sh """
             ./gradlew pushDockerImage \
