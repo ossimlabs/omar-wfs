@@ -10,7 +10,23 @@ properties([
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '20')),
     disableConcurrentBuilds()
 ])
-
+podTemplate(
+        containers: [
+                containerTemplate(
+                        name: 'cypress',
+                        image: 'cypress/base:12.14.1',
+                        ttyEnabled: true,
+                        command: 'cat',
+                        privileged: true
+                )
+        ],
+        volumes: [
+                hostPathVolume(
+                        hostPath: '/var/run/docker.sock',
+                        mountPath: '/var/run/docker.sock'
+                ),
+        ]
+)
 node("${BUILD_NODE}"){
 
     stage("Checkout branch $BRANCH_NAME")
@@ -48,13 +64,15 @@ node("${BUILD_NODE}"){
         }
 
     stage ("Run Cypress Test") {
+        container('cypress') {
             sh """
-            npx cypress run \
-            mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json \
-            marge mochawesome-bundle.json -o mochawesome-report/html \
-                -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-            """
-            archiveArtifacts "mochawesome-report/html/mochawesome-bundle.html"
+                        npx cypress run \
+                        mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json \
+                        marge mochawesome-bundle.json -o mochawesome-report/html \
+                            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+                        """
+                        archiveArtifacts "mochawesome-report/html/mochawesome-bundle.html"
+        }
     }
 
     stage ("Publish Nexus")
