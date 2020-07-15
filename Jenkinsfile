@@ -130,11 +130,6 @@ podTemplate(
         }
     }
    }
-   catch(Throwable e) {
-   //Ignoring errors, SonarQube stage is optional.
-   e.printStackTrace()
-   }
-
 
     stage('Docker build') {
       container('docker') {
