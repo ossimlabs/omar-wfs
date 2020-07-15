@@ -159,11 +159,10 @@ podTemplate(
         }
       }
 
-      stage('Upload chart'){
-        container('builder') {
-          withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
+    stage('Upload chart'){
+      container('builder') {
+        withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
             sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
-          }
         }
       }
     }
