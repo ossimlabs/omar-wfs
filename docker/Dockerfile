@@ -19,12 +19,3 @@ WORKDIR $HOME
 EXPOSE 8080
 COPY *.jar $HOME/
 CMD ["/bin/sh", "/home/omar/run.sh"]
-
-#################*NEED TO GET THIS WORKING*#####################
-#RUN curl -sL https://rpm.nodesource.com/setup | bash -
-#RUN yum install -y nodejs
-#RUN npm i -g npx
-#RUN npm install cypress --save-dev
-#RUN npm install --save-dev mocha cypress-multi-reporters mochawesome
-#RUN npm i --save-dev mochawesome-merge
-#RUN npm i --save-dev mochawesome-report-generator

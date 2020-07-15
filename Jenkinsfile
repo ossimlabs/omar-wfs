@@ -138,7 +138,6 @@ podTemplate(
           """
         }
       }
-    }
 
       stage('Docker push'){
         container('docker') {
@@ -165,6 +164,7 @@ podTemplate(
             sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
         }
       }
+    }
     }
 
     stage("Clean Workspace"){
