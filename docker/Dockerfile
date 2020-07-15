@@ -3,9 +3,7 @@
 #FROM adoptopenjdk/openjdk8:alpine-slim
 FROM nexus-docker-public-hosted.ossim.io/openjdk8:alpine-slim
 
-ENV HOME /home/omar \
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
+ENV HOME /home/omar
 RUN adduser -D -h $HOME -s /sbin/nologin -u 1001 omar
 COPY run.sh $HOME
 RUN chown 1001:0 -R $HOME && \
