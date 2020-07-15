@@ -129,7 +129,6 @@ podTemplate(
           }
         }
     }
-   }
 
     stage('Docker build') {
       container('docker') {
