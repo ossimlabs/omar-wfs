@@ -49,8 +49,6 @@ podTemplate(
 )
 {
   node(POD_LABEL){
-    agent any
-    stages {
           stage("Checkout branch $BRANCH_NAME")
           {
               checkout(scm)
@@ -97,6 +95,7 @@ podTemplate(
                 npx cypress run \
                     -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
                 """
+                junit 'results/*.xml'
                 archiveArtifacts "results/*.xml"
             }
         }
@@ -171,10 +170,4 @@ podTemplate(
             step([$class: 'WsCleanup'])
         }
     }
-    post {
-        always {
-            junit 'results/*.xml'
-        }
-    }
-  }
 }
