@@ -133,12 +133,13 @@ podTemplate(
 
     stage('Docker build') {
       container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {
           sh """
             docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:${BRANCH_NAME} ./docker
           """
         }
       }
+    }
 
       stage('Docker push'){
         container('docker') {
