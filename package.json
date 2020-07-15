@@ -11,6 +11,7 @@
     "cypress": "^4.10.0",
     "cypress-multi-reporters": "^1.4.0",
     "mocha": "^8.0.1",
+    "mocha-junit-reporter": "^2.0.0",
     "mochawesome": "^6.1.1",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0"
@@ -18,9 +19,7 @@
   "scripts": {
     "cypress:open": "cypress open",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cypress:run": "npx cypress run",
-    "report:merge": "mochawesome-merge --reportDir mochawesome-report > mochawesome-bundle.json",
-    "report:generate": "marge mochawesome-bundle.json -o mochawesome-report/html"
+    "cypress:run": "npx cypress run"
   },
   "repository": {
     "type": "git",
