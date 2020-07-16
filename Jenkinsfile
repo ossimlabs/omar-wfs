@@ -90,28 +90,17 @@ podTemplate(
           }
 
         stage ("Run Cypress Test") {
-                    container('cypress') {
-                        sh """
-                        npm i -g xunit-viewer
-                        xunit-viewer -r results -o results/test-results.html
-                        """
-                        junit 'results/*.xml'
-                        archiveArtifacts "results/*.xml"
-                        archiveArtifacts "results/*.html"
-                        s3Upload(file:'results/test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-                    }
-                }
-
-      stage ("Publish to s3 bucket")
-      {
-            container('builder')
-            {
-                        sh """
-                            aws s3 cp ${WORKSPACE}/results/ s3://ossimlabs/cypressTests
-                        """
-
+            container('cypress') {
+                sh """
+                npm i -g xunit-viewer
+                xunit-viewer -r results -o results/test-results.html
+                """
+                junit 'results/*.xml'
+                archiveArtifacts "results/*.xml"
+                archiveArtifacts "results/*.html"
+                s3Upload(file:'results/test-results.html', bucket:'ossimlabs', path:'cypressTests/')
             }
-      }
+        }
 
           stage('Build') {
             container('builder') {
