@@ -103,6 +103,17 @@ podTemplate(
             }
         }
 
+      stage ("Publish to s3 bucket")
+      {
+            container('builder')
+            {
+                        sh """
+                            aws s3 cp ${WORKSPACE}/results/ s3://ossimlabs/cypressTests
+                        """
+
+            }
+      }
+
           stage('Build') {
             container('builder') {
               sh """
