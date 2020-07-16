@@ -93,7 +93,7 @@ podTemplate(
             container('cypress') {
                 sh """
                 npm i -g xunit-viewer
-                xunit-viewer -r results -o results/test-results.html
+                xunit-viewer -r results -o results/omar-wfs-test-results.html
                 """
                 junit 'results/*.xml'
                 archiveArtifacts "results/*.xml"
