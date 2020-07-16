@@ -98,7 +98,7 @@ podTemplate(
                 junit 'results/*.xml'
                 archiveArtifacts "results/*.xml"
                 archiveArtifacts "results/*.html"
-                s3Upload(file:'results/test-results.html', bucket:'ossimlabs', path:'cypressTests/')
+                s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
             }
         }
 
