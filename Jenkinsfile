@@ -93,10 +93,13 @@ podTemplate(
             container('cypress') {
                 sh """
                 npx cypress run \
+                npm i -g xunit-viewer \
+                xunit-viewer -r results -o results/test-results.html \
                     -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
                 """
                 junit 'results/*.xml'
                 archiveArtifacts "results/*.xml"
+                archiveArtifacts "results/*.html"
             }
         }
 
