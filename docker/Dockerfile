@@ -11,9 +11,6 @@ RUN chown 1001:0 -R $HOME && \
     chmod 777 $HOME/*.sh
 USER 1001
 
-RUN yum install -y python3 python-pip
-RUN pip3 install awscli --user
-
 ENV SPRING_CLOUD_CONFIG_ENABLED=true \
     SPRING_CLOUD_DISCOVERY_ENABLED=true
 WORKDIR $HOME
