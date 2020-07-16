@@ -13,7 +13,7 @@ describe('Automated tests for the omar-wfs methods', () => {
             parameters.forEach((parameter) => {
                 if(parameter["default"])
                     request = request + parameter["name"] + "=" + parameter["default"] + "&";
-                if(parameter["enum"])
+                else if(parameter["enum"])
                     request = request + parameter["name"] + "=" + parameter["enum"][0] + "&";
             })
             request = request.substring(0, request.length - 1);
