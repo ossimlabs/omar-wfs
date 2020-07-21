@@ -90,8 +90,10 @@ podTemplate(
           }
 
         stage ("Run Cypress Test") {
-            container('cypress') {
+            container('builder') {
                 sh """
+                npm i cypress
+                npx cypress run
                 npm i -g xunit-viewer
                 xunit-viewer -r results -o results/omar-wfs-test-results.html
                 """
