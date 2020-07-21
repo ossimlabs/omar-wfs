@@ -34,7 +34,7 @@ podTemplate(
     ),
     containerTemplate(
       name: 'cypress',
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-cypress:12.14.1",
+      image: "cypress/included:4.9.0",
       ttyEnabled: true,
       command: 'cat',
       privileged: true
@@ -90,10 +90,9 @@ podTemplate(
           }
 
         stage ("Run Cypress Test") {
-            container('builder') {
+            container('cypress') {
                 sh """
-                npm i cypress
-                npx cypress run
+                cypress run --headless
                 npm i -g xunit-viewer
                 xunit-viewer -r results -o results/omar-wfs-test-results.html
                 """
