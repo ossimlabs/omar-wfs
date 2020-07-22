@@ -34,7 +34,7 @@ podTemplate(
     ),
     containerTemplate(
       name: 'cypress',
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-cypress:12.14.1",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
       ttyEnabled: true,
       command: 'cat',
       privileged: true
@@ -92,11 +92,14 @@ podTemplate(
         stage ("Run Cypress Test") {
             container('cypress') {
                 sh """
-                npx cypress run \
-                    -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+                cypress run --headless
+                npm i -g xunit-viewer
+                xunit-viewer -r results -o results/omar-wfs-test-results.html
                 """
                 junit 'results/*.xml'
                 archiveArtifacts "results/*.xml"
+                archiveArtifacts "results/*.html"
+                s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
             }
         }
 
