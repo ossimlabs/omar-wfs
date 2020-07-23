@@ -91,6 +91,12 @@ podTemplate(
 
         stage ("Run Cypress Test") {
             container('cypress') {
+                try {
+                sh """
+                cypress run --headless
+                """
+                } catch (err) {
+                }
                 sh """
                 cypress run --headless
                 npm i -g xunit-viewer

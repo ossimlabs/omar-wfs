@@ -17,7 +17,11 @@ charts/*.tgz
 docker/*.jar
 apps/omar-wfs-app/bin
 plugins/omar-wfs-plugin/bin
+package-lock.json
+package.json
+results/
+node_modules/
+cypress/fixtures/
 cypress/plugins/
 cypress/support/
-node_modules/
-
+cypress/videos/
