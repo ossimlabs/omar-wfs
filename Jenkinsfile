@@ -96,7 +96,6 @@ podTemplate(
                 cypress run --headless
                 """
                 } catch (err) {
-                }
                 sh """
                 cypress run --headless
                 npm i -g xunit-viewer
@@ -106,6 +105,7 @@ podTemplate(
                 archiveArtifacts "results/*.xml"
                 archiveArtifacts "results/*.html"
                 s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
+                }
             }
         }
 
