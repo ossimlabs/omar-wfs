@@ -96,7 +96,6 @@ podTemplate(
                 cypress run --headless
                 """
                 } catch (err) {
-                    console.log(err);
                 }
                 sh """
                 npm i -g xunit-viewer
