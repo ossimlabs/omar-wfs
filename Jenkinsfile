@@ -89,21 +89,13 @@ podTemplate(
             }
           }
 
-<<<<<<< HEAD
                 stage ("Run Cypress Test") {
-=======
-        stage ("Run Cypress Test") {
->>>>>>> dbfe16c6ddc4b301fbfd0c5b14f4cd13d048a137
             container('cypress') {
                 try {
                 sh """
                 cypress run --headless
                 """
-<<<<<<< HEAD
                 } catch (err) { }
-=======
-                } catch (err) {
->>>>>>> dbfe16c6ddc4b301fbfd0c5b14f4cd13d048a137
                 sh """
                 cypress run --headless
                 npm i -g xunit-viewer
@@ -113,10 +105,6 @@ podTemplate(
                 archiveArtifacts "results/*.xml"
                 archiveArtifacts "results/*.html"
                 s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-<<<<<<< HEAD
-=======
-                }
->>>>>>> dbfe16c6ddc4b301fbfd0c5b14f4cd13d048a137
             }
         }
 
