@@ -766,6 +766,12 @@ class WebFeatureService
         case 'sortBy':
           if ( wfsParams[wfsParamName]?.trim() )
           {
+            if (!wfsParams[wfsParamName].contains(',') && !wfsParams[wfsParamName].contains('ingest_date')) {
+              if (wfsParams[wfsParamName] ==~ /.*D(ESC)?/)
+                wfsParams[wfsParamName] += ',ingest_date DESC'
+              else
+                wfsParams[wfsParamName] += ',ingest_date ASC'
+            }
             options['sort'] = wfsParams[wfsParamName].split(',').collect {
                 def x = it.split(/ |\+/) as List
                 if ( x[1] ==~ /.*D(ESC)?/ ) {
@@ -773,6 +779,7 @@ class WebFeatureService
                 } else if (x[1] ==~ /.*A(SC)?/) {
                     x = [x[0], 'ASC'] as List
                 }
+                return x
             } as List
           }
           break
