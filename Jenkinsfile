@@ -230,7 +230,7 @@ stage('Docker build') {
             }
           }
         }
-        }
+        
       
       
       stage('New Deploy'){
