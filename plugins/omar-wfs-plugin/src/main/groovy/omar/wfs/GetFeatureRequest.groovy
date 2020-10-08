@@ -2,7 +2,6 @@ package omar.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import groovy.util.slurpersupport.GPathResult
 
 /**
  * Created by sbortman on 9/22/15.
@@ -50,7 +49,6 @@ class GetFeatureRequest implements Validateable
   {
     def typeName = xml?.Query?.@typeName?.text()
     def namespacePrefix = typeName?.split( ':' )?.first()
-    def namespaceUri = xml?.lookupNamespace( namespacePrefix ) ?: null
     String specifiedVersion = WfsParseUtil.findVersion( xml )
     def maxFeatures = xml?.@maxFeatures?.text()
     def startIndex = xml?.@startIndex?.text()
