@@ -178,12 +178,12 @@ stage('Docker build') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
           if (BRANCH_NAME == 'master'){
                 sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}" ./docker
+                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}" ./docker
                 """
           }
           else {
                 sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}".a ./docker
+                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a ./docker
                 """
           }
         }
@@ -195,19 +195,19 @@ stage('Docker build') {
           withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
             if (BRANCH_NAME == 'master'){
                 sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}"
+                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}"
                 """
             }
             else if (BRANCH_NAME == 'dev') {
                 sh """
-                    docker tag "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}".a "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:dev
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}".a
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:dev
+                    docker tag "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:dev
+                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a
+                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:dev
                 """
             }
             else {
                 sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs-app:"${VERSION}".a           
+                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a           
                 """
             }
           }
