@@ -22,6 +22,12 @@ spec:
       - name: wait-for-geoscript
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup omar-geoscript-app; do echo waiting for geoscript; sleep 2; done"]
+      {{- if .Values.extraInitContainers }}
+      {{ toYaml .Values.extraInitContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.sideCars }}
+      {{ toYaml .Values.sideCars | indent 6 }}
+      {{- end }}
       containers:
       - name:  {{ .Values.appName }}
         env:
