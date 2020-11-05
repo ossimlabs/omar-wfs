@@ -23,11 +23,11 @@ spec:
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup omar-geoscript-app; do echo waiting for geoscript; sleep 2; done"]
       {{- if .Values.extraInitContainers }}
-      {{- toYaml .Values.extraInitContainers |  nindent 6 }}
+      {{- toYaml .Values.extraInitContainers | nindent 6 }}
       {{- end }}
       containers:
       {{- if .Values.sideCars }}
-      {{- toYaml .Values.sideCars |  nindent 6 }}
+      {{- toYaml .Values.sideCars | nindent 6 }}
       {{- end }}
       - name:  {{ .Values.appName }}
         env:
