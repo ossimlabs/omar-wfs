@@ -141,7 +141,7 @@ class WebFeatureService
                 ows.Phone {
                   ows.Voice()
                   ows.Facsimile()
-                }
+
                 ows.Address {
                   ows.DeliveryPoint()
                   ows.City()
@@ -149,11 +149,12 @@ class WebFeatureService
                   ows.PostalCode()
                   ows.Country()
                   ows.ElectronicMailAddress()
+
                 }
               }
             }
           }
-
+        }
         ows.OperationsMetadata {
           ows.Operation( name: 'GetCapabilities' ) {
             ows.DCP {
