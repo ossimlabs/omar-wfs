@@ -1138,7 +1138,7 @@ class WebFeatureService
       return kmlWriter.buffer
   }
 
-  def getKmlWmsParams(params) {
+  def getKmlWmsParams() {
       return [
           BANDS: "default",
           FORMAT: "image/png",
