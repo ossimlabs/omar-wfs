@@ -110,7 +110,6 @@ class WebFeatureService
       def requestMethod = "GetCapabilities"
       Date startTime = new Date()
       def responseTime
-      def requestInfoLog
       def username = wfsParams.username ?: "(null)"
 
       def x = {
@@ -334,7 +333,7 @@ class WebFeatureService
 
     def getFeature(GetFeatureRequest wfsParams)
     {
-      def (prefix, layerName) = wfsParams?.typeName?.split(':')
+
       Map<Object, Object> options = parseOptions(wfsParams)
       String format = parseOutputFormat(wfsParams?.outputFormat)
 
@@ -392,9 +391,9 @@ class WebFeatureService
             sensorId.add(compare_regex.group(1))
         }
 
-        keywordCountryCode = !countryCode.isEmpty() ? countryCode : ["-"]
-        keywordMissionId = !missionId.isEmpty() ? missionId : ["-"]
-        keywordSensorId = !sensorId.isEmpty() ? sensorId : ["-"]
+        keywordCountryCode != countryCode.isEmpty() ? countryCode : ["-"]
+        keywordMissionId != missionId.isEmpty() ? missionId : ["-"]
+        keywordSensorId != sensorId.isEmpty() ? sensorId : ["-"]
 
         // The point location is only available in the filter when zoomed in the UI.
         // We want to use the point location to exclude large search areas.
