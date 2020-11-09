@@ -126,140 +126,158 @@ class WebFeatureService
               ows.Keyword('WFS')
               ows.Keyword('WMS')
               ows.Keyword('OMAR')
-            }
-            ows.ServiceType('WFS')
-            ows.ServiceTypeVersion('1.1.0')
-            ows.Fees('NONE')
-            ows.AccessConstraints('NONE')
-          }
-          ows.ServiceProvider {
-            ows.ProviderName('OSSIM Labs')
-            ows.ServiceContact {
-              ows.IndividualName('Scott Bortman')
-              ows.PositionName('OMAR Developer')
-              ows.ContactInfo {
-                ows.Phone {
-                  ows.Voice()
-                  ows.Facsimile()
+//            }
+              ows.ServiceType('WFS')
+              ows.ServiceTypeVersion('1.1.0')
+              ows.Fees('NONE')
+              ows.AccessConstraints('NONE')
+//          }
+              ows.ServiceProvider {
+                ows.ProviderName('OSSIM Labs')
+                ows.ServiceContact {
+                  ows.IndividualName('Scott Bortman')
+                  ows.PositionName('OMAR Developer')
+                  ows.ContactInfo {
+                    ows.Phone {
+                      ows.Voice()
+                      ows.Facsimile()
+//                }
+                      ows.Address {
+                        ows.DeliveryPoint()
+                        ows.City()
+                        ows.AdministrativeArea()
+                        ows.PostalCode()
+                        ows.Country()
+                        ows.ElectronicMailAddress()
 
-                ows.Address {
-                  ows.DeliveryPoint()
-                  ows.City()
-                  ows.AdministrativeArea()
-                  ows.PostalCode()
-                  ows.Country()
-                  ows.ElectronicMailAddress()
+//                }
+//              }
+//            }
+//          }
 
-                }
-              }
-            }
-          }
-        }
-        ows.OperationsMetadata {
-          ows.Operation( name: 'GetCapabilities' ) {
-            ows.DCP {
-              ows.HTTP {
-                ows.Get( 'xlink:href': wfsEndpoint )
-                ows.Post( 'xlink:href': wfsEndpoint )
-              }
-            }
-            ows.Parameter( name: 'AcceptVersions' ) {
-              ows.Value('1.1.0')
-            }
-            ows.Parameter( name: 'AcceptFormats' ) {
-              ows.Value('text/xml')
-            }
-          }
-          ows.Operation( name: 'DescribeFeatureType' ) {
-            ows.DCP {
-              ows.HTTP {
-                ows.Get( 'xlink:href': wfsEndpoint)
-                ows.Post( 'xlink:href': wfsEndpoint)
-              }
-            }
-            ows.Parameter( name: 'outputFormat' ) {
-              ows.Value('text/xml; subtype=gml/3.1.1')
-            }
-          }
-          ows.Operation( name: 'GetFeature' ) {
-            ows.DCP {
-              ows.HTTP {
-                ows.Get( 'xlink:href': wfsEndpoint )
-                ows.Post( 'xlink:href': wfsEndpoint )
-              }
-            }
-            ows.Parameter( name: 'resultType' ) {
-              ows.Value('results')
-              ows.Value('hits')
-            }
-            ows.Parameter( name: 'outputFormat' ) {
-              outputFormats?.each { outputFormat ->
-                ows.Value(outputFormat)
-              }
-            }
-          }
-        }
-        FeatureTypeList {
-          Operations {
-            Operation('Query')
-          }
-          model?.featureTypes?.each { featureType ->
-            FeatureType( "xmlns:${featureType.namespace.prefix}":  featureType.namespace.uri) {
-              Name("${featureType.namespace.prefix}:${featureType.name}")
-              Title(featureType.title)
-              Abstract(featureType.description)
-              ows.Keywords {
-                featureType.keywords.each { keyword ->
-                  ows.Keyword(keyword)
-                }
-              }
-              DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
-              ows.WGS84BoundingBox {
-                def bounds = featureType.geoBounds
-                ows.LowerCorner("${bounds.minX} ${bounds.minY}")
-                ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
-              }
-            }
-          }
-        }
-        ogc.Filter_Capabilities {
-            ogc.Spatial_Capabilities {
-              ogc.GeometryOperands {
-                geometryOperands.each { geometryOperand ->
-                  ogc.GeometryOperand(geometryOperand)
-                }
-              }
-              ogc.SpatialOperators {
-                spatialOperators.each { spatialOperator ->
-                  ogc.SpatialOperator( name: spatialOperator )
-                }
-              }
-            }
-            ogc.Scalar_Capabilities {
-              ogc.LogicalOperators()
-              ogc.ComparisonOperators {
-                comparisonOperators.each { comparisonOperator ->
-                  ogc.ComparisonOperator(comparisonOperator)
-                }
-              }
-              ogc.ArithmeticOperators {
-                ogc.SimpleArithmetic()
-                ogc.Functions {
-                  ogc.FunctionNames {
-                    model?.functionNames.each {function ->
-                      ogc.FunctionName( nArgs: function.argCount, function.name)
+                        ows.OperationsMetadata {
+                          ows.Operation(name: 'GetCapabilities') {
+                            ows.DCP {
+                              ows.HTTP {
+                                ows.Get('xlink:href': wfsEndpoint)
+                                ows.Post('xlink:href': wfsEndpoint)
+                              }
+                            }
+                            ows.Parameter(name: 'AcceptVersions') {
+                              ows.Value('1.1.0')
+                            }
+                            ows.Parameter(name: 'AcceptFormats') {
+                              ows.Value('text/xml')
+                            }
+//          }
+                            ows.Operation(name: 'DescribeFeatureType') {
+                              ows.DCP {
+                                ows.HTTP {
+                                  ows.Get('xlink:href': wfsEndpoint)
+                                  ows.Post('xlink:href': wfsEndpoint)
+                                }
+                              }
+                              ows.Parameter(name: 'outputFormat') {
+                                ows.Value('text/xml; subtype=gml/3.1.1')
+                              }
+//          }
+                              ows.Operation(name: 'GetFeature') {
+                                ows.DCP {
+                                  ows.HTTP {
+                                    ows.Get('xlink:href': wfsEndpoint)
+                                    ows.Post('xlink:href': wfsEndpoint)
+                                  }
+                                }
+                                ows.Parameter(name: 'resultType') {
+                                  ows.Value('results')
+                                  ows.Value('hits')
+                                }
+                                ows.Parameter(name: 'outputFormat') {
+                                  outputFormats?.each { outputFormat ->
+                                    ows.Value(outputFormat)
+//              }
+//            }
+//          }
+//        }
+                                    FeatureTypeList {
+                                      Operations {
+                                        Operation('Query')
+                                      }
+                                      model?.featureTypes?.each { featureType ->
+                                        FeatureType("xmlns:${featureType.namespace.prefix}": featureType.namespace.uri) {
+                                          Name("${featureType.namespace.prefix}:${featureType.name}")
+                                          Title(featureType.title)
+                                          Abstract(featureType.description)
+                                          ows.Keywords {
+                                            featureType.keywords.each { keyword ->
+                                              ows.Keyword(keyword)
+                                            }
+                                          }
+                                          DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
+                                          ows.WGS84BoundingBox {
+                                            def bounds = featureType.geoBounds
+                                            ows.LowerCorner("${bounds.minX} ${bounds.minY}")
+                                            ows.UpperCorner("${bounds.maxX} ${bounds.maxY}")
+//              }
+//            }
+//          }
+//        }
+                                            ogc.Filter_Capabilities {
+                                              ogc.Spatial_Capabilities {
+                                                ogc.GeometryOperands {
+                                                  geometryOperands.each { geometryOperand ->
+                                                    ogc.GeometryOperand(geometryOperand)
+                                                  }
+                                                }
+                                                ogc.SpatialOperators {
+                                                  spatialOperators.each { spatialOperator ->
+                                                    ogc.SpatialOperator(name: spatialOperator)
+                                                  }
+                                                }
+                                              }
+                                              ogc.Scalar_Capabilities {
+                                                ogc.LogicalOperators()
+                                                ogc.ComparisonOperators {
+                                                  comparisonOperators.each { comparisonOperator ->
+                                                    ogc.ComparisonOperator(comparisonOperator)
+                                                  }
+                                                }
+                                                ogc.ArithmeticOperators {
+                                                  ogc.SimpleArithmetic()
+                                                  ogc.Functions {
+                                                    ogc.FunctionNames {
+                                                      model?.functionNames.each { function ->
+                                                        ogc.FunctionName(nArgs: function.argCount, function.name)
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                              ogc.Id_Capabilities {
+                                                ogc.FID()
+                                                ogc.EID()
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
               }
             }
-            ogc.Id_Capabilities {
-              ogc.FID()
-              ogc.EID()
-            }
           }
         }
       }
+//
 
       def xml = new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x )
       def contentType = 'application/xml'
