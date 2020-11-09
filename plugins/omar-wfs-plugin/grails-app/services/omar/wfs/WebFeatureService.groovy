@@ -110,7 +110,6 @@ class WebFeatureService
     def requestMethod = "GetCapabilities"
     Date startTime = new Date()
     def responseTime
-    def requestInfoLog
     def username = wfsParams.username ?: "(null)"
 
     def x = {
@@ -335,7 +334,6 @@ class WebFeatureService
 
   def getFeature(GetFeatureRequest wfsParams)
   {
-    def (prefix, layerName) = wfsParams?.typeName?.split(':')
     Map<Object, Object> options = parseOptions(wfsParams)
     String format = parseOutputFormat(wfsParams?.outputFormat)
 
@@ -393,9 +391,9 @@ class WebFeatureService
           sensorId.add(compare_regex.group(1))
       }
 
-      keywordCountryCode = !countryCode.isEmpty() ? countryCode : ["-"]
-      keywordMissionId = !missionId.isEmpty() ? missionId : ["-"]
-      keywordSensorId = !sensorId.isEmpty() ? sensorId : ["-"]
+      keywordCountryCode = countryCode.isEmpty() ? countryCode : ["-"]
+      keywordMissionId = missionId.isEmpty() ? missionId : ["-"]
+      keywordSensorId = sensorId.isEmpty() ? sensorId : ["-"]
 
       // The point location is only available in the filter when zoomed in the UI.
       // We want to use the point location to exclude large search areas.
@@ -519,17 +517,16 @@ class WebFeatureService
     }
 
     def xml = new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x )
-    def contentType = 'application/xml'
 
     [contentType: 'text/xml', text: xml.toString()]
   }
 
-  def getFeatureJSON(def results, def typeName, def version='1.1.0')
+  def getFeatureJSON(def results, def typeName) // def version='1.1.0')
   {
     def slurper = new JsonSlurper()
 
     def x = {
-      type 'FeatureCollection'
+      typeName 'FeatureCollection'
       totalFeatures results?.numberOfFeatures
       features results?.features?.collect {
         if ( it instanceof String ) {
@@ -558,14 +555,11 @@ class WebFeatureService
     def serverData = grailsApplication.config?.geoscript?.serverData
     def version = (wmsVersion == "WMS1_1_1") ? "1.1.1" : "1.3.0"
 
-    def contentType, buffer, responseTime, requestInfoLog
+    def contentType
     def schemaLocation = grailsLinkGenerator.link( absolute: true, uri: "/schemas/wms/1.3.0/capabilities_1_3_0.xsd" )
     def docTypeLocation = grailsLinkGenerator.link( absolute: true, uri: "/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd" )
     def model = geoscriptService.capabilitiesData
 
-    def requestType = "GET"
-    def requestMethod = "GetCapabilities"
-    Date startTime = new Date()
 
     def x = {
       mkp.xmlDeclaration()
