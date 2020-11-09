@@ -102,7 +102,7 @@ class WfsController
       results = webFeatureService.getFeature( cmd )
       break
     default:
-      throw new Exception('BAD REQUEST')
+      throw new IllegalArgumentException('UNKNOWN REQUEST')
     }
 
     String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')

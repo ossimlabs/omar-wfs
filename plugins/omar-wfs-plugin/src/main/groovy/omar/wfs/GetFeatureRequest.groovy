@@ -48,7 +48,7 @@ class GetFeatureRequest implements Validateable
   static GetFeatureRequest fromXML(def xml)
   {
     def typeName = xml?.Query?.@typeName?.text()
-    def namespacePrefix = typeName?.split( ':' )?.first()
+//    def namespacePrefix = typeName?.split( ':' )?.first()
 //    def namespaceUri = xml?.lookupNamespace( namespacePrefix ) ?: null
     String specifiedVersion = WfsParseUtil.findVersion( xml )
     def maxFeatures = xml?.@maxFeatures?.text()

@@ -116,43 +116,44 @@ class WebFeatureService
         mkp.xmlDeclaration()
         mkp.declareNamespace(ogcNamespaces)
         mkp.declareNamespace(model?.featureTypeNamespacesByPrefix)
-        wfs.WFS_Capabilities( version:'1.1.0', xmlns: 'http://www.opengis.net/wfs',
-          'xsi:schemaLocation': "http://www.opengis.net/wfs ${schemaLocation}/schemas/wfs/1.1.0/wfs.xsd",
+        wfs.WFS_Capabilities(version: '1.1.0', xmlns: 'http://www.opengis.net/wfs',
+                'xsi:schemaLocation': "http://www.opengis.net/wfs ${schemaLocation}/schemas/wfs/1.1.0/wfs.xsd",
         ) {
-        ows.ServiceIdentification {
-          ows.Title('O2 WFS Server')
-          ows.Abstract('O2 WFS server')
-          ows.Keywords {
-            ows.Keyword('WFS')
-            ows.Keyword('WMS')
-            ows.Keyword('OMAR')
+          ows.ServiceIdentification {
+            ows.Title('O2 WFS Server')
+            ows.Abstract('O2 WFS server')
+            ows.Keywords {
+              ows.Keyword('WFS')
+              ows.Keyword('WMS')
+              ows.Keyword('OMAR')
+            }
+            ows.ServiceType('WFS')
+            ows.ServiceTypeVersion('1.1.0')
+            ows.Fees('NONE')
+            ows.AccessConstraints('NONE')
           }
-          ows.ServiceType('WFS')
-          ows.ServiceTypeVersion('1.1.0')
-          ows.Fees('NONE')
-          ows.AccessConstraints('NONE')
-        }
-        ows.ServiceProvider {
-          ows.ProviderName('OSSIM Labs')
-          ows.ServiceContact {
-            ows.IndividualName('Scott Bortman')
-            ows.PositionName('OMAR Developer')
-            ows.ContactInfo {
-              ows.Phone {
-                ows.Voice()
-                ows.Facsimile()
-              }
-              ows.Address {
-                ows.DeliveryPoint()
-                ows.City()
-                ows.AdministrativeArea()
-                ows.PostalCode()
-                ows.Country()
-                ows.ElectronicMailAddress()
+          ows.ServiceProvider {
+            ows.ProviderName('OSSIM Labs')
+            ows.ServiceContact {
+              ows.IndividualName('Scott Bortman')
+              ows.PositionName('OMAR Developer')
+              ows.ContactInfo {
+                ows.Phone {
+                  ows.Voice()
+                  ows.Facsimile()
+                }
+                ows.Address {
+                  ows.DeliveryPoint()
+                  ows.City()
+                  ows.AdministrativeArea()
+                  ows.PostalCode()
+                  ows.Country()
+                  ows.ElectronicMailAddress()
+                }
               }
             }
           }
-        }
+
         ows.OperationsMetadata {
           ows.Operation( name: 'GetCapabilities' ) {
             ows.DCP {
