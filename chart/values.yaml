@@ -49,7 +49,7 @@ maxReplicas: 10
 targetCpu: 50
 
 image:
-  name: omar-wfs-app
+  name: omar-wfs
   tag: dev
   pullPolicy: Always
 
@@ -77,3 +77,14 @@ terminationGracePeriodSeconds: 30
 envVars:
   SPRING_CLOUD_CONFIG_LABEL: master
   JAVA_OPTS: "-server -Xms256m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit -Djava.awt.headless=true -XshowSettings:vm -Djava.security.egd=file:/dev/./urandom"
+
+
+configmaps: {}
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraInitContainers: []
+
+sideCars: []
