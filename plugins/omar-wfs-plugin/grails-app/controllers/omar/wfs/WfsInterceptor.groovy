@@ -35,9 +35,9 @@ class WfsInterceptor
 
   boolean after() { true }
 
-  void afterView()
-  {
+  void afterView() {
     // no-op
-    @Override
+    // @Override
   }
 }
+
