@@ -469,7 +469,7 @@ class WebFeatureService
         double latitude = pointLocation.group(2).toDouble()
         locationOrNull = new Location(latitude, longitude)
       }
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException ignore) {
       // Ignore exception because we handle it by returning null
     }
     return locationOrNull

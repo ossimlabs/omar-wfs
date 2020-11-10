@@ -38,5 +38,6 @@ class WfsInterceptor
   void afterView()
   {
     // no-op
+    @Override
   }
 }
