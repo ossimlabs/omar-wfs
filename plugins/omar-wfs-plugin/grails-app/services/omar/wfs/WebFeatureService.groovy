@@ -764,9 +764,9 @@ class WebFeatureService
               if (!wfsParams[wfsParamName].contains(',') && !wfsParams[wfsParamName].contains('ingest_date')) {
                 if (wfsParams[wfsParamName] ==~ /.*D(ESC)?/)
                   wfsParams[wfsParamName] += ',ingest_date DESC'
-                else //{
+                else {
                   wfsParams[wfsParamName] += ',ingest_date ASC'
-//                }
+                }
               }
               options['sort'] = wfsParams[wfsParamName].split(',').collect {
                 def x = it.split(/ |\+/) as List
