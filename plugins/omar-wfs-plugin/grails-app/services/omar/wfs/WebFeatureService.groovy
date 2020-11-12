@@ -40,7 +40,6 @@ class WebFeatureService
           'gml32',
           'json',
           'KML',
-          // 'SHAPE-ZIP',
           'text/xml; subtype=gml/2.1.2',
           'text/xml; subtype=gml/3.1.1',
           'text/xml; subtype=gml/3.2'
@@ -110,7 +109,6 @@ class WebFeatureService
     def requestMethod = "GetCapabilities"
     Date startTime = new Date()
     def responseTime
-//    def requestInfoLog
     def username = wfsParams.username ?: "(null)"
 
     def x = {
@@ -754,7 +752,6 @@ class WebFeatureService
             } as List<String>
             if ( fields && !fields?.isEmpty() && fields?.every { it } )
             {
-              // println "FIELDS: ${fields.size()}"
               options['fields'] = fields
             }
             break
@@ -853,7 +850,6 @@ class WebFeatureService
             open( 1 )
           }
 
-          // if (params.footprints != "off") {
           Folder() {
             name( "Footprints" )
             features.eachWithIndex() { value, index ->
@@ -863,7 +859,6 @@ class WebFeatureService
             open( 1 )
           }
           open( 1 )
-          // }
         }
       }
     }
@@ -891,10 +886,6 @@ class WebFeatureService
     }
     else
     {
-      //println '*' * 40
-      //println feature
-      //println '*' * 40
-
 
       def xcoords =  feature.geometry.coordinates[0][0].collect { it[0] }
       def ycoords =  feature.geometry.coordinates[0][0].collect { it[1] }
@@ -1041,9 +1032,7 @@ class WebFeatureService
         name( "${index + 1}: " + (feature.title ?: new File(feature.filename ?: feature.properties.filename).name) )
 
         Icon() {
-          // def wmsUrl = grailsApplication.config.omar.wms.baseUrl + "/wms?"
           wmsParams.FILTER = "in(${feature.get("id")?.toString() - 'raster_entry.'})"
-          // wmsParams.each() { wmsUrl += "${it.key}=${it.value}&" }
 
           def o2BaseUrl = grailsLinkGenerator.serverBaseURL - grailsApplication.config.server.contextPath
           def wmsUrl = grailsLinkGenerator.link(base: o2BaseUrl, uri: '/omar-wms/wms', params: wmsParams, absolute: true)
