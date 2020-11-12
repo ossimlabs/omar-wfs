@@ -1,6 +1,5 @@
 package omar.wfs
 
-import omar.core.BindUtil
 
 class WfsInterceptor
 {
