@@ -2,6 +2,7 @@ package omar.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
+import groovy.util.slurpersupport.GPathResult
 import groovy.xml.StreamingMarkupBuilder
 
 /**

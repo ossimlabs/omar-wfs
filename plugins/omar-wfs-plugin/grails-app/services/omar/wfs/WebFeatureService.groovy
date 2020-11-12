@@ -110,6 +110,7 @@ class WebFeatureService
     def requestMethod = "GetCapabilities"
     Date startTime = new Date()
     def responseTime
+//    def requestInfoLog
     def username = wfsParams.username ?: "(null)"
 
     def x = {
