@@ -2,7 +2,6 @@ package omar.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-//import groovy.util.slurpersupport.GPathResult
 
 /**
  * Created by sbortman on 9/22/15.
