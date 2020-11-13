@@ -1,50 +1,38 @@
 properties([
-    parameters ([
-        string(name: 'BUILD_NODE', defaultValue: 'POD_LABEL', description: 'The build node to run on'),
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
-        string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
-    ]),
-    pipelineTriggers([
-            [$class: "GitHubPushTrigger"]
-    ]),
-    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/ossimlabs/omar-wfs'],
-    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '20')),
-    disableConcurrentBuilds()
+  parameters ([
+    string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL',
+           defaultValue: 'nexus-docker-private-group.ossim.io',
+           description: 'Repository of docker images')
+  ]),
+  pipelineTriggers([
+    [$class: "GitHubPushTrigger"]
+  ]),
+  [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/Maxar-Corp/sqs-to-s3-download']
 ])
+
 podTemplate(
   containers: [
     containerTemplate(
-      name: 'docker',
-      image: 'docker:19.03.11',
-      ttyEnabled: true,
-      command: 'cat',
-      privileged: true
+        name: 'docker',
+        image: 'docker:19.03.11',
+        ttyEnabled: true,
+        command: 'cat',
+        privileged: true
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:1.0.0",
-      name: 'builder',
-      command: 'cat',
-      ttyEnabled: true
+        image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
+        name: 'helm',
+        command: 'cat',
+        ttyEnabled: true
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
-      name: 'helm',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-      containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/kubectl-aws-helm:latest",
-      name: 'kubectl-aws-helm',
-      command: 'cat',
-      ttyEnabled: true,
-      alwaysPullImage: true
-    ),
-    containerTemplate(
-      name: 'cypress',
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
-      ttyEnabled: true,
-      command: 'cat',
-      privileged: true
+        name: 'git',
+        image: 'alpine/git:latest',
+        ttyEnabled: true,
+        command: 'cat',
+        envVars: [
+            envVar(key: 'HOME', value: '/root')
+        ]
     )
   ],
   volumes: [
@@ -56,206 +44,136 @@ podTemplate(
 )
 {
   node(POD_LABEL){
-          stage("Checkout branch")
-          {
+    stage("Checkout branch"){
         scmVars = checkout(scm)
         GIT_BRANCH_NAME = scmVars.GIT_BRANCH
         BRANCH_NAME = """${sh(returnStdout: true, script: "echo ${GIT_BRANCH_NAME} | awk -F'/' '{print \$2}'").trim()}"""
-        sh """
-        touch buildVersion.txt
-        grep buildVersion gradle.properties | cut -d "=" -f2 > "buildVersion.txt"
-        """
-        preVERSION = readFile "buildVersion.txt"
-        VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
-
-        GIT_TAG_NAME = "omar-wfs" + "-" + VERSION
-        ARTIFACT_NAME = "ArtifactName"
-
+        VERSION = '1.0.2'
+        ARTIFACT_NAME = 'sqs-to-s3'
+        GIT_TAG_NAME = ARTIFACT_NAME + "-" + VERSION
         script {
-          if (BRANCH_NAME != 'master') {
-            buildName "${VERSION} - ${BRANCH_NAME}-SNAPSHOT"
-          } else {
-            buildName "${VERSION} - ${BRANCH_NAME}"
-          }
+            if (BRANCH_NAME != 'master') {
+                buildName "${VERSION}-SNAPSHOT - ${BRANCH_NAME}"
+            } else {
+                buildName "${VERSION} - ${BRANCH_NAME}"
+            }
         }
+    }
+
+    stage("Load Variables"){
+      step([$class     : "CopyArtifact",
+            projectName: "gegd-dgcs-jenkins-artifacts",
+            filter     : "common-variables.groovy",
+            flatten    : true])
+      load "common-variables.groovy"
+
+      switch (BRANCH_NAME) {
+        case "master":
+          TAG_NAME = VERSION
+          break
+        case "dev":
+          TAG_NAME = "latest"
+          break
+        default:
+          TAG_NAME = BRANCH_NAME
+          break
       }
-          stage("Load Variables")
-          {
-            withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
-              step ([$class: "CopyArtifact",
-                projectName: o2ArtifactProject,
-                filter: "common-variables.groovy",
-                flatten: true])
-              }
-              load "common-variables.groovy"
-              switch (BRANCH_NAME) {
-                  case "master":
-                    TAG_NAME = VERSION
-                    break
-                  case "dev":
-                    TAG_NAME = "latest"
-                    break
-                  default:
-                    TAG_NAME = BRANCH_NAME
-                    break
-              }
-              DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-wfs"
-          }
 
-          stage('SonarQube Analysis') {
-              nodejs(nodeJSInstallationName: "${NODEJS_VERSION}") {
-                  def scannerHome = tool "${SONARQUBE_SCANNER_VERSION}"
+      DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/sqs-to-s3-download"
+    }
+    stage('SonarQube Analysis') {
+        nodejs(nodeJSInstallationName: "Node 14.4.0") {
+            def scannerHome = tool "SonarQube Scanner 4.3"
 
-                  withSonarQubeEnv('sonarqube'){
-                      sh """
+                withSonarQubeEnv('sonarqube'){
+                    sh """
+
                         ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=omar-wfs \
-                        -Dsonar.login=${SONARQUBE_TOKEN}
-                      """
-                  }
-              }
-          }
-
-        stage ("Generate Swagger Spec") {
-          container('builder') {
-                sh """
-                ./gradlew :omar-wfs-plugin:generateSwaggerDocs \
-                    -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-                """
-                archiveArtifacts "plugins/*/build/swaggerSpec.json"
-            }
-          }
-
-                stage ("Run Cypress Test") {
-            container('cypress') {
-                try {
-                sh """
-                cypress run --headless
-                """
-                } catch (err) { }
-                sh """
-                cypress run --headless
-                npm i -g xunit-viewer
-                xunit-viewer -r results -o results/omar-wfs-test-results.html
-                """
-                junit 'results/*.xml'
-                archiveArtifacts "results/*.xml"
-                archiveArtifacts "results/*.html"
-                s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-            }
+                        -Dsonar.projectKey=sqs-to-s3-download \
+                        -Dsonar.login=54a54ccce7b49d977bc527e9e6a5a14dddcaffdb
+                    """
         }
-
-          stage('Build') {
-            container('builder') {
-              sh """
-              ./gradlew assemble \
-                  -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-              ./gradlew copyJarToDockerDir \
-                  -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-              """
-              archiveArtifacts "plugins/*/build/libs/*.jar"
-              archiveArtifacts "apps/*/build/libs/*.jar"
-            }
-          }
-
-        stage ("Publish Nexus"){
-          container('builder'){
-              withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                              credentialsId: 'nexusCredentials',
-                              usernameVariable: 'MAVEN_REPO_USERNAME',
-                              passwordVariable: 'MAVEN_REPO_PASSWORD']])
-              {
-                sh """
-                ./gradlew publish \
-                    -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-                """
-              }
-            }
-        }
-
-stage('Docker build') {
-      container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
-          if (BRANCH_NAME == 'master'){
-                sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}" ./docker
-                """
-          }
-          else {
-                sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a ./docker
-                """
+      }
+    }
+    stage("Build & Deploy") {
+      container('docker'){
+        withGradle {
+          script {
+            sh 'apk add gradle'
+            sh 'gradle assemble'
           }
         }
       }
     }
 
-    stage('Docker push'){
-        container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
-            if (BRANCH_NAME == 'master'){
-                sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}"
-                """
+    stage("Build Docker Image") {
+      container('docker'){
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {
+          sh  "docker build . -t ${DOCKER_IMAGE_PATH}:${TAG_NAME} \
+                    --build-arg DOCKER_REGISTRY=${DOCKER_REGISTRY_DOWNLOAD_URL} \
+                    --build-arg BASE_IMAGE_TAG=release"
+          }
+        }
+      }
+
+    stage("Push Docker Image") {
+      container('docker'){
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}") {
+          script {
+            sh "docker push ${DOCKER_IMAGE_PATH}:${TAG_NAME}"
+
+            if (BRANCH_NAME == "master") {
+              sh  "docker tag ${DOCKER_IMAGE_PATH}:${TAG_NAME} ${DOCKER_IMAGE_PATH}:release"
+              sh  "docker push ${DOCKER_IMAGE_PATH}:release"
             }
-            else if (BRANCH_NAME == 'dev') {
+          }
+        }
+      }
+    }
+
+    stage('Package Chart'){
+      container('helm') {
+        script {
+          sh 'helm package chart'
+        }
+      }
+    }
+
+    stage('Upload All Charts'){
+      container('helm') {
+        withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
+          script {
+            sh 'apk add curl'
+            sh 'curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file *.tgz -v'
+          }
+        }
+      }
+    }
+
+    stage('Tag Repo') {
+      when (BRANCH_NAME == 'master') {
+        container('git') {
+          withCredentials([sshUserPrivateKey(
+          credentialsId: env.GIT_SSH_CREDENTIALS_ID,
+          keyFileVariable: 'SSH_KEY_FILE',
+          passphraseVariable: '',
+          usernameVariable: 'SSH_USERNAME')]) {
+            script {
                 sh """
-                    docker tag "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:dev
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:dev
-                """
-            }
-            else {
-                sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-wfs:"${VERSION}".a           
+                  mkdir ~/.ssh
+                  echo -e "StrictHostKeyChecking=no\nIdentityFile ${SSH_KEY_FILE}" >> ~/.ssh/config
+                  git config user.email "radiantcibot@gmail.com"
+                  git config user.name "Jenkins"
+                  git tag -a "${GIT_TAG_NAME}" \
+                    -m "Generated by: ${env.JENKINS_URL}" \
+                    -m "Job: ${env.JOB_NAME}" \
+                    -m "Build: ${env.BUILD_NUMBER}"
+                  git push -v origin "${GIT_TAG_NAME}"
                 """
             }
           }
         }
       }
-
-          stage('Package chart'){
-            container('helm') {
-              sh """
-                  mkdir packaged-chart
-                  helm package -d packaged-chart chart
-                """
-            }
-          }
-
-        stage('Upload chart'){
-          container('builder') {
-            withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
-                sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
-            }
-          }
-        }
-        
-      
-      
-      stage('New Deploy'){
-        container('kubectl-aws-helm') {
-            withAWS(
-            credentials: 'Jenkins-AWS-IAM',
-            region: 'us-east-1'){
-                if (BRANCH_NAME == 'master'){
-                    //insert future instructions here
-                }
-                else if (BRANCH_NAME == 'dev') {
-                    sh "aws eks --region us-east-1 update-kubeconfig --name gsp-dev-v2 --alias dev"
-                    sh "kubectl config set-context dev --namespace=omar-dev"
-                    sh "kubectl rollout restart deployment/omar-wfs"   
-                }
-                else {
-                    sh "echo Not deploying ${BRANCH_NAME} branch"
-                }
-            }
-        }
     }
-
-        stage("Clean Workspace"){
-          if ("${CLEAN_WORKSPACE}" == "true")
-            step([$class: 'WsCleanup'])
-        }
-    }
+  }
 }
