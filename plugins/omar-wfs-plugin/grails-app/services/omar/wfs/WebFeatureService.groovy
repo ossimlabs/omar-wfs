@@ -264,10 +264,12 @@ class WebFeatureService
     Date endTime = new Date()
     responseTime = Math.abs(startTime.getTime() - endTime.getTime())
 
-    requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
+    def requestInfoLog = new JsonBuilder(timestamp: DateUtil.formatUTC(startTime), username: username, requestType: requestType,
             requestMethod: requestMethod, endTime: DateUtil.formatUTC(endTime), responseTime: responseTime,
             responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
+    log.info requestInfoLog as String
+    
     [contentType: contentType, text: xml.toString()]
   }
 
@@ -379,19 +381,22 @@ class WebFeatureService
       filter.split(' AND ').each { s ->
         compare_regex = regex.matcher(s)
 
-        while (s.contains('country_code') && compare_regex.find())
+        while (s.contains('country_code') && compare_regex.find()){
           countryCode.add(compare_regex.group(1))
+        }
 
-        while (s.contains('mission_id') && compare_regex.find())
+        while (s.contains('mission_id') && compare_regex.find()) {
           missionId.add(compare_regex.group(1))
+        }
 
-        while (s.contains('sensor_id') && compare_regex.find())
+        while (s.contains('sensor_id') && compare_regex.find()) {
           sensorId.add(compare_regex.group(1))
+        }
       }
 
-      keywordCountryCode = countryCode.isEmpty() ? countryCode : ["-"]
-      keywordMissionId = missionId.isEmpty() ? missionId : ["-"]
-      keywordSensorId = sensorId.isEmpty() ? sensorId : ["-"]
+      keywordCountryCode = countryCode?.trim() ?: ['-'] 
+      keywordMissionId = missionId?.trim() ?: ['-']
+      keywordSensorId = sensorId?.trim() ?: ['-']
 
       // The point location is only available in the filter when zoomed in the UI.
       // We want to use the point location to exclude large search areas.
@@ -524,7 +529,7 @@ class WebFeatureService
     def slurper = new JsonSlurper()
 
     def x = {
-      typeName 'FeatureCollection'
+      type 'FeatureCollection'
       totalFeatures results?.numberOfFeatures
       features results?.features?.collect {
         if ( it instanceof String ) {
