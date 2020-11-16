@@ -269,7 +269,7 @@ class WebFeatureService
             responseSize: xml.toString().bytes.length, contentType: contentType, params: wfsParams.toString())
 
     log.info requestInfoLog as String
-    
+
     [contentType: contentType, text: xml.toString()]
   }
 
@@ -394,9 +394,9 @@ class WebFeatureService
         }
       }
 
-      keywordCountryCode = countryCode?.trim() ?: ['-'] 
-      keywordMissionId = missionId?.trim() ?: ['-']
-      keywordSensorId = sensorId?.trim() ?: ['-']
+      keywordCountryCode = countryCode ?: ['-'] 
+      keywordMissionId = missionId ?: ['-']
+      keywordSensorId = sensorId ?: ['-']
 
       // The point location is only available in the filter when zoomed in the UI.
       // We want to use the point location to exclude large search areas.
