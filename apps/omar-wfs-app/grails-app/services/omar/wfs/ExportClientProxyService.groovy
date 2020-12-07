@@ -1,6 +1,6 @@
 package omar.wfs
 
-class ExportClientService {
+class ExportClientProxyService {
     @Value('${omar.wfs.app.geoscript.url}')
     def geoscriptEndpoint
 
