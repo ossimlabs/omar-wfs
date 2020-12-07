@@ -42,7 +42,8 @@ class WebFeatureService
           'KML',
           'text/xml; subtype=gml/2.1.2',
           'text/xml; subtype=gml/3.1.1',
-          'text/xml; subtype=gml/3.2'
+          'text/xml; subtype=gml/3.2',
+          'SHAPE-ZIP'
   ]
 
   static final def geometryOperands = [
@@ -354,11 +355,14 @@ class WebFeatureService
     {
       includeNumberMatched = true
     }
+
+    def outputFormat = parseOutputFormat(wfsParams?.outputFormat)
+
     def results = geoscriptService.queryLayer(
             wfsParams?.typeName,
             options,
             wfsParams?.resultType ?: 'results',
-            parseOutputFormat(wfsParams?.outputFormat),
+            outputFormat,
             includeNumberMatched
     )
 

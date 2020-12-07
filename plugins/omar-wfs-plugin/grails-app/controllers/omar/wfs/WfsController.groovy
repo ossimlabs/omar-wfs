@@ -1,6 +1,5 @@
 package omar.wfs
 
-
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -17,6 +16,7 @@ import java.nio.charset.StandardCharsets
 class WfsController
 {
   WebFeatureService webFeatureService
+  ExportClientService exportClientService 
 
   static int DEFAULT_MAX_FEATURES = 1000
 
@@ -99,6 +99,12 @@ class WfsController
         cmd.outputFormat = 'GML3'
       } 
       
+      if ( cmd.outputFormat == 'SHAPE-ZIP') {
+        String exportShapeUrl = exportClientService.getExportShapefileURL(cmd)
+
+        response.sendRedirect(exportShapeUrl)
+      }
+
       results = webFeatureService.getFeature( cmd )
       break
     default:
@@ -220,6 +226,12 @@ class WfsController
     def results = webFeatureService.getFeature( wfsParams )
     if(results.status != null) {
       response.status = results.status
+    }
+
+    if ( wfsParams.outputFormat == 'SHAPE-ZIP') {
+        String exportShapeUrl = exportClientService.getExportShapefileURL(wfsParams)
+
+      response.sendRedirect(exportShapeUrl)
     }
 
     String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
