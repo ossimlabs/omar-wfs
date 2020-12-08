@@ -4,6 +4,7 @@ class ExportClientService {
     def grailsLinkGenerator
 
     def getExportShapefileURL(GetFeatureRequest wfsParams) {
+
         // copy non-null values
         def params = ['typeName', 'filter', 'maxFeatures', 'startIndex'].inject([:]) { a, b ->
             if ( wfsParams[b] ) {
