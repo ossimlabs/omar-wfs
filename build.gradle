@@ -61,6 +61,7 @@ subprojects { project ->
                 openshiftProjectName = getConfigurationProperty('OPENSHIFT_PROJECT_NAME', 'openshiftProjectName')
             }
 
+/*
             io.ossim.gradleDefaults.Openshift.addOpenshiftTasks(
                     project,
                     openshiftUrl,
@@ -72,7 +73,7 @@ subprojects { project ->
                     dockerImageName,
                     dockerImageTag
             )
-
+*/
             docker {
                 registryCredentials {
                     url = dockerRegistryPrivateUrl
