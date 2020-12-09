@@ -2,7 +2,7 @@ package omar.wfs
 
 import org.springframework.beans.factory.annotation.Value
 
-class ExportClientProxyService {
+class ExportClientProxyService extends ExportClientService {
     @Value('${omar.wfs.app.geoscript.url}')
     def geoscriptEndpoint
 
