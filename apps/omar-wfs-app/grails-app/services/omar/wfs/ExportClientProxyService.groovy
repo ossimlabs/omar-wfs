@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Value
 import grails.web.mapping.LinkGenerator
 
 class ExportClientProxyService extends  ExportClientService {
-    @Value('${omar.wfs.app.geoscript.url}')
-    def geoscriptEndpoint
     
     LinkGenerator grailsLinkGenerator
 
@@ -19,8 +17,8 @@ class ExportClientProxyService extends  ExportClientService {
         }
 
         grailsLinkGenerator.link( 
-            base: geoscriptEndpoint - '/geoscriptApi',
-            absolute: true, uri: '/export/exportShapefile', params: params )
+            absolute: true, uri: '/export/exportShapefile', params: params 
+        ).replace("omar-wfs", "omar-geoscript")
     }
 
 }
