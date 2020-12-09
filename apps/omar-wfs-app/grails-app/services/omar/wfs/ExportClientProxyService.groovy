@@ -6,8 +6,6 @@ class ExportClientProxyService extends ExportClientService {
     @Value('${omar.wfs.app.geoscript.url}')
     def geoscriptEndpoint
 
-    def grailsLinkGenerator
-
     def getExportShapefileURL(GetFeatureRequest wfsParams) {
         // copy non-null values
         def params = ['typeName', 'filter', 'maxFeatures', 'startIndex'].inject([:]) { a, b ->
