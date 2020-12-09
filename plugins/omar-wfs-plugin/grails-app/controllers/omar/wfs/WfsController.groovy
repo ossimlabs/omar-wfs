@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets
 class WfsController
 {
   WebFeatureService webFeatureService
-  ExportClientService exportClientService 
+  def exportClientService 
 
   static int DEFAULT_MAX_FEATURES = 1000
 
