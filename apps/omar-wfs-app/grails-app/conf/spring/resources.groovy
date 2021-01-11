@@ -4,5 +4,7 @@ import omar.wfs.ExportClientProxyService
 
 beans = {
   geoscriptService(GeoscriptClientService)
-  exportClientService(ExportClientProxyService)
+  exportClientService(ExportClientProxyService) {
+    grailsLinkGenerator = ref("grailsLinkGenerator")
+  }
 }
