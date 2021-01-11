@@ -1,6 +1,5 @@
 package omar.wfs
 
-
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -17,6 +16,7 @@ import java.nio.charset.StandardCharsets
 class WfsController
 {
   WebFeatureService webFeatureService
+  def exportClientService 
 
   static int DEFAULT_MAX_FEATURES = 1000
 
@@ -99,10 +99,16 @@ class WfsController
         cmd.outputFormat = 'GML3'
       } 
       
+      if ( cmd.outputFormat == 'SHAPE-ZIP') {
+        String exportShapeUrl = exportClientService.getExportShapefileURL(cmd)
+
+        response.sendRedirect(exportShapeUrl)
+      }
+
       results = webFeatureService.getFeature( cmd )
       break
     default:
-      throw new Exception('UNKNOWN REQUEST')
+      throw new IllegalArgumentException('UNKNOWN REQUEST')
     }
 
     String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')
@@ -196,7 +202,7 @@ class WfsController
           @ApiImplicitParam(name = 'typeName', value = 'Type name', defaultValue="omar:raster_entry", paramType = 'query', dataType = 'string', required=true),
           @ApiImplicitParam(name = 'filter', value = 'Filter', paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'resultType', value = 'Result type', defaultValue="", allowableValues="results,hits", paramType = 'query', dataType = 'string', required=false),
-          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32, WMS111, WMS130", paramType = 'query', dataType = 'string', required=false),
+          @ApiImplicitParam(name = 'outputFormat', value = 'Output format', defaultValue="", allowableValues="JSON, KML, CSV, GML2, GML3, GML32, WMS111, WMS130, SHAPE-ZIP", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'sortBy', value = 'Sort by', paramType = 'query', dataType = 'string'),
           @ApiImplicitParam(name = 'propertyName', value = 'Property name (comma separated fields)', defaultValue="", paramType = 'query', dataType = 'string', required=false),
           @ApiImplicitParam(name = 'maxFeatures', value = 'Maximum Features in the result', defaultValue="10", paramType = 'query', dataType = 'integer', required=false),
@@ -220,6 +226,12 @@ class WfsController
     def results = webFeatureService.getFeature( wfsParams )
     if(results.status != null) {
       response.status = results.status
+    }
+
+    if ( wfsParams.outputFormat == 'SHAPE-ZIP') {
+        String exportShapeUrl = exportClientService.getExportShapefileURL(wfsParams)
+
+      response.sendRedirect(exportShapeUrl)
     }
 
     String format = webFeatureService.parseOutputFormat(wfsParams?.outputFormat ?: 'GML3')

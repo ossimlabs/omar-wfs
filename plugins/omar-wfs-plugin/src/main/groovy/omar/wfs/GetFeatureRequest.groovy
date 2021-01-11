@@ -2,7 +2,6 @@ package omar.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import groovy.util.slurpersupport.GPathResult
 
 /**
  * Created by sbortman on 9/22/15.
@@ -49,13 +48,11 @@ class GetFeatureRequest implements Validateable
   static GetFeatureRequest fromXML(def xml)
   {
     def typeName = xml?.Query?.@typeName?.text()
-    def namespacePrefix = typeName?.split( ':' )?.first()
-    def namespaceUri = xml?.lookupNamespace( namespacePrefix ) ?: null
+
     String specifiedVersion = WfsParseUtil.findVersion( xml )
     def maxFeatures = xml?.@maxFeatures?.text()
     def startIndex = xml?.@startIndex?.text()
 
-    // println  groovy.xml.XmlUtil.serialize(xml)
 
     def propertyNames = xml?.Query?.first()?.PropertyName?.collect { it?.text()?.split( ':' )?.last() }?.join( ',' )
 
@@ -65,7 +62,6 @@ class GetFeatureRequest implements Validateable
         version: specifiedVersion,
         request: 'GetFeature',
         typeName: typeName,
-//        namespace: namespace,
         outputFormat: xml?.@outputFormat?.text() ?: null,
         maxFeatures: ( maxFeatures ) ? maxFeatures?.toInteger() : null,
         startIndex: ( startIndex ) ? startIndex?.toInteger() : null,
@@ -75,7 +71,6 @@ class GetFeatureRequest implements Validateable
         propertyName: propertyNames
     )
 
-//    println cmd
 
     return cmd
   }
