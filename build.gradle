@@ -27,7 +27,7 @@ subprojects { project ->
      buildVersionTag = gitBranch == "master" ? "RELEASE" : "SNAPSHOT"
     }
 
-    project.version "${buildVersion}-${buildVersionTag}"
+    project.version "${project.buildVersion}-${buildVersionTag}"
     project.group groupName
 
     apply plugin: "eclipse"
@@ -57,33 +57,30 @@ subprojects { project ->
 
             ext {
                 jarDestination = "${project.projectDir}/build/libs/${project.name}-${version}.jar"
-                mavenPublishUrl = getConfigurationProperty( 'MAVEN_PUBLISH_URL', 'mavenPublishUrl' )
+                mavenPublishUrl = getConfigurationProperty( 'MAVEN_UPLOAD_URL', 'mavenPublishUrl' )
                 mavenRepoUsername = getConfigurationProperty( 'MAVEN_REPO_USERNAME', 'mavenRepoUsername')
                 mavenRepoPassword = getConfigurationProperty( 'MAVEN_REPO_PASSWORD', 'mavenRepoPassword')
             }
-
-            project.with {
-              publishing {
-                    publications {
-                        "${project.name}" (MavenPublication) {
-                            group groupName
-                            groupId = groupName
-                            version project.version
-                            from components.java
-                        }
+            publishing {
+                publications {
+                    "${project.name}" (MavenPublication) {
+                        from components.java
+                        group groupName
+                        groupId = groupName
+                        version = project.version
                     }
-                    repositories {
+                }
+                repositories {
                     maven {
                         credentials {
                             username mavenRepoUsername
                             password mavenRepoPassword
-                            }
-                            url = mavenPublishUrl.toLowerCase()
                         }
-                    }                
-                    jar.onlyIf {
-                        !file(jarDestination).exists()
+                        url = mavenPublishUrl.toLowerCase()
                     }
+                }                
+                jar.onlyIf {
+                    !file(jarDestination).exists()
                 }
             }
         }
