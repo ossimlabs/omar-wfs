@@ -44,8 +44,6 @@ resources:
     cpu: 500m
     memory: 500Mi
 
-minReplicas: 4
-maxReplicas: 10
 targetCpu: 50
 
 image:
