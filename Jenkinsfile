@@ -21,7 +21,7 @@ podTemplate(
       privileged: true
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:1.0.0",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:jdk11",
       name: 'builder',
       command: 'cat',
       ttyEnabled: true
@@ -54,12 +54,7 @@ podTemplate(
         scmVars = checkout(scm)
         GIT_BRANCH_NAME = scmVars.GIT_BRANCH
         BRANCH_NAME = """${sh(returnStdout: true, script: "echo ${GIT_BRANCH_NAME} | awk -F'/' '{print \$2}'").trim()}"""
-        sh """
-        touch buildVersion.txt
-        grep buildVersion gradle.properties | cut -d "=" -f2 > "buildVersion.txt"
-        """
-        preVERSION = readFile "buildVersion.txt"
-        VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
+        VERSION = """${sh(returnStdout: true, script: "cat chart/Chart.yaml | grep version: | awk -F'version:' '{print \$2}'").trim()}"""
 
         GIT_TAG_NAME = "omar-wfs" + "-" + VERSION
         ARTIFACT_NAME = "ArtifactName"
