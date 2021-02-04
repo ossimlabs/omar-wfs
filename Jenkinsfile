@@ -107,7 +107,7 @@ node(POD_LABEL){
 //                 sh """
 //                     npm i -g xunit-viewer
 //                     xunit-viewer -r results -o results/${APP_NAME}-test-results.html
-//                     """
+//                 """
 //                     junit 'results/*.xml'
 //                     archiveArtifacts "results/*.xml"
 //                     archiveArtifacts "results/*.html"
@@ -179,8 +179,10 @@ node(POD_LABEL){
                 helm package -d packaged-chart chart
             """
         withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
-            sh "apk add curl"
-            sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
+            sh """
+                apk add curl
+                curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v
+            """
             }
         }
     }
