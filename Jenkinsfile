@@ -2,7 +2,6 @@ properties([
     parameters([
         string(name: 'PROJECT_URL', defaultValue: 'https://github.com/ossimlabs/omar-wfs', description: 'The project github URL'),
         string(name: 'BUILD_NODE', defaultValue: 'POD_LABEL', description: 'The build node to run on'),
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
         string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
     pipelineTriggers([
@@ -95,26 +94,26 @@ node(POD_LABEL){
         DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${APP_NAME}"
     }
 
-     stage ("Run Cypress Test") {
-         container('cypress') {
-             try {
-                 sh """
-                     cypress run --headless
-                 """
-             }
-             catch (err) {
-
-             }
-                 sh """
-                     npm i -g xunit-viewer
-                     xunit-viewer -r results -o results/${APP_NAME}-test-results.html
-                     """
-                     junit 'results/*.xml'
-                     archiveArtifacts "results/*.xml"
-                     archiveArtifacts "results/*.html"
-                     s3Upload(file:'results/${APP_NAME}-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-                 }
-             }
+//     stage ("Run Cypress Test") {
+//         container('cypress') {
+//             try {
+//                 sh """
+//                     cypress run --headless
+//                 """
+//             }
+//             catch (err) {
+//
+//             }
+//                 sh """
+//                     npm i -g xunit-viewer
+//                     xunit-viewer -r results -o results/${APP_NAME}-test-results.html
+//                     """
+//                     junit 'results/*.xml'
+//                     archiveArtifacts "results/*.xml"
+//                     archiveArtifacts "results/*.html"
+//                     s3Upload(file:'results/${APP_NAME}-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
+//                 }
+//             }
 
 //     stage('Fortify Scans') {
 //         COMING SOON
