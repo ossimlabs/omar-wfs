@@ -139,6 +139,7 @@ node(POD_LABEL){
                           credentialsId: 'nexusCredentials',
                           usernameVariable: 'MAVEN_REPO_USERNAME',
                           passwordVariable: 'MAVEN_REPO_PASSWORD']])
+            {
                 sh """
                     ./gradlew assemble -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
                     ./gradlew copyJarToDockerDir -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
@@ -146,6 +147,7 @@ node(POD_LABEL){
                 """
                 archiveArtifacts "plugins/*/build/libs/*.jar"
                 archiveArtifacts "apps/*/build/libs/*.jar"
+            }
         }
     }
 
