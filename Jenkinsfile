@@ -95,28 +95,6 @@ node(POD_LABEL){
         DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${APP_NAME}"
     }
 
-//     CYPRESS TESTS COMING SOON
-//     stage ("Run Cypress Test") {
-//         container('cypress') {
-//             try {
-//                 sh """
-//                     cypress run --headless
-//                 """
-//             }
-//             catch (err) {
-//
-//             }
-//                 sh """
-//                     npm i -g xunit-viewer
-//                     xunit-viewer -r results -o results/${APP_NAME}-test-results.html
-//                     """
-//                     junit 'results/*.xml'
-//                     archiveArtifacts "results/*.xml"
-//                     archiveArtifacts "results/*.html"
-//                     s3Upload(file:'results/${APP_NAME}-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-//                 }
-//             }
-
 //     stage('Fortify Scans') {
 //         COMING SOON
 //     }
@@ -124,13 +102,46 @@ node(POD_LABEL){
     stage('SonarQube Analysis') {
         nodejs(nodeJSInstallationName: "${NODEJS_VERSION}") {
             def scannerHome = tool "${SONARQUBE_SCANNER_VERSION}"
+            withSonarQubeEnv('sonarqube'){
+                sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=${APP_NAME} \
+                    -Dsonar.login=${SONARQUBE_TOKEN}
+                """
+            }
+        }
+    }
+  
+    stage ("Run Cypress Test") {
+        container('cypress') {
+            try {
+                sh """
+                    cypress run --headless
+                """
+            } catch (err) {
+                sh """
+                    npm i -g xunit-viewer
+                    xunit-viewer -r results -o results/omar-wfs-test-results.html
+                """
+                junit 'results/*.xml'
+                archiveArtifacts "results/*.xml"
+                archiveArtifacts "results/*.html"
+                s3Upload(file:'results/omar-wfs-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
+            }
+        }
+    }
 
-                withSonarQubeEnv('sonarqube'){
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=${APP_NAME} \
-                        -Dsonar.login=${SONARQUBE_TOKEN}
-                    """
+    stage ("Publish Nexus"){
+        container('builder'){
+            withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                          credentialsId: 'nexusCredentials',
+                          usernameVariable: 'MAVEN_REPO_USERNAME',
+                          passwordVariable: 'MAVEN_REPO_PASSWORD']])
+            {
+                sh """
+                    ./gradlew publish \
+                        -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+                """
             }
         }
     }
