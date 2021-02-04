@@ -147,7 +147,6 @@ node(POD_LABEL){
                 """
                 archiveArtifacts "plugins/*/build/libs/*.jar"
                 archiveArtifacts "apps/*/build/libs/*.jar"
-            }
         }
     }
 
