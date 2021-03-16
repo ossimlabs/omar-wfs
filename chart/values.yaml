@@ -4,7 +4,7 @@
 
 replicas: 1
 
-appName: omar-wfs-test
+appName: omar-wfs
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
@@ -51,7 +51,7 @@ image:
   tag: dev
   pullPolicy: Always
 
-ingressPath: /omar-wfs-test
+ingressPath: /omar-wfs
 internalPort: 8080
 externalPort: 8080
 
@@ -68,7 +68,7 @@ readinessProbe:
   periodSeconds: 15
   successThreshold: 1
   timeoutSeconds: 3
-  path: /omar-wfs-test/actuator/health
+  path: /omar-wfs/actuator/health
 
 terminationGracePeriodSeconds: 30
 

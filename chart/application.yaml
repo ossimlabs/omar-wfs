@@ -128,5 +128,5 @@ userInfo:
 
 server:
   servlet:
-    context-path: /omar-wfs-test
+    context-path: /omar-wfs
   contextPath: ${server.servlet.context-path}
