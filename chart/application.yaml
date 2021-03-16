@@ -1,0 +1,132 @@
+---
+about:
+   contactEmail: Kevin.Naquin@maxar.com
+   releaseName: HystericalHyena
+   releaseNumber: 1.0.0
+
+baseUrl: ${serverProtocol}://${serverName}
+
+endpoints:
+  enabled: true
+  health:
+    enabled: true
+  actuator:
+    sensitive: false
+  beans:
+    sensitive: false
+  metrics:
+    sensitive: false
+  configprops:
+    sensitive: false
+  trace:
+    sensitive: false
+  mappings:
+    sensitive: false
+  env:
+    sensitive: false
+  loggers:
+    sensitive: false
+
+environments:
+  production:
+    dataSource:
+      dbCreate: update
+
+# eureka:
+#   client:
+#     serviceUrl:
+#       defaultZone: http://omar-eureka-server:8761/omar-eureka-server/eureka/
+#   instance:
+#     leaseRenewalIntervalInSeconds: 1
+#     leaseExpirationDurationInSeconds: 2
+#     preferIpAddress: true
+#     statusPageUrlPath: ${server.contextPath}/info
+#     homePageUrlPath: ${server.contextPath}
+#     healthCheckUrlPath: ${server.contextPath}/health
+
+grails:
+  serverURL: ${serverProtocol}://${serverName}${server.contextPath}
+
+hystrix:
+  execution:
+    timeout:
+      enabled: false
+  fallback:
+    enabled: false
+
+logging:
+  level:
+    avro.app: ${loggingLevel}
+    sqs.app: ${loggingLevel}
+    stager.app: ${loggingLevel}
+    omar.avro: ${loggingLevel}
+    omar.eureka: ${loggingLevel}
+    omar.geoscript: ${loggingLevel}
+    omar.oms: ${loggingLevel}
+    omar.raster: ${loggingLevel}
+    omar.stager: ${loggingLevel}
+    omar.sqs: ${loggingLevel}
+    omar.wcs: ${loggingLevel}
+    omar.wfs: ${loggingLevel}
+    omar.wms: ${loggingLevel}
+    omar.wmts: ${loggingLevel}
+
+loggingLevel: DEBUG
+
+omarDb:
+  host: omar-3pa-prod.cxqt5icsmetr.us-east-1.rds.amazonaws.com
+  username: postgres
+  password: Wm>|dk4jW4gfDM5]
+  name: o2_omar_db
+  port: 5432
+  driver: org.postgresql.Driver
+  dialect: 'org.hibernate.spatial.dialect.postgis.PostgisDialect'
+  url: jdbc:postgresql://${omarDb.host}:${omarDb.port}/${omarDb.name}
+
+security:
+  user:
+    name: omar #user name to authenticate for Spring Boot Admin
+    password: omarftw123 #Password to authenticate for Spring Boot Admin
+
+securityClassification:
+  backgroundColor: green
+  classification: UNCLASSIFIED
+  textColor: white
+
+serverDomain: 3pa.maxar.com
+serverName: omar.${serverDomain}
+serverNamePki: pki-omar.${serverDomain}
+
+serverProtocol: https
+
+# spring:
+  # boot:
+  #   admin:
+  #     url: http://omar-admin-server:8080/omar-admin-server/
+  #     auto-deregistration: true
+  #     client:
+  #       prefer-ip: true
+  #     username: omar #Client app username for Spring Boot Admin
+  #     password: omarftw123 #Client app password for Spring Boot Admin
+
+swagger:
+  validatorUrl: null
+  info:
+    title: ${info.app.name} API
+    version: ${info.app.version}
+    contact:
+      name: "Maxar"
+      url: http://overview.${serverDomain}
+      email: "kurt.feldbush@maxar.com"
+    license:
+      name: "Licensed under MIT"
+      url: "https://opensource.org/licenses/MIT"
+
+userInfo:
+  requestHeaderUserName: username
+  requestHeaderUserNameDefault: Anonymous
+
+server:
+  servlet:
+    context-path: /omar-wfs-test
+  contextPath: ${server.servlet.context-path}

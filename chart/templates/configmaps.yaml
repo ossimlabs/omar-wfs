@@ -1,4 +1,3 @@
-
 {{- /*
 This template allows for generating configmaps from files and
 directories, both templated and untemplated, as well as binary

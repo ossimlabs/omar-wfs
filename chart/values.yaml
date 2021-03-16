@@ -4,7 +4,7 @@
 
 replicas: 1
 
-appName: omar-wfs
+appName: omar-wfs-test
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
@@ -51,7 +51,7 @@ image:
   tag: dev
   pullPolicy: Always
 
-ingressPath: /omar-wfs
+ingressPath: /omar-wfs-test
 internalPort: 8080
 externalPort: 8080
 
@@ -68,12 +68,12 @@ readinessProbe:
   periodSeconds: 15
   successThreshold: 1
   timeoutSeconds: 3
-  path: /omar-wfs/actuator/health
+  path: /omar-wfs-test/actuator/health
 
 terminationGracePeriodSeconds: 30
 
-envVars:
-  SPRING_CLOUD_CONFIG_LABEL: master
+# envVars:
+#   SPRING_CLOUD_CONFIG_LABEL: master
 
 
 configmaps: {}

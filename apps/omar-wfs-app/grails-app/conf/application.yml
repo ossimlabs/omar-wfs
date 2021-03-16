@@ -138,7 +138,7 @@ environments:
 ---
 server:
     servlet:
-        context-path: /omar-wfs
+        context-path: /omar-wfs-test
     contextPath: ${server.servlet.context-path}
 
 management:
@@ -163,7 +163,7 @@ grails:
 ---
 spring:
   application:
-    name: omar-wfs
+    name: omar-wfs-test
   cloud:
     discovery:
       enabled: ${SPRING_CLOUD_DISCOVERY_ENABLED:false}
