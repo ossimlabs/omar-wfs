@@ -10,6 +10,12 @@
   {{- end }}
 {{- end -}}
 
+{{/* Templates for the container command */}}
+{{- define "gomar-wfs.command" -}}
+{{- range $configmap := .Values.configmaps}}"application-yaml", "{{ $configmap.mountPath }}/{{ $configmap.file }}"
+{{- end -}}
+{{- end -}}
+
 
 
 
