@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
       - name: wait-for-geoscript
-        image: busybox:1.28
+        image: "{{ .Values.global.dockerRepository }}/busybox:1.28"
         command: ['sh', '-c', "until nslookup omar-geoscript-app; do echo waiting for geoscript; sleep 2; done"]
       {{- if .Values.extraInitContainers }}
       {{- toYaml .Values.extraInitContainers | nindent 6 }}
