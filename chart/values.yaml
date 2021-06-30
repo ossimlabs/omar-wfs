@@ -14,7 +14,14 @@ global:
     password: null
   hostname: omar-dev.ossim.io
 
-  createIngress: true
+  omarDb:
+    name: null
+    host: null
+    user: null
+    password: null
+    port: null
+
+  createIngress: false
   useTls: false
   useTLSClientAuth: false
   sslCertSecretName: null
@@ -48,10 +55,10 @@ targetCpu: 50
 
 image:
   name: omar-wfs
-  tag: dev
+  tag: 2.16
   pullPolicy: Always
 
-ingressPath: /omar-wfs
+path: /omar-wfs
 internalPort: 8080
 externalPort: 8080
 
