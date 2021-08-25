@@ -29,7 +29,7 @@ global:
 
   createImagePullSecret: true
   useImagePullSecret: true
-  
+
   createHpa: true
 
   useSpringConfigServer: false
@@ -84,10 +84,6 @@ terminationGracePeriodSeconds: 30
 
 
 configmaps: {}
-
-extraVolumes: []
-
-extraVolumeMounts: []
 
 extraInitContainers: []
 
