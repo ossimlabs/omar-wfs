@@ -46,12 +46,6 @@
 {{- define "omar-wfs.volumeMounts" -}}
 {{- include "omar-wfs.volumeMounts.configmaps" . -}}
 {{- include "omar-wfs.volumeMounts.pvcs" . -}}
-{{- if .Values.global.extraVolumeMounts }}
-{{ toYaml .Values.global.extraVolumeMounts }}
-{{- end }}
-{{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts }}
-{{- end }}
 {{- end -}}
 
 
@@ -80,10 +74,4 @@
 {{- define "omar-wfs.volumes" -}}
 {{- include "omar-wfs.volumes.configmaps" . -}}
 {{- include "omar-wfs.volumes.pvcs" . -}}
-{{- if .Values.global.extraVolumes }}
-{{ toYaml .Values.global.extraVolumes }}
-{{- end }}
-{{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes }}
-{{- end }}
 {{- end -}}
