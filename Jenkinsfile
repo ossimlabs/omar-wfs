@@ -40,13 +40,6 @@ podTemplate(
             envVars: [
                 envVar(key: 'HOME', value: '/root')
                 ]
-        ),
-        containerTemplate(
-            name: 'cypress',
-            image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
-            ttyEnabled: true,
-            command: 'cat',
-            privileged: true
         )
       ],
     volumes: [
@@ -68,7 +61,14 @@ node(POD_LABEL){
         DEV = "dev"
         GIT_BRANCH_NAME = scmVars.GIT_BRANCH
         BRANCH_NAME = """${sh(returnStdout: true, script: "echo ${GIT_BRANCH_NAME} | awk -F'/' '{print \$2}'").trim()}"""
-        VERSION = """${sh(returnStdout: true, script: "cat chart/Chart.yaml | grep version: | awk -F'version:' '{print \$2}'").trim()}"""
+        sh """
+        echo "${GIT_BRANCH_NAME}"
+        echo "${BRANCH_NAME}"
+        touch buildVersion.txt
+        grep buildVersion gradle.properties | cut -d "=" -f2 > "buildVersion.txt"
+        """
+        preVERSION = readFile "buildVersion.txt"
+        VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
         GIT_TAG_NAME = APP_NAME + "-" + VERSION
         ARTIFACT_NAME = "ArtifactName"
 
@@ -93,43 +93,18 @@ node(POD_LABEL){
         DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${APP_NAME}"
     }
 
-//     stage ("Run Cypress Test") {
-//         container('cypress') {
-//             try {
-//                 sh """
-//                     cypress run --headless
-//                 """
-//             }
-//             catch (err) {
-//
-//             }
-//                 sh """
-//                     npm i -g xunit-viewer
-//                     xunit-viewer -r results -o results/${APP_NAME}-test-results.html
-//                 """
-//                     junit 'results/*.xml'
-//                     archiveArtifacts "results/*.xml"
-//                     archiveArtifacts "results/*.html"
-//                     s3Upload(file:'results/${APP_NAME}-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
-//                 }
-//             }
+//      stage('SonarQube Analysis') {
+//          nodejs(nodeJSInstallationName: "${NODEJS_VERSION}") {
+//              def scannerHome = tool "${SONARQUBE_SCANNER_VERSION}"
 
-//     stage('Fortify Scans') {
-//         COMING SOON
-//     }
-
-     stage('SonarQube Analysis') {
-         nodejs(nodeJSInstallationName: "${NODEJS_VERSION}") {
-             def scannerHome = tool "${SONARQUBE_SCANNER_VERSION}"
-
-                 withSonarQubeEnv('sonarqube'){
-                     sh """
-                         ${scannerHome}/bin/sonar-scanner \
-                         -Dsonar.projectKey=${APP_NAME}
-                     """
-             }
-         }
-     }
+//                  withSonarQubeEnv('sonarqube'){
+//                      sh """
+//                          ${scannerHome}/bin/sonar-scanner \
+//                          -Dsonar.projectKey=${APP_NAME}
+//                      """
+//              }
+//          }
+//      }
 
     stage('Build') {
         container('builder') {
@@ -210,3 +185,4 @@ node(POD_LABEL){
         }
     }
 }
+
