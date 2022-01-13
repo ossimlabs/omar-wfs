@@ -178,8 +178,6 @@ eureka:
   instance:
     preferIpAddress: true
 ---
-logging:
-  config: classpath:logback.groovy
 
 omar:
   wfs:
