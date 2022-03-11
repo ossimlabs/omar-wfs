@@ -29,6 +29,8 @@ class GetFeatureRequest implements Validateable
   Integer maxFeatures
   Integer startIndex
 
+  String srsName
+  
   static mapping = {
     version false
   }
