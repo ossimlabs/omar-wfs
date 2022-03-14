@@ -211,7 +211,7 @@ class WebFeatureService
                   ows.Keyword(keyword)
                 }
               }
-              DefaultSRS("urn:x-ogc:def:crs:${featureType.proj}")
+              DefaultSRS("${featureType.proj}")
               ows.WGS84BoundingBox {
                 def bounds = featureType.geoBounds
                 ows.LowerCorner("${bounds.minX} ${bounds.minY}")
@@ -741,7 +741,7 @@ class WebFeatureService
   def parseOptions(def wfsParams)
   {
     def wfsParamNames = [
-            'maxFeatures', 'startIndex', 'propertyName', 'sortBy', 'filter'
+            'maxFeatures', 'startIndex', 'propertyName', 'sortBy', 'filter', 'srsName'
     ]
 
     def options = wfsParamNames.inject( [:] ) { options, wfsParamName ->
@@ -784,6 +784,9 @@ class WebFeatureService
                 return x
               } as List
             }
+            break
+          case "srsName":
+            options['srsName'] = wfsParams[wfsParamName]
             break
           default:
             if ( wfsParams[wfsParamName] )
