@@ -58,12 +58,14 @@ resources:
 
 autoscaling:
   enabled:
-  targetCpu: 50
+  # targetCpu: 50
+  minReplicas: 1
+  maxReplicas: 1
 
 image:
   name: omar-wfs
   tag: 2.16
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ingress:
   enabled:
