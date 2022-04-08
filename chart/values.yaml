@@ -64,7 +64,7 @@ autoscaling:
 
 image:
   name: omar-wfs
-  tag: 2.16
+  tag: null
   pullPolicy: IfNotPresent
 
 ingress:
