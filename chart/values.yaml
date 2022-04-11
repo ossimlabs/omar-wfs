@@ -39,6 +39,9 @@ global:
 
   useSpringConfigServer: false
 
+  deployment:
+    annotations: {}
+
 # These variables can be overridden because of the use of the 'pluck' function:
 # - createIngress
 # - useTls
@@ -103,3 +106,6 @@ configmaps: {}
 extraInitContainers: []
 
 sideCars: []
+
+deployment:
+  annotations: {}
