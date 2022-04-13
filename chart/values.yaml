@@ -43,7 +43,7 @@ global:
     annotations: {}
 
   serviceAccount:
-    enabled: null
+    enabled: false
     annotations: {}
     # name:
 
