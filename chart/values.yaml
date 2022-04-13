@@ -4,7 +4,7 @@
 
 replicas: 1
 
-appName: omar-wfs
+fullnameOverride: omar-wfs
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
