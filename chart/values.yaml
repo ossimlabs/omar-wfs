@@ -105,7 +105,7 @@ readinessProbe:
 
 terminationGracePeriodSeconds: 30
 
-# envVars:
+envVars: {}
 #   SPRING_CLOUD_CONFIG_LABEL: master
 
 configmaps: {}
