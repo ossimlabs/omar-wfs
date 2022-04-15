@@ -101,7 +101,7 @@ data:
       textColor: white
 
     serverDomain: ossim.io
-    serverName: omar.${serverDomain}
+    serverName: {{ .Values.global.hostname }}
     serverNamePki: pki-omar.${serverDomain}
 
     serverProtocol: https
