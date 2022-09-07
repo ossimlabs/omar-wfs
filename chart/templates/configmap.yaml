@@ -92,7 +92,7 @@ data:
 
     security:
       user:
-        name: omar #user name to authenticate for Spring Boot Admin
+        name: omar #username to authenticate for Spring Boot Admin
         password: omarftw123 #Password to authenticate for Spring Boot Admin
 
     securityClassification:
