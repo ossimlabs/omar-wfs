@@ -50,6 +50,7 @@ global:
     # name:
 
   envVars: {}
+  envFrom: []
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -112,6 +113,7 @@ terminationGracePeriodSeconds: 30
 
 envVars: {}
 #   SPRING_CLOUD_CONFIG_LABEL: master
+envFrom: []
 nodeSelector: {}
 affinity: {}
 tolerations: []
