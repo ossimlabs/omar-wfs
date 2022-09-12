@@ -7,12 +7,17 @@ replicas: 1
 fullnameOverride: omar-wfs
 
 global:
-  dockerRepository: nexus-docker-private-group.ossim.io
+
   imagePullSecret:
     registry: null
     username: null
     password: null
   hostname: omar-dev.ossim.io
+
+  image:
+    registry: ""
+    pullPolicy: ""
+    pullSecrets: []
 
   omarDb:
     name: null
@@ -31,8 +36,6 @@ global:
   sslCertSecretName: null
   authSslCertSecretName: null
 
-  
-
   autoscaling:
     enabled: true
 
@@ -47,6 +50,9 @@ global:
     # name:
 
   envVars: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 # These variables can be overridden because of the use of the 'pluck' function:
 # - createIngress
@@ -106,6 +112,9 @@ terminationGracePeriodSeconds: 30
 
 envVars: {}
 #   SPRING_CLOUD_CONFIG_LABEL: master
+nodeSelector: {}
+affinity: {}
+tolerations: []
 
 configmaps: {}
 
