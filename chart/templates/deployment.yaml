@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
       - name: wait-for-geoscript
-        image: "{{ .Values.global.image.registry }}/busybox:1.28"
+        image: "{{ include "omar-wfs.busybox.image" . }}"
         command: ['sh', '-c', "until nslookup omar-geoscript; do echo waiting for geoscript; sleep 2; done"]
       {{- if .Values.extraInitContainers }}
       {{- toYaml .Values.extraInitContainers | nindent 6 }}
