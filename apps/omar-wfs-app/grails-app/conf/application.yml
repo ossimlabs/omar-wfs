@@ -152,7 +152,7 @@ management:
       sensitive: false
     health:
       enabled: true
-    
+
 grails:
     cors:
         enabled: true
@@ -191,7 +191,7 @@ omar:
     app:
       geoscript:
         # The url endpoint for the omar-geoscript service
-        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi    
+        url: http://omar-geoscript:8080/omar-geoscript/geoscriptApi
 
 # Define the http protocols that swagger will use
 swagger:
