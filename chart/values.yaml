@@ -11,6 +11,7 @@ global:
     registry: null
     username: null
     password: null
+
   hostname: omar-dev.ossim.io
 
   image:
@@ -85,7 +86,7 @@ autoscaling:
 image:
   name: omar-wfs
   tag: null
-  pullPolicy: IfNotPresent
+  pullPolicy: ""
 
 busybox:
   image: {}
