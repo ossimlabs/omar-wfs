@@ -129,3 +129,18 @@ environments:
           enabled: true
           settings:
             web-allow-others: true
+---
+omar:
+  wfs:
+    # we have a variable that will allow us to override the result
+    # to include numberMatch.  By default this is off.  I do not see
+    # numberMatch as part of the spec only the numberOfFeatures that is in the result
+    # set.  We will default this to false because this is an expensive operation
+    # when enabled for it will do a count query and a result query when
+    # the return type is of type "results" instead of "hits".
+    includeNumberMatched: false
+    app:
+      geoscript:
+        # The url endpoint for the omar-geoscript service
+        url: http://omar-geoscript-app:8080/omar-geoscript/geoscriptApi    
+
