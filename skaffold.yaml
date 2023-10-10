@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta7
+kind: Config
+metadata:
+  name: omar-wfs
+build:
+  artifacts:
+    - image: registry.iap.maxar.com/gegd/omar/omar-wfs
+      jib: 
+        project: omar-wfs-app
+      context: ./apps/omar-wfs-app
+  tagPolicy:
+    sha256: {}
+deploy:
+  helm:
+    releases:
+      - name: omar-wfs # this is the helm release name                
+        chartPath: ./apps/omar-wfs-app/chart
+        valuesFiles:
+          - ./apps/omar-wfs-app/values-dev.yaml # provides values to override defaults in chart
+        namespace: omar-3pa-dev
+        setValueTemplates:
+          image.tag: latest
+          image.name: omar-wfs
