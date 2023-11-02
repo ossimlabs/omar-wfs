@@ -13,6 +13,14 @@ data:
 
     baseUrl: ${serverProtocol}://${serverName}
 
+    omar:
+      wfs:
+        includeNumberMatched: false
+        app:
+          geoscript:
+            # The url endpoint for the omar-geoscript service
+            url: http://omar-geoscript:8080/omar-geoscript/geoscriptApi
+
     endpoints:
       enabled: true
       health:
